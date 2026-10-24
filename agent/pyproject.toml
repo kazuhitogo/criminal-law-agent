@@ -1,0 +1,31 @@
+[project]
+name = "criminal-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Kazuhito Go", email = "kazuhitogo@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.43.118",
+    "criminal-ontology",
+    "fastapi>=0.162.0",
+    "pydantic>=2.14.1",
+    "strands-agents>=1.62.0",
+    "strands-agents-tools>=0.8.10",
+    "uvicorn>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.11,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+criminal-ontology = { path = "../ontology", editable = true }
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+]

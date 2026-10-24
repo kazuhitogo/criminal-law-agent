@@ -1,0 +1,1210 @@
+# 刑法第2編「罪」(77条〜264条) データ
+# 法定刑は拘禁刑への一本化(2025年6月施行)を反映。
+# statute_text は e-Gov 法令データ(刑法, 明治40年法律第45号)の条文に基づく。
+# category は schema.ttl の罪カテゴリクラス名と一致させる。
+
+crimes:
+  # ================================================================
+  # 【国家的法益に対する罪】
+  # ================================================================
+
+  # --- 第1章 内乱に関する罪 (77-80) ---
+  - id: insurrection
+    label: 内乱罪
+    article: "77"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の存立・統治機構
+    elements:
+      - type: conduct
+        desc: 国の統治機構を破壊し又は領土で国権を排除して権力を行使する等を目的とした暴動
+        keywords: [内乱, 暴動, クーデター, 政府転覆, 反乱]
+      - type: intent
+        desc: 国憲紊乱の目的
+        keywords: []
+    penalties:
+      - type: death
+        note: 首謀者は死刑又は無期拘禁刑
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 死刑又は無期拘禁刑(首謀者)。その他は役割に応じ無期又は有期拘禁刑
+    statute_text: "国の統治機構を破壊し、又はその領土において国権を排除して権力を行使し、その他憲法の定める統治の基本秩序を壊乱することを目的として暴動をした者は、内乱の罪とし、次の区別に従って処断する。"
+
+  # --- 第2章 外患に関する罪 (81-89) ---
+  - id: inducement-foreign-aggression
+    label: 外患誘致罪
+    article: "81"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の対外的存立
+    elements:
+      - type: conduct
+        desc: 外国と通謀して日本国に武力を行使させる
+        keywords: [外患, 外国と通謀, 武力行使, 売国]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: death
+        note: 死刑
+    statute_text: "外国と通謀して日本国に対し武力を行使させた者は、死刑に処する。"
+
+  # --- 第5章 公務の執行を妨害する罪 (95-96の6) ---
+  - id: obstruction-of-official-duty
+    label: 公務執行妨害罪
+    article: "95"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家・地方公共団体の公務
+    elements:
+      - type: object
+        desc: 職務を執行する公務員
+        keywords: [警察官, 公務員, 職員, 役所]
+      - type: conduct
+        desc: 職務執行に際し暴行又は脅迫を加える
+        keywords: [暴行, 脅迫, 抵抗, 妨害, 殴る, 突き飛ばす]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "公務員が職務を執行するに当たり、これに対して暴行又は脅迫を加えた者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+
+  # --- 第6章 逃走の罪 (97-102) ---
+  - id: escape
+    label: 逃走罪
+    article: "97"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の拘禁作用
+    elements:
+      - type: object
+        desc: 法令により拘禁された者
+        keywords: [逃走, 脱走, 脱獄, 逃げる]
+      - type: conduct
+        desc: 逃走する
+        keywords: [逃走, 逃亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "法令により拘禁された者が逃走したときは、三年以下の拘禁刑に処する。"
+
+  # --- 第7章 犯人蔵匿及び証拠隠滅の罪 (103-105の2) ---
+  - id: harboring-criminal
+    label: 犯人蔵匿罪
+    article: "103"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の刑事司法作用
+    elements:
+      - type: object
+        desc: 罰金以上の刑に当たる罪を犯した者又は拘禁中に逃走した者
+        keywords: [犯人, かくまう, 匿う, 逃がす]
+      - type: conduct
+        desc: 蔵匿し又は隠避させる
+        keywords: [かくまう, 匿う, 隠す, 逃がす]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "罰金以上の刑に当たる罪を犯した者又は拘禁中に逃走した者を蔵匿し、又は隠避させた者は、三年以下の拘禁刑又は三十万円以下の罰金に処する。"
+
+  - id: evidence-destruction
+    label: 証拠隠滅罪
+    article: "104"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の刑事司法作用
+    elements:
+      - type: object
+        desc: 他人の刑事事件に関する証拠
+        keywords: [証拠, 隠滅, 偽造, 変造, 隠す, 捨てる]
+      - type: conduct
+        desc: 隠滅・偽造・変造し又はこれを使用する
+        keywords: [隠滅, 証拠隠滅, 偽造, 変造]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "他人の刑事事件に関する証拠を隠滅し、偽造し、若しくは変造し、又は偽造若しくは変造の証拠を使用した者は、三年以下の拘禁刑又は三十万円以下の罰金に処する。"
+
+  # --- 第9章 騒乱の罪 (106-107) ---
+  - id: riot
+    label: 騒乱罪
+    article: "106"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の平穏
+    elements:
+      - type: conduct
+        desc: 多衆で集合して暴行又は脅迫をする
+        keywords: [騒乱, 暴動, 多衆, 集団, 暴れる]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: null
+        unit: year
+        note: 首謀者は1年以上10年以下の拘禁刑等、役割により区別
+    statute_text: "多衆で集合して暴行又は脅迫をした者は、騒乱の罪とし、次の区別に従って処断する。"
+
+  # --- 第11章 放火及び失火の罪 (108-118) ---
+  - id: arson-inhabited
+    label: 現住建造物等放火罪
+    article: "108"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 現に人が住居に使用し又は現に人がいる建造物等
+        keywords: [放火, 火をつける, 燃やす, 家, 建物]
+      - type: conduct
+        desc: 放火して焼損する
+        keywords: [放火, 火災, 燃やす, 火をつける]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: death
+        note: 死刑又は無期若しくは5年以上の拘禁刑
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 死刑又は無期若しくは5年以上の拘禁刑
+    statute_text: "放火して、現に人が住居に使用し又は現に人がいる建造物、汽車、電車、艦船又は鉱坑を焼損した者は、死刑又は無期若しくは五年以上の拘禁刑に処する。"
+
+  # --- 第15章 飲料水に関する罪 (142-147) ---
+  - id: water-contamination
+    label: 浄水汚染罪
+    article: "142"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: 人の飲料に供する浄水
+        keywords: [飲料水, 水道, 汚染, 毒, 混入]
+      - type: conduct
+        desc: 汚染して使用できないようにする
+        keywords: [汚染, 混入, 毒, 汚す]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 6
+        unit: month
+        note: 6月以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金
+    statute_text: "人の飲料に供する浄水を汚染し、よって使用することができないようにした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。"
+
+  # --- 第16章 通貨偽造の罪 (148-153) ---
+  - id: counterfeiting-currency
+    label: 通貨偽造罪
+    article: "148"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 通貨に対する公共の信用
+    elements:
+      - type: object
+        desc: 行使の目的で通用する貨幣・紙幣・銀行券
+        keywords: [偽札, 偽造, 通貨, お金, 紙幣, 貨幣]
+      - type: conduct
+        desc: 偽造又は変造する
+        keywords: [偽造, 変造, 偽札]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 無期又は3年以上の拘禁刑
+    statute_text: "行使の目的で、通用する貨幣、紙幣又は銀行券を偽造し、又は変造した者は、無期又は三年以上の拘禁刑に処する。"
+
+  # --- 第17章 文書偽造の罪 (154-161の2) ---
+  - id: counterfeiting-private-document
+    label: 私文書偽造罪
+    article: "159"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 権利義務又は事実証明に関する他人の文書・図画
+        keywords: [文書偽造, 偽造, 書類, 契約書, サイン, 署名, 印鑑]
+      - type: conduct
+        desc: 他人の印章・署名を使用して偽造する
+        keywords: [偽造, 変造, なりすまし, 偽の書類]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "行使の目的で、他人の印章若しくは署名を使用して権利、義務若しくは事実証明に関する文書若しくは図画を偽造し、又は偽造した他人の印章若しくは署名を使用して権利、義務若しくは事実証明に関する文書若しくは図画を偽造した者は、三月以上五年以下の拘禁刑に処する。"
+
+  # --- 第18章 有価証券偽造の罪 (162-163) ---
+  - id: counterfeiting-securities
+    label: 有価証券偽造罪
+    article: "162"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 有価証券に対する公共の信用
+    elements:
+      - type: object
+        desc: 公債証書・官庁の証券・会社の株券その他の有価証券
+        keywords: [有価証券, 株券, 手形, 小切手, 偽造]
+      - type: conduct
+        desc: 偽造又は変造する
+        keywords: [偽造, 変造]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 3月以上10年以下の拘禁刑
+    statute_text: "行使の目的で、公債証書、官庁の証券、会社の株券その他の有価証券を偽造し、又は変造した者は、三月以上十年以下の拘禁刑に処する。"
+
+  # --- 第18章の2 支払用カード電磁的記録に関する罪 (163の2-163の5) ---
+  - id: unauthorized-payment-card-record
+    label: 支払用カード電磁的記録不正作出罪
+    article: "163の2"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 支払用カードの電磁的記録に対する信用
+    elements:
+      - type: object
+        desc: 人の財産上の事務処理を誤らせる目的のクレジットカード等の電磁的記録
+        keywords: [クレジットカード, スキミング, 電磁的記録, カード偽造, 不正作出]
+      - type: conduct
+        desc: 不正に作出する
+        keywords: [偽造, スキミング, 不正作出]
+      - type: intent
+        desc: 財産上の事務処理を誤らせる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: 100万円以下の罰金
+    statute_text: "人の財産上の事務処理を誤らせる目的で、その事務処理の用に供する電磁的記録であって、クレジットカードその他の代金又は料金の支払用のカードを構成するものを不正に作った者は、十年以下の拘禁刑又は百万円以下の罰金に処する。"
+
+  # --- 第19章 印章偽造の罪 (164-168) ---
+  - id: counterfeiting-seal
+    label: 印章偽造罪
+    article: "167"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 印章・署名に対する公共の信用
+    elements:
+      - type: object
+        desc: 他人の印章又は署名
+        keywords: [印鑑, 印章, 署名, ハンコ, 偽造]
+      - type: conduct
+        desc: 行使の目的で偽造する
+        keywords: [偽造, 印鑑偽造]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "行使の目的で、他人の印章又は署名を偽造した者は、三年以下の拘禁刑に処する。"
+
+  # --- 第20章 偽証の罪 (169-171) ---
+  - id: perjury
+    label: 偽証罪
+    article: "169"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の審判作用
+    elements:
+      - type: object
+        desc: 法律により宣誓した証人
+        keywords: [偽証, 嘘の証言, 証人, 裁判, 宣誓]
+      - type: conduct
+        desc: 虚偽の陳述をする
+        keywords: [虚偽, 嘘, 偽証]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 3月以上10年以下の拘禁刑
+    statute_text: "法律により宣誓した証人が虚偽の陳述をしたときは、三月以上十年以下の拘禁刑に処する。"
+
+  # --- 第21章 虚偽告訴の罪 (172-173) ---
+  - id: false-accusation
+    label: 虚偽告訴罪
+    article: "172"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の審判作用・個人の私生活の平穏
+    elements:
+      - type: conduct
+        desc: 人に刑事・懲戒処分を受けさせる目的で虚偽の告訴・告発をする
+        keywords: [虚偽告訴, でっちあげ, 冤罪, 嘘の告訴, 誣告]
+      - type: intent
+        desc: 刑事又は懲戒の処分を受けさせる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 3月以上10年以下の拘禁刑
+    statute_text: "人に刑事又は懲戒の処分を受けさせる目的で、虚偽の告訴、告発その他の申告をした者は、三月以上十年以下の拘禁刑に処する。"
+
+  # --- 第22章 わいせつ、不同意性交等及び重婚の罪 (174-184) ---
+  - id: public-indecency
+    label: 公然わいせつ罪
+    article: "174"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な性風俗
+    elements:
+      - type: conduct
+        desc: 公然とわいせつな行為をする
+        keywords: [公然わいせつ, 露出, わいせつ行為]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 6
+        unit: month
+        note: 6月以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金又は科料
+    statute_text: "公然とわいせつな行為をした者は、六月以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
+
+  - id: non-consensual-sexual-intercourse
+    label: 不同意性交等罪
+    article: "177"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 性的自由・性的自己決定権
+    elements:
+      - type: object
+        desc: 同意しない意思を形成等が困難な状態の相手
+        keywords: [性的暴行, 不同意性交, レイプ, 性被害, 無理やり]
+      - type: conduct
+        desc: 暴行・脅迫等により同意しない意思の形成等を困難にして性交等をする
+        keywords: [無理やり, 同意なく, 性交, 性的暴行]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 5年以上の有期拘禁刑
+    statute_text: "次に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、性交、肛門性交、口腔性交又は膣若しくは肛門に身体の一部若しくは物を挿入する行為であってわいせつなものをした者は、婚姻関係の有無にかかわらず、五年以上の有期拘禁刑に処する。"
+
+  - id: non-consensual-indecency
+    label: 不同意わいせつ罪
+    article: "176"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 性的自由・性的自己決定権
+    elements:
+      - type: conduct
+        desc: 同意しない意思の形成等が困難な状態でわいせつな行為をする
+        keywords: [痴漢, わいせつ, 体を触られた, 無理やり触られた, 性被害]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 120
+        unit: month
+        note: 6月以上10年以下の拘禁刑
+    statute_text: "前条第一項各号に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、わいせつな行為をした者は、婚姻関係の有無にかかわらず、六月以上十年以下の拘禁刑に処する。"
+
+  - id: gambling
+    label: 賭博罪
+    article: "185"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な経済的風俗
+    elements:
+      - type: conduct
+        desc: 賭博をする
+        keywords: [賭博, ギャンブル, 賭け, 違法カジノ, 賭け事]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金又は科料
+    statute_text: "賭博をした者は、五十万円以下の罰金又は科料に処する。ただし、一時の娯楽に供する物を賭けたにとどまるときは、この限りでない。"
+
+  # --- 第24章 礼拝所及び墳墓に関する罪 (188-192) ---
+  - id: disrespect-worship-place
+    label: 礼拝所不敬罪
+    article: "188"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 国民の宗教的感情
+    elements:
+      - type: object
+        desc: 神祠・仏堂・墓所その他の礼拝所
+        keywords: [神社, 墓, 礼拝所, 仏堂, 不敬, 損壊]
+      - type: conduct
+        desc: 公然と不敬な行為をする
+        keywords: [不敬, 荒らす, 汚す]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 6
+        unit: month
+        note: 6月以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金又は科料
+    statute_text: "神祠、仏堂、墓所その他の礼拝所に対し、公然と不敬な行為をした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。"
+
+  # --- 第25章 汚職の罪 (193-198) ---
+  - id: abuse-of-authority
+    label: 公務員職権濫用罪
+    article: "193"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家作用の公正・個人の自由
+    elements:
+      - type: object
+        desc: 公務員
+        keywords: [職権濫用, 公務員, 権力乱用]
+      - type: conduct
+        desc: 職権を濫用して義務のないことを行わせ又は権利の行使を妨害する
+        keywords: [職権濫用, 権力乱用, 強要]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+    statute_text: "公務員がその職権を濫用して、人に義務のないことを行わせ、又は権利の行使を妨害したときは、二年以下の拘禁刑に処する。"
+
+  - id: bribe-acceptance
+    label: 収賄罪
+    article: "197"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務の公正とそれに対する社会的信頼
+    elements:
+      - type: object
+        desc: 公務員
+        keywords: [収賄, 賄賂, わいろ, 公務員, 袖の下]
+      - type: conduct
+        desc: 職務に関し賄賂を収受・要求・約束する
+        keywords: [賄賂, 収賄, わいろ, 受け取る]
+      - type: intent
+        desc: 職務関連性の認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+    statute_text: "公務員が、その職務に関し、賄賂を収受し、又はその要求若しくは約束をしたときは、五年以下の拘禁刑に処する。この場合において、請託を受けたときは、七年以下の拘禁刑に処する。"
+
+  # ================================================================
+  # 【個人的法益に対する罪】
+  # ================================================================
+
+  # --- 第26章 殺人の罪 (199-203) ---
+  - id: homicide
+    label: 殺人罪
+    article: "199"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命
+    elements:
+      - type: object
+        desc: 他人(自然人)
+        keywords: [殺された, 殺す, 殺害, 刺された, 命を奪われた]
+      - type: conduct
+        desc: 人を殺す
+        keywords: [殺す, 殺害, 刺す, 絞める, 毒殺]
+      - type: result
+        desc: 死亡
+        keywords: [死亡, 死んだ]
+      - type: intent
+        desc: 殺意(故意)
+        keywords: [殺意, 殺すつもり]
+    penalties:
+      - type: death
+        note: 死刑又は無期若しくは5年以上の拘禁刑
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 死刑又は無期若しくは5年以上の拘禁刑
+    statute_text: "人を殺した者は、死刑又は無期若しくは五年以上の拘禁刑に処する。"
+
+  # --- 第27章 傷害の罪 (204-208の2) ---
+  - id: injury
+    label: 傷害罪
+    article: "204"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の身体
+    elements:
+      - type: object
+        desc: 他人の身体
+        keywords: [怪我, けが, 負傷, 傷, 殴られた, 入院]
+      - type: conduct
+        desc: 人の身体を傷害する
+        keywords: [殴る, 叩く, 蹴る, 傷つける, 暴行, ボコ]
+      - type: result
+        desc: 生理的機能の障害(傷害結果)
+        keywords: [怪我, けが, 骨折, 打撲, あざ, 出血]
+      - type: intent
+        desc: 故意(暴行の故意で足りる)
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 15
+        unit: year
+        note: 15年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "人の身体を傷害した者は、十五年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [assault, injury-causing-death]
+
+  - id: injury-causing-death
+    label: 傷害致死罪
+    article: "205"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の身体・生命
+    elements:
+      - type: conduct
+        desc: 身体を傷害し死亡させる
+        keywords: [殴って死なせた, 暴行で死亡, 傷害致死]
+      - type: result
+        desc: 死亡
+        keywords: [死亡, 死んだ]
+      - type: intent
+        desc: 傷害の故意(殺意不要)
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 3年以上の有期拘禁刑
+    statute_text: "身体を傷害し、よって人を死亡させた者は、三年以上の有期拘禁刑に処する。"
+
+  - id: assault
+    label: 暴行罪
+    article: "208"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の身体
+    elements:
+      - type: conduct
+        desc: 暴行を加えたが傷害に至らない
+        keywords: [殴られた, 叩かれた, 蹴られた, 突き飛ばされた, 暴力, ボコ, 小突かれた]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金又は科料
+    statute_text: "暴行を加えた者が人を傷害するに至らなかったときは、二年以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
+    related_to: [injury]
+
+  # --- 第28章 過失傷害の罪 (209-211) ---
+  - id: negligent-homicide
+    label: 過失致死罪
+    article: "210"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命
+    elements:
+      - type: conduct
+        desc: 過失により人を死亡させる
+        keywords: [過失, うっかり, 事故, 不注意, 死なせた]
+      - type: result
+        desc: 死亡
+        keywords: [死亡]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "過失により人を死亡させた者は、五十万円以下の罰金に処する。"
+
+  # --- 第29章 堕胎の罪 (212-216) ---
+  - id: self-abortion
+    label: 堕胎罪
+    article: "212"
+    category: CrimeAgainstLifeBody
+    legal_interest: 胎児の生命・母体
+    elements:
+      - type: conduct
+        desc: 妊娠中の女子が薬物等で堕胎する
+        keywords: [堕胎, 中絶]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+    statute_text: "妊娠中の女子が薬物を用い、又はその他の方法により、堕胎したときは、一年以下の拘禁刑に処する。"
+
+  # --- 第30章 遺棄の罪 (217-219) ---
+  - id: abandonment
+    label: 遺棄罪
+    article: "217"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命・身体の安全
+    elements:
+      - type: object
+        desc: 老年・幼年・身体障害・疾病のため扶助を必要とする者
+        keywords: [遺棄, 置き去り, 放置, 見捨てる]
+      - type: conduct
+        desc: 遺棄する
+        keywords: [遺棄, 置き去り, 放置]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+    statute_text: "老年、幼年、身体障害又は疾病のために扶助を必要とする者を遺棄した者は、一年以下の拘禁刑に処する。"
+
+  # --- 第31章 逮捕及び監禁の罪 (220-221) ---
+  - id: unlawful-capture-confinement
+    label: 逮捕監禁罪
+    article: "220"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の身体活動の自由
+    elements:
+      - type: object
+        desc: 他人
+        keywords: [監禁, 閉じ込められた, 拘束, 逮捕, 縛られた]
+      - type: conduct
+        desc: 不法に逮捕し又は監禁する
+        keywords: [監禁, 閉じ込める, 拘束, 縛る, 軟禁]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 84
+        unit: month
+        note: 3月以上7年以下の拘禁刑
+    statute_text: "不法に人を逮捕し、又は監禁した者は、三月以上七年以下の拘禁刑に処する。"
+
+  # --- 第32章 脅迫の罪 (222-223) ---
+  - id: intimidation
+    label: 脅迫罪
+    article: "222"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 意思決定の自由・私生活の平穏
+    elements:
+      - type: conduct
+        desc: 生命・身体・自由・名誉・財産に害を加える旨を告知して脅迫する
+        keywords: [脅された, 殺すと言われた, 脅迫, 危害を加える, 脅し, 恐喝された]
+      - type: object
+        desc: 本人又は親族
+        keywords: []
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "生命、身体、自由、名誉又は財産に対し害を加える旨を告知して人を脅迫した者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。"
+    related_to: [compulsion, extortion]
+
+  - id: compulsion
+    label: 強要罪
+    article: "223"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 意思決定・意思活動の自由
+    elements:
+      - type: conduct
+        desc: 脅迫・暴行で義務のないことを行わせ又は権利の行使を妨害する
+        keywords: [強要, 無理やりやらされた, 強制, 脅して従わせる, 土下座させられた]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "生命、身体、自由、名誉若しくは財産に対し害を加える旨を告知して脅迫し、又は暴行を用いて、人に義務のないことを行わせ、又は権利の行使を妨害した者は、三年以下の拘禁刑に処する。"
+    related_to: [intimidation]
+
+  # --- 第33章 略取、誘拐及び人身売買の罪 (224-229) ---
+  - id: kidnapping-minor
+    label: 未成年者略取誘拐罪
+    article: "224"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者の自由・保護者の監護権
+    elements:
+      - type: object
+        desc: 未成年者
+        keywords: [誘拐, 連れ去り, 略取, 子供が連れ去られた]
+      - type: conduct
+        desc: 略取し又は誘拐する
+        keywords: [誘拐, 連れ去り, 略取]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 84
+        unit: month
+        note: 3月以上7年以下の拘禁刑
+    statute_text: "未成年者を略取し、又は誘拐した者は、三月以上七年以下の拘禁刑に処する。"
+
+  # --- 第34章 名誉に対する罪 (230-232) ---
+  - id: defamation
+    label: 名誉毀損罪
+    article: "230"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の外部的名誉
+    elements:
+      - type: conduct
+        desc: 公然と事実を摘示して人の名誉を毀損する
+        keywords: [名誉毀損, 悪口, 噂を流された, 評判, SNS, デマ, 晒された, 誹謗中傷]
+      - type: circumstance
+        desc: 公然性(不特定又は多数が認識しうる状態)
+        keywords: [SNS, ネット, 公然, 掲示板, 拡散]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "公然と事実を摘示し、人の名誉を毀損した者は、その事実の有無にかかわらず、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [insult]
+
+  - id: insult
+    label: 侮辱罪
+    article: "231"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の外部的名誉
+    elements:
+      - type: conduct
+        desc: 事実を摘示せず公然と人を侮辱する
+        keywords: [侮辱, バカ, 悪口, 罵倒, SNS, 誹謗中傷, 馬鹿にされた]
+      - type: circumstance
+        desc: 公然性
+        keywords: [SNS, ネット, 公然, 掲示板]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金又は科料
+    statute_text: "事実を摘示しなくても、公然と人を侮辱した者は、一年以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
+    related_to: [defamation]
+
+  # --- 第35章 信用及び業務に対する罪 (233-234の2) ---
+  - id: defamation-of-credit
+    label: 信用毀損及び業務妨害罪
+    article: "233"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の経済的信用・業務
+    elements:
+      - type: conduct
+        desc: 虚偽の風説を流布し又は偽計を用いて信用を毀損し業務を妨害する
+        keywords: [業務妨害, 信用毀損, 嘘の噂, 妨害, 営業妨害]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "虚偽の風説を流布し、又は偽計を用いて、人の信用を毀損し、又はその業務を妨害した者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [forcible-obstruction-of-business]
+
+  - id: forcible-obstruction-of-business
+    label: 威力業務妨害罪
+    article: "234"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の業務
+    elements:
+      - type: conduct
+        desc: 威力を用いて人の業務を妨害する
+        keywords: [業務妨害, 営業妨害, 威力, 妨害, 迷惑行為]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "威力を用いて人の業務を妨害した者も、前条の例による。"
+    related_to: [defamation-of-credit]
+
+  # --- 第36章 窃盗及び強盗の罪 (235-245) ---
+  - id: theft
+    label: 窃盗罪
+    article: "235"
+    category: CrimeAgainstProperty
+    legal_interest: 財産(占有)
+    elements:
+      - type: object
+        desc: 他人の財物
+        keywords: [盗む, 盗まれた, 取られた, 持ち去, 万引き, スリ, 財布, 自転車, 盗難, スられた]
+      - type: conduct
+        desc: 窃取(占有者の意思に反する占有移転)
+        keywords: [盗む, こっそり, 勝手に持って, 盗難, 持ち去る]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "他人の財物を窃取した者は、窃盗の罪とし、十年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [robbery]
+
+  - id: robbery
+    label: 強盗罪
+    article: "236"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・人の身体の安全
+    elements:
+      - type: object
+        desc: 他人の財物又は財産上の利益
+        keywords: [強盗, 奪われた, 脅して奪う, ひったくり]
+      - type: conduct
+        desc: 暴行・脅迫を用いて財物を強取する
+        keywords: [強盗, 奪う, 脅して奪う, 暴力で奪う]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 5年以上の有期拘禁刑
+    statute_text: "暴行又は脅迫を用いて他人の財物を強取した者は、強盗の罪とし、五年以上の有期拘禁刑に処する。"
+    related_to: [theft]
+
+  # --- 第37章 詐欺及び恐喝の罪 (246-251) ---
+  - id: fraud
+    label: 詐欺罪
+    article: "246"
+    category: CrimeAgainstProperty
+    legal_interest: 財産
+    elements:
+      - type: conduct
+        desc: 人を欺いて財物を交付させる
+        keywords: [詐欺, 騙された, だまし取られた, 嘘, 振り込め, 架空請求, 騙し取る]
+      - type: result
+        desc: 錯誤に基づく財産的処分
+        keywords: [振り込んだ, 支払った, 渡した]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "人を欺いて財物を交付させた者は、十年以下の拘禁刑に処する。"
+    related_to: [extortion]
+
+  - id: extortion
+    label: 恐喝罪
+    article: "249"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・意思決定の自由
+    elements:
+      - type: conduct
+        desc: 人を恐喝して財物を交付させる
+        keywords: [恐喝, 脅して金, ゆすり, たかり, 脅し取られた, カツアゲ]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "人を恐喝して財物を交付させた者は、十年以下の拘禁刑に処する。"
+    related_to: [fraud, intimidation]
+
+  # --- 第38章 横領の罪 (252-254) ---
+  - id: embezzlement
+    label: 横領罪
+    article: "252"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・委託信任関係
+    elements:
+      - type: object
+        desc: 自己の占有する他人の物
+        keywords: [横領, 着服, 使い込み, 預かった金, ネコババ]
+      - type: conduct
+        desc: 横領する
+        keywords: [横領, 着服, 使い込み, 私的流用]
+      - type: intent
+        desc: 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+    statute_text: "自己の占有する他人の物を横領した者は、五年以下の拘禁刑に処する。"
+    related_to: [breach-of-trust]
+
+  - id: breach-of-trust
+    label: 背任罪
+    article: "247"
+    category: CrimeAgainstProperty
+    legal_interest: 財産
+    elements:
+      - type: object
+        desc: 他人のためその事務を処理する者
+        keywords: [背任, 任務違反, 損害を与えた, 利益相反]
+      - type: conduct
+        desc: 任務に背く行為で本人に財産上の損害を加える
+        keywords: [背任, 任務違反, 損害]
+      - type: intent
+        desc: 図利加害目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "他人のためにその事務を処理する者が、自己若しくは第三者の利益を図り又は本人に損害を加える目的で、その任務に背く行為をし、本人に財産上の損害を加えたときは、五年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [embezzlement]
+
+  # --- 第39章 盗品等に関する罪 (256) ---
+  - id: stolen-property
+    label: 盗品等関与罪
+    article: "256"
+    category: CrimeAgainstProperty
+    legal_interest: 被害者の追求権・財産
+    elements:
+      - type: object
+        desc: 盗品その他財産に対する罪に当たる行為で領得された物
+        keywords: [盗品, 故買, 贓物, 盗まれた物の取引]
+      - type: conduct
+        desc: 無償譲受・運搬・保管・有償譲受・あっせんをする
+        keywords: [盗品, 譲受, 故買]
+      - type: intent
+        desc: 盗品であることの認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑(有償譲受け等)
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金(有償譲受け等)
+    statute_text: "盗品その他財産に対する罪に当たる行為によって領得された物を運搬し、保管し、若しくは有償で譲り受け、又はその有償の処分のあっせんをした者は、十年以下の拘禁刑及び五十万円以下の罰金に処する。"
+
+  # --- 第40章 毀棄及び隠匿の罪 (258-264) ---
+  - id: property-damage
+    label: 器物損壊罪
+    article: "261"
+    category: CrimeAgainstProperty
+    legal_interest: 財産(物の効用)
+    elements:
+      - type: object
+        desc: 他人の物(公用・私用文書等を除く)
+        keywords: [器物損壊, 壊された, 壊す, 破損, 傷つけられた, 落書き, 割られた]
+      - type: conduct
+        desc: 損壊又は傷害する
+        keywords: [壊す, 破壊, 損壊, 傷つける, 割る]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金又は科料
+    statute_text: "前三条に規定するもののほか、他人の物を損壊し、又は傷害した者は、三年以下の拘禁刑又は三十万円以下の罰金若しくは科料に処する。"
+
+  # --- 第12章 住居を侵す罪 (130-132) ---
+  - id: breaking-into-residence
+    label: 住居侵入罪
+    article: "130"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 住居の平穏・管理権
+    elements:
+      - type: object
+        desc: 人の住居・邸宅・建造物・艦船
+        keywords: [住居侵入, 不法侵入, 侵入, 勝手に入られた, 空き巣, 侵入された]
+      - type: conduct
+        desc: 正当な理由なく侵入し又は要求を受けて退去しない
+        keywords: [侵入, 勝手に入る, 不法侵入, 退去しない]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金
+    statute_text: "正当な理由がないのに、人の住居若しくは人の看守する邸宅、建造物若しくは艦船に侵入し、又は要求を受けたにもかかわらずこれらの場所から退去しなかった者は、三年以下の拘禁刑又は十万円以下の罰金に処する。"
+
+  # --- 第13章 秘密を侵す罪 (133-135) ---
+  - id: opening-letters
+    label: 信書開封罪
+    article: "133"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 個人の秘密・通信の秘密
+    elements:
+      - type: object
+        desc: 封をしてある他人の信書
+        keywords: [信書開封, 手紙を勝手に開けられた, 郵便, 開封]
+      - type: conduct
+        desc: 正当な理由なく開封する
+        keywords: [開封, 勝手に開ける]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 20万円以下の罰金
+    statute_text: "正当な理由がないのに、封をしてある信書を開けた者は、一年以下の拘禁刑又は二十万円以下の罰金に処する。"
+
+  # --- 第10章 往来を妨害する罪 (124-129) ---
+  - id: obstruction-of-traffic
+    label: 往来妨害罪
+    article: "124"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 交通の安全
+    elements:
+      - type: object
+        desc: 陸路・水路・橋
+        keywords: [往来妨害, 道路封鎖, 通行妨害, 交通妨害]
+      - type: conduct
+        desc: 損壊又は閉塞して往来の妨害を生じさせる
+        keywords: [妨害, 封鎖, 閉塞]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 20万円以下の罰金
+    statute_text: "陸路、水路又は橋を損壊し、又は閉塞して往来の妨害を生じさせた者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。"

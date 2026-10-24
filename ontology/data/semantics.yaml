@@ -1,0 +1,216 @@
+# セマンティックレイヤー: 相談文の日常語 ⇄ 法律概念 の橋渡し。
+# concepts[].indicates_crimes は crimes.yaml の id を指す。
+# broader は上位概念(推移的 broaderConcept)。
+
+concepts:
+  # --- 身体・生命 ---
+  - id: bodily-harm
+    pref_label: 身体への侵害
+    alt_labels: [怪我, けが, 負傷]
+    indicates_crimes: [injury]
+
+  - id: physical-assault
+    pref_label: 身体への有形力の行使
+    alt_labels: [殴られた, 叩かれた, ボコられた, 蹴られた, 突き飛ばされた, 暴力, 小突かれた, 殴る]
+    broader: bodily-harm
+    indicates_crimes: [assault, injury]
+
+  - id: killing
+    pref_label: 生命の侵害
+    alt_labels: [殺された, 殺す, 殺害, 刺された, 命を奪われた, 毒殺]
+    indicates_crimes: [homicide, injury-causing-death]
+
+  - id: negligent-death
+    pref_label: 過失による死
+    alt_labels: [事故で死なせた, うっかり死なせた, 不注意, 過失致死]
+    indicates_crimes: [negligent-homicide]
+
+  - id: abandonment-concept
+    pref_label: 要扶助者の遺棄
+    alt_labels: [置き去り, 見捨てられた, 放置された]
+    indicates_crimes: [abandonment]
+
+  # --- 自由 ---
+  - id: confinement
+    pref_label: 身体活動の自由の侵害
+    alt_labels: [監禁, 閉じ込められた, 拘束, 縛られた, 軟禁]
+    indicates_crimes: [unlawful-capture-confinement]
+
+  - id: threat-of-harm
+    pref_label: 害悪の告知
+    alt_labels: [脅された, 殺すと言われた, 脅迫, 危害を加える, 脅し]
+    indicates_crimes: [intimidation, compulsion, extortion]
+
+  - id: coercion
+    pref_label: 意思に反する強制
+    alt_labels: [無理やりやらされた, 強要, 強制, 従わせる, 土下座させられた]
+    indicates_crimes: [compulsion]
+
+  - id: kidnapping
+    pref_label: 人の略取誘拐
+    alt_labels: [誘拐, 連れ去り, 略取, 子供が連れ去られた]
+    indicates_crimes: [kidnapping-minor]
+
+  - id: sexual-violence
+    pref_label: 性的自由の侵害
+    alt_labels: [性的暴行, レイプ, 性被害, 無理やり, 痴漢, 体を触られた]
+    indicates_crimes: [non-consensual-sexual-intercourse, non-consensual-indecency]
+
+  - id: intrusion
+    pref_label: 住居の平穏の侵害
+    alt_labels: [不法侵入, 侵入, 勝手に入られた, 空き巣, 住居侵入]
+    indicates_crimes: [breaking-into-residence]
+
+  - id: secret-violation
+    pref_label: 秘密の侵害
+    alt_labels: [手紙を勝手に開けられた, 信書開封, 郵便を開けられた]
+    indicates_crimes: [opening-letters]
+
+  # --- 名誉・信用・業務 ---
+  - id: reputation-harm
+    pref_label: 名誉の侵害
+    alt_labels: [名誉毀損, 悪口, 噂を流された, 誹謗中傷, 晒された, デマ, SNSで悪口]
+    indicates_crimes: [defamation, insult]
+
+  - id: insult-concept
+    pref_label: 公然の侮辱
+    alt_labels: [侮辱, バカ, 馬鹿にされた, 罵倒]
+    broader: reputation-harm
+    indicates_crimes: [insult]
+
+  - id: business-obstruction
+    pref_label: 業務・信用の侵害
+    alt_labels: [業務妨害, 営業妨害, 信用毀損, 嘘の噂で商売を邪魔された]
+    indicates_crimes: [defamation-of-credit, forcible-obstruction-of-business]
+
+  # --- 財産 ---
+  - id: property-taking
+    pref_label: 財物の窃取
+    alt_labels: [盗まれた, 取られた, 万引き, スられた, 盗難, 財布を盗まれた, 自転車を盗まれた]
+    indicates_crimes: [theft]
+
+  - id: robbery-concept
+    pref_label: 暴行脅迫による強取
+    alt_labels: [強盗, 奪われた, 脅して奪われた, ひったくり]
+    broader: property-taking
+    indicates_crimes: [robbery]
+
+  - id: deception
+    pref_label: 欺罔による財産取得
+    alt_labels: [詐欺, 騙された, だまし取られた, 振り込め, 架空請求]
+    indicates_crimes: [fraud]
+
+  - id: extortion-concept
+    pref_label: 恐喝による財産取得
+    alt_labels: [恐喝, ゆすり, たかり, カツアゲ, 脅し取られた]
+    broader: threat-of-harm
+    indicates_crimes: [extortion]
+
+  - id: embezzlement-concept
+    pref_label: 委託物の横領
+    alt_labels: [横領, 着服, 使い込み, ネコババ, 預けた金が返らない]
+    indicates_crimes: [embezzlement]
+
+  - id: breach-of-trust-concept
+    pref_label: 任務違背による損害
+    alt_labels: [背任, 任務違反, 利益相反]
+    indicates_crimes: [breach-of-trust]
+
+  - id: stolen-goods
+    pref_label: 盗品への関与
+    alt_labels: [盗品, 故買, 贓物]
+    indicates_crimes: [stolen-property]
+
+  - id: property-destruction
+    pref_label: 物の損壊
+    alt_labels: [器物損壊, 壊された, 破損, 傷つけられた, 落書き, 割られた]
+    indicates_crimes: [property-damage]
+
+  # --- 社会的法益 ---
+  - id: arson-concept
+    pref_label: 放火
+    alt_labels: [放火, 火をつけられた, 燃やされた, 火災]
+    indicates_crimes: [arson-inhabited]
+
+  - id: forgery
+    pref_label: 偽造
+    alt_labels: [偽造, 変造, 偽物, 偽の書類, なりすまし文書]
+    indicates_crimes: [counterfeiting-private-document, counterfeiting-securities, counterfeiting-seal]
+
+  - id: currency-forgery
+    pref_label: 通貨偽造
+    alt_labels: [偽札, 偽金, 通貨偽造]
+    broader: forgery
+    indicates_crimes: [counterfeiting-currency]
+
+  - id: card-forgery
+    pref_label: 支払カード偽造
+    alt_labels: [クレジットカード偽造, スキミング, カード不正]
+    broader: forgery
+    indicates_crimes: [unauthorized-payment-card-record]
+
+  - id: obscenity
+    pref_label: わいせつ
+    alt_labels: [公然わいせつ, 露出, わいせつ行為]
+    indicates_crimes: [public-indecency]
+
+  - id: gambling-concept
+    pref_label: 賭博
+    alt_labels: [賭博, ギャンブル, 賭け事, 違法カジノ]
+    indicates_crimes: [gambling]
+
+  - id: water-pollution
+    pref_label: 飲料水汚染
+    alt_labels: [飲料水汚染, 水道に毒, 水を汚された]
+    indicates_crimes: [water-contamination]
+
+  - id: traffic-obstruction
+    pref_label: 往来妨害
+    alt_labels: [往来妨害, 道路封鎖, 通行妨害]
+    indicates_crimes: [obstruction-of-traffic]
+
+  - id: worship-disrespect
+    pref_label: 礼拝所不敬
+    alt_labels: [墓を荒らされた, 神社を汚された, 礼拝所不敬]
+    indicates_crimes: [disrespect-worship-place]
+
+  # --- 国家的法益 ---
+  - id: official-duty-obstruction
+    pref_label: 公務執行妨害
+    alt_labels: [公務執行妨害, 警察官に抵抗, 役所で暴れた]
+    indicates_crimes: [obstruction-of-official-duty]
+
+  - id: false-report
+    pref_label: 虚偽の申告・証言
+    alt_labels: [虚偽告訴, でっちあげ, 冤罪, 嘘の告訴, 偽証, 嘘の証言]
+    indicates_crimes: [false-accusation, perjury]
+
+  - id: bribery-concept
+    pref_label: 賄賂
+    alt_labels: [賄賂, わいろ, 収賄, 袖の下]
+    indicates_crimes: [bribe-acceptance]
+
+  - id: harboring
+    pref_label: 犯人蔵匿・証拠隠滅
+    alt_labels: [犯人をかくまう, 匿う, 逃がす, 証拠隠滅, 証拠を隠す]
+    indicates_crimes: [harboring-criminal, evidence-destruction]
+
+  - id: escape-concept
+    pref_label: 逃走
+    alt_labels: [逃走, 脱走, 脱獄]
+    indicates_crimes: [escape]
+
+  - id: insurrection-concept
+    pref_label: 内乱・外患
+    alt_labels: [内乱, クーデター, 政府転覆, 外患, 売国]
+    indicates_crimes: [insurrection, inducement-foreign-aggression]
+
+  - id: riot-concept
+    pref_label: 騒乱
+    alt_labels: [騒乱, 暴動, 集団で暴れた]
+    indicates_crimes: [riot]
+
+  - id: abuse-authority-concept
+    pref_label: 職権濫用
+    alt_labels: [職権濫用, 権力乱用, 公務員の権力乱用]
+    indicates_crimes: [abuse-of-authority]

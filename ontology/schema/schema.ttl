@@ -1,0 +1,215 @@
+@prefix cl:   <https://example.org/criminal-law#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Ontology header
+#################################################################
+cl: a owl:Ontology ;
+    rdfs:label "日本刑法オントロジー（第2編 罪）"@ja ;
+    rdfs:comment "刑法第2編（77条〜264条）の罪・構成要件・法定刑・保護法益を表現する RDFS/OWL スキーマ。"@ja .
+
+#################################################################
+# Top-level class
+#################################################################
+cl:Entity a rdfs:Class , owl:Class ;
+    rdfs:label "エンティティ"@ja .
+
+#################################################################
+# Crime class hierarchy (rdfs:subClassOf chain)
+#################################################################
+cl:Crime a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "罪"@ja .
+
+# --- 個人的法益に対する罪 ---
+cl:CrimeAgainstPerson a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Crime ;
+    rdfs:label "個人的法益に対する罪"@ja .
+
+cl:CrimeAgainstLifeBody a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstPerson ;
+    rdfs:label "生命・身体に対する罪"@ja .
+
+cl:CrimeAgainstFreedomHonor a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstPerson ;
+    rdfs:label "自由・名誉・秘密に対する罪"@ja .
+
+cl:CrimeAgainstProperty a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstPerson ;
+    rdfs:label "財産に対する罪"@ja .
+
+# --- 社会的法益に対する罪 ---
+cl:CrimeAgainstSociety a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Crime ;
+    rdfs:label "社会的法益に対する罪"@ja .
+
+cl:CrimeAgainstPublicSafety a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstSociety ;
+    rdfs:label "公共の安全に対する罪"@ja .
+
+cl:CrimeAgainstPublicTrust a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstSociety ;
+    rdfs:label "公共の信用に対する罪"@ja .
+
+cl:CrimeAgainstPublicMorals a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstSociety ;
+    rdfs:label "風俗・健康に対する罪"@ja .
+
+# --- 国家的法益に対する罪 ---
+cl:CrimeAgainstState a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Crime ;
+    rdfs:label "国家的法益に対する罪"@ja .
+
+cl:CrimeAgainstStateExistence a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstState ;
+    rdfs:label "国家の存立に対する罪"@ja .
+
+cl:CrimeAgainstStateFunction a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:CrimeAgainstState ;
+    rdfs:label "国家の作用に対する罪"@ja .
+
+# --- 法益カテゴリの排他（OWL disjointWith） ---
+cl:CrimeAgainstProperty owl:disjointWith cl:CrimeAgainstLifeBody .
+cl:CrimeAgainstPerson   owl:disjointWith cl:CrimeAgainstSociety .
+cl:CrimeAgainstPerson   owl:disjointWith cl:CrimeAgainstState .
+cl:CrimeAgainstSociety  owl:disjointWith cl:CrimeAgainstState .
+
+#################################################################
+# Element class hierarchy
+#################################################################
+cl:Element a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "構成要件要素"@ja .
+
+cl:ConductElement a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Element ; rdfs:label "行為"@ja .
+cl:ResultElement a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Element ; rdfs:label "結果"@ja .
+cl:ObjectElement a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Element ; rdfs:label "客体"@ja .
+cl:CircumstanceElement a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Element ; rdfs:label "状況・付随事情"@ja .
+cl:IntentElement a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Element ; rdfs:label "故意・目的・過失"@ja .
+
+#################################################################
+# Penalty class hierarchy
+#################################################################
+cl:Penalty a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "法定刑"@ja .
+
+cl:DeathPenalty a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Penalty ; rdfs:label "死刑"@ja .
+cl:Imprisonment a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Penalty ; rdfs:label "拘禁刑"@ja .
+cl:Fine a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Penalty ; rdfs:label "罰金・科料"@ja .
+
+#################################################################
+# Other core classes
+#################################################################
+cl:LegalInterest a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "保護法益"@ja .
+
+cl:Article a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "条文"@ja .
+
+cl:Chapter a rdfs:Class , owl:Class ;
+    rdfs:subClassOf cl:Entity ;
+    rdfs:label "章"@ja .
+
+#################################################################
+# Object properties
+#################################################################
+cl:definedIn a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:Article ;
+    owl:inverseOf cl:defines ;
+    rdfs:label "規定条文"@ja .
+
+cl:defines a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Article ; rdfs:range cl:Crime ;
+    rdfs:label "規定する罪"@ja .
+
+cl:hasElement a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:Element ;
+    rdfs:label "構成要件要素を持つ"@ja .
+
+cl:hasPenalty a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:Penalty ;
+    rdfs:label "法定刑を持つ"@ja .
+
+cl:requiresIntent a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:IntentElement ;
+    rdfs:label "故意・目的を要する"@ja .
+
+cl:protectsLegalInterest a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:LegalInterest ;
+    rdfs:label "保護法益"@ja .
+
+cl:relatedTo a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:Crime ;
+    rdfs:label "関連罪"@ja .
+
+cl:inChapter a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Crime ; rdfs:range cl:Chapter ;
+    rdfs:label "所属する章"@ja .
+
+cl:hasConcept a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain cl:Element ; rdfs:range skos:Concept ;
+    rdfs:label "概念への参照"@ja .
+
+# セマンティックレイヤー: 概念 → 罪
+cl:indicatesCrime a rdf:Property , owl:ObjectProperty ;
+    rdfs:domain skos:Concept ; rdfs:range cl:Crime ;
+    rdfs:label "示唆する罪"@ja .
+
+# 概念の上位概念（推移的）
+cl:broaderConcept a rdf:Property , owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:domain skos:Concept ; rdfs:range skos:Concept ;
+    rdfs:label "上位概念"@ja .
+
+#################################################################
+# Datatype properties
+#################################################################
+cl:statuteText a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Article ; rdfs:range xsd:string ;
+    rdfs:label "条文原文"@ja .
+
+cl:articleNumber a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Article ; rdfs:range xsd:string ;
+    rdfs:label "条番号"@ja .
+
+cl:hasKeyword a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Element ; rdfs:range xsd:string ;
+    rdfs:label "マッチ用キーワード"@ja .
+
+cl:penaltyType a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Penalty ; rdfs:range xsd:string ;
+    rdfs:label "刑種"@ja .
+
+cl:minValue a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Penalty ; rdfs:range xsd:integer ;
+    rdfs:label "下限"@ja .
+
+cl:maxValue a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Penalty ; rdfs:range xsd:integer ;
+    rdfs:label "上限"@ja .
+
+cl:unit a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Penalty ; rdfs:range xsd:string ;
+    rdfs:label "単位"@ja .
+
+cl:note a rdf:Property , owl:DatatypeProperty ;
+    rdfs:range xsd:string ;
+    rdfs:label "注記"@ja .
+
+cl:elementType a rdf:Property , owl:DatatypeProperty ;
+    rdfs:domain cl:Element ; rdfs:range xsd:string ;
+    rdfs:label "要素種別"@ja .
