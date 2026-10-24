@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 
 from criminal_agent import agent as agent_mod
 from criminal_agent import api as api_mod
-from criminal_agent.agent import ConsultationResult, CrimeCandidateOut, DISCLAIMER
+from criminal_agent.agent import ConsultationResult, CrimeCandidateOut
 from criminal_agent.tools import (
     get_crime_detail,
     list_crime_categories,
@@ -70,7 +70,6 @@ def test_tool_list_categories():
 def test_consultation_result_schema_defaults():
     r = ConsultationResult(summary="テスト")
     assert r.no_crime is False
-    assert r.disclaimer == DISCLAIMER
     assert r.candidates == []
 
 
@@ -122,10 +121,9 @@ def test_api_consult_schema(monkeypatch):
     assert "summary" in body
     assert "candidates" in body
     assert "no_crime" in body
-    assert "disclaimer" in body
+    assert "disclaimer" not in body  # 免責は廃止
     assert body["candidates"][0]["crime_label"] == "窃盗罪"
     assert body["candidates"][0]["article"] == "235"
-    assert body["disclaimer"]  # 免責が必ず付く
 
 
 def test_api_consult_validation_error():
@@ -175,7 +173,7 @@ def test_api_consult_stream(monkeypatch):
         yield {"type": "tool_use", "name": "search_crimes_by_text", "input": {"consultation": text}}
         yield {"type": "sparql", "label": "x", "sparql": "SELECT * WHERE {}"}
         yield {"type": "graph", "crime_id": "theft", "sparql": "C", "triples": [{"s": "cl:theft", "p": "rdfs:label", "o": "窃盗罪"}], "turtle": "t"}
-        yield {"type": "result", "result": {"summary": "s", "candidates": [], "no_crime": True, "disclaimer": "d"}}
+        yield {"type": "result", "result": {"summary": "s", "candidates": [], "no_crime": True}}
         yield {"type": "done"}
 
     monkeypatch.setattr(api_mod, "consult_stream", fake_stream)

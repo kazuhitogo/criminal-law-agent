@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import "./App.css";
 import {
   consultStream,
@@ -18,9 +18,6 @@ import {
   type TraceItem,
 } from "./components/AgentTrace";
 import { StepIndicator, type JudgeStep } from "./components/StepIndicator";
-
-const DISCLAIMER =
-  "本システムは日本の刑法に関する一般的な情報提供を目的としたものであり、個別事案に対する法的助言ではありません。実際の法的対応については弁護士等の専門家にご相談ください。";
 
 // prefers-reduced-motion を尊重したスクロール挙動
 function prefersReducedMotion(): boolean {
@@ -169,19 +166,40 @@ function App() {
     [labelToCrimeId],
   );
 
-  const footerDisclaimer = useMemo(
-    () => result?.disclaimer ?? DISCLAIMER,
-    [result],
-  );
-
   return (
     <div className="app">
       <header className="app-header">
-        <h1>刑法あてはめ判定</h1>
+        <svg
+          className="header-crest"
+          viewBox="0 0 64 64"
+          fill="none"
+          aria-hidden="true"
+        >
+          <g
+            stroke="#d4a017"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="32" y1="13" x2="32" y2="48" />
+            <line x1="14" y1="20" x2="50" y2="20" />
+            <circle cx="32" cy="13" r="2.6" fill="#d4a017" stroke="none" />
+            <line x1="14" y1="20" x2="9" y2="31" />
+            <line x1="14" y1="20" x2="19" y2="31" />
+            <line x1="50" y1="20" x2="45" y2="31" />
+            <line x1="50" y1="20" x2="55" y2="31" />
+            <path d="M7 31 Q14 40 21 31" />
+            <path d="M43 31 Q50 40 57 31" />
+            <line x1="22" y1="48" x2="42" y2="48" />
+            <path d="M26 48 Q32 42 38 48" />
+          </g>
+        </svg>
+        <h1>
+          刑法あてはめ<span className="gold">判定</span>
+        </h1>
         <p className="header-tagline">
-          その出来事は刑法上の犯罪にあたるのか。構成要件に照らして判定します。
+          その出来事は、罪に問えるのか。構成要件に照らし、刑法上の当否を見極めます。
         </p>
-        <p className="header-disclaimer">{DISCLAIMER}</p>
       </header>
 
       <main className="app-main">
@@ -223,9 +241,7 @@ function App() {
         )}
       </main>
 
-      <footer className="app-footer">
-        <p>{footerDisclaimer}</p>
-      </footer>
+      <p className="usage-note">出力結果の利用は自己責任でお願いします。</p>
     </div>
   );
 }

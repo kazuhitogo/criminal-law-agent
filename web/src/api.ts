@@ -17,7 +17,6 @@ export interface ConsultationResult {
   summary: string;
   candidates: CrimeCandidate[];
   no_crime: boolean;
-  disclaimer: string;
 }
 
 // API ベース URL（環境変数 VITE_API_BASE で上書き可）

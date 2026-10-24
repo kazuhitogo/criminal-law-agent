@@ -183,8 +183,7 @@ uv run uvicorn criminal_agent.api:app --port 8099
       "reasoning": "〜のため該当しうる"
     }
   ],
-  "no_crime": false,
-  "disclaimer": "本回答は情報提供であり、確定的な法的助言ではありません。"
+  "no_crime": false
 }
 ```
 
@@ -214,7 +213,7 @@ LLM に渡すツール出力は軽量に保ち、可視化用データはスト�
 
 ### `GET /health`
 
-稼働確認。`{"status": "ok", "disclaimer": "..."}` を返す。
+稼働確認。`{"status": "ok"}` を返す。
 
 ---
 

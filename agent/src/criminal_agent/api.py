@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from .agent import DISCLAIMER, ConsultationResult, consult, consult_stream
+from .agent import ConsultationResult, consult, consult_stream
 
 app = FastAPI(
     title="刑法相談エージェント API",
@@ -41,7 +41,7 @@ class ConsultRequest(BaseModel):
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "disclaimer": DISCLAIMER}
+    return {"status": "ok"}
 
 
 @app.post("/consult", response_model=ConsultationResult)

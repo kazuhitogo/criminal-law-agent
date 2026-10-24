@@ -26,10 +26,10 @@ export function ResultView({
         <span className="judge-verdict">
           {hasCandidates
             ? "犯罪が成立しうる"
-            : "刑法上の犯罪にはあたらない可能性が高い"}
+            : "罪に問うは難し"}
         </span>
         {hasCandidates && (
-          <span className="judge-sub">{count} 件の罪に該当の可能性</span>
+          <span className="judge-sub">構成要件に照らし {count} 件の罪に該当の可能性</span>
         )}
       </div>
 

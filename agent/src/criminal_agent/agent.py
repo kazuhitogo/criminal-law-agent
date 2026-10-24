@@ -22,11 +22,6 @@ from .tools import (
 # モデル ID は環境変数で上書き可（リージョンにより us./apac./eu. プレフィックスが変わる）
 DEFAULT_MODEL_ID = "global.anthropic.claude-haiku-5-5"
 
-DISCLAIMER = (
-    "本回答は日本の刑法に関する一般的な情報提供であり、確定的な法的助言ではありません。"
-    "実際の法的対応については弁護士等の専門家にご相談ください。"
-)
-
 SYSTEM_PROMPT = """\
 あなたは日本の刑法に関する「情報提供」を行うアシスタントです。確定的な法的助言は行いません。
 
@@ -75,7 +70,6 @@ class ConsultationResult(BaseModel):
         default=False,
         description="刑法上該当する罪が無い（民事のみ等）と判断される場合 true",
     )
-    disclaimer: str = Field(default=DISCLAIMER, description="免責事項")
 
 
 def build_model(model_id: str | None = None) -> BedrockModel:
@@ -108,9 +102,6 @@ def consult(text: str, model_id: str | None = None) -> ConsultationResult:
     agent = build_agent(model_id)
     result = agent(text, structured_output_model=ConsultationResult)
     out: ConsultationResult = result.structured_output
-    # 免責は常に付与
-    if not out.disclaimer:
-        out.disclaimer = DISCLAIMER
     return out
 
 
@@ -257,8 +248,6 @@ async def consult_stream(text: str, model_id: str | None = None):
             if "structured_output" in ev and ev["structured_output"] is not None:
                 so = ev["structured_output"]
                 if isinstance(so, ConsultationResult):
-                    if not so.disclaimer:
-                        so.disclaimer = DISCLAIMER
                     yield {"type": "result", "result": so.model_dump()}
 
         yield {"type": "done"}

@@ -1,14 +1,22 @@
 :root {
-  --bg: #f5f6f8;
+  /* 法廷テーマ: 羊皮紙の地 × 紺の威厳 × ゴールドの格式 */
+  --bg: #f4f1ea;
+  --bg-accent: #ece7db;
   --card-bg: #ffffff;
-  --border: #e2e5ea;
-  --text: #1c2024;
-  --muted: #6b7280;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --high: #dc2626;
-  --medium: #d97706;
-  --low: #6b7280;
+  --border: #d9d2c3;
+  --text: #1a1f2b;
+  --muted: #6b6456;
+  --navy: #0f172a;
+  --navy-soft: #1e293b;
+  --gold: #b8860b;
+  --gold-bright: #d4a017;
+  --primary: #1e293b;
+  --primary-hover: #0f172a;
+  --high: #991b1b;
+  --medium: #b45309;
+  --low: #6b6456;
+  --serif: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP",
+    "MS PMincho", serif;
 }
 
 * {
@@ -18,6 +26,11 @@
 body {
   margin: 0;
   background: var(--bg);
+  background-image: radial-gradient(
+    circle at 50% -10%,
+    rgba(15, 23, 42, 0.05),
+    transparent 60%
+  );
   color: var(--text);
   font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
   line-height: 1.6;
@@ -26,26 +39,86 @@ body {
 .app {
   max-width: 760px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 0 1rem 3rem;
+}
+
+/* --- 法廷ヘッダー（紺地・ゴールド罫・天秤） --- */
+.app-header {
+  position: relative;
+  margin: 0 -1rem 1.25rem;
+  padding: 1rem 1.5rem 0.9rem;
+  background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+  color: #f8fafc;
+  text-align: center;
+  border-bottom: 3px solid var(--gold);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.25);
+}
+
+.app-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-bright) 20%,
+    var(--gold-bright) 80%,
+    transparent
+  );
+}
+
+.header-crest {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 0.3rem;
+  display: block;
+}
+
+/* 紺地ヘッダー内のテキスト選択を可読に（ゴールド下地・濃色文字） */
+.app-header ::selection {
+  background: rgba(212, 160, 23, 0.85);
+  color: #0f172a;
 }
 
 .app-header h1 {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem;
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.25rem;
+  color: #f8fafc;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-.header-disclaimer {
-  font-size: 0.8rem;
-  color: var(--muted);
-  background: #fff8e1;
-  border: 1px solid #f0e3b0;
-  border-radius: 8px;
-  padding: 0.6rem 0.8rem;
-  margin: 0;
+.app-header h1 .gold {
+  color: var(--gold-bright);
+}
+
+.header-tagline {
+  margin: 0 auto;
+  max-width: 44rem;
+  font-size: 0.92rem;
+  color: #dbe3ee;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-wrap: balance;
 }
 
 .app-main {
   margin-top: 1.5rem;
+}
+
+/* --- 自己責任の注記 --- */
+.usage-note {
+  margin: 2.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
 }
 
 /* --- form --- */
@@ -72,8 +145,8 @@ body {
 
 .consult-textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.18);
 }
 
 .examples {
@@ -98,24 +171,29 @@ body {
 }
 
 .example-chip:hover:not(:disabled) {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 .submit-btn {
   align-self: flex-start;
-  padding: 0.6rem 1.4rem;
-  border: none;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #fff;
+  padding: 0.7rem 1.8rem;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: linear-gradient(160deg, #1e293b, #0f172a);
+  color: #f8fafc;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: linear-gradient(160deg, #273548, #141f33);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);
+  transform: translateY(-1px);
 }
 
 .submit-btn:disabled,
@@ -179,10 +257,11 @@ body {
 }
 
 .no-crime {
-  padding: 1rem;
+  padding: 1rem 1.2rem;
   border-radius: 8px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eef2f9, #e4ebf5);
+  border: 1px solid #c3cfe2;
+  border-left: 4px solid var(--navy);
 }
 
 .no-crime p {
@@ -199,8 +278,10 @@ body {
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem 1.2rem;
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  padding: 1.1rem 1.3rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
 }
 
 .card-header {
@@ -212,7 +293,10 @@ body {
 }
 
 .card-title {
-  font-size: 1.15rem;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy);
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -268,19 +352,6 @@ body {
 
 .badge-low {
   background: var(--low);
-}
-
-/* --- footer --- */
-.app-footer {
-  margin-top: 2.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-.app-footer p {
-  margin: 0;
 }
 
 /* ================= AI 思考回路・実行ログ ================= */
@@ -575,23 +646,21 @@ body {
   border: 0;
 }
 
-.header-tagline {
-  margin: 0 0 0.6rem;
-  font-size: 0.95rem;
-  color: var(--text);
-}
-
 /* --- ステージ（縦フロー） --- */
 .stage {
   margin-top: 1.5rem;
 }
 
 .stage-title {
-  font-size: 0.95rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--primary);
-  margin: 0 0 0.75rem;
-  letter-spacing: 0.02em;
+  color: var(--navy);
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.4rem;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
 }
 
 /* 送信後、入力ブロックを縮小（情報は保持、見せ方のみ） */
@@ -682,7 +751,7 @@ body {
   border-color: var(--primary);
   color: var(--primary);
   transform: scale(1.12);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.22);
   animation: step-pulse 1.4s ease-in-out infinite;
 }
 
@@ -694,61 +763,86 @@ body {
 @keyframes step-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.22);
   }
   50% {
-    box-shadow: 0 0 0 7px rgba(37, 99, 235, 0.08);
+    box-shadow: 0 0 0 7px rgba(184, 134, 11, 0.1);
   }
 }
 
-/* --- 判定ヘッダー --- */
+/* --- 判定ヘッダー（判決） --- */
 .judge-header {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  animation: judge-in 0.4s ease both;
+  gap: 0.3rem;
+  padding: 1.1rem 1.3rem;
+  border-radius: 8px;
+  margin-bottom: 1.1rem;
+  animation: judge-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  overflow: hidden;
+}
+
+.judge-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
 }
 
 @keyframes judge-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(10px) scale(0.985);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .judge-hit {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: linear-gradient(135deg, #fbeaea, #f6dede);
+  border: 1px solid #e0b4b4;
+  box-shadow: 0 3px 14px rgba(153, 27, 27, 0.14);
+}
+
+.judge-hit::before {
+  background: var(--high);
 }
 
 .judge-miss {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eef2f9, #e4ebf5);
+  border: 1px solid #c3cfe2;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.12);
+}
+
+.judge-miss::before {
+  background: var(--navy);
 }
 
 .judge-verdict {
-  font-size: 1.15rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  padding-left: 0.4rem;
 }
 
 .judge-hit .judge-verdict {
-  color: #b91c1c;
+  color: var(--high);
 }
 
 .judge-miss .judge-verdict {
-  color: #1d4ed8;
+  color: var(--navy);
 }
 
 .judge-sub {
   font-size: 0.85rem;
   color: var(--muted);
+  padding-left: 0.4rem;
 }
 
 /* --- 判定カード --- */
