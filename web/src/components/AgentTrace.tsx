@@ -2,6 +2,10 @@ import { useState } from "react";
 import type { StreamEvent, Triple } from "../api";
 import { GraphView } from "./GraphView";
 
+// 判定ライブビューの進行ログ（SPEC §6.5 / §6.6）。
+// 表示するイベントは従来と同一（reasoning/tool_use/sparql/graph/tool_result）。
+// ラベル文言のみ「判定の文脈」に変更する。GraphView の描画ロジックは不変。
+
 // タイムラインに表示する種別のイベント（token/result/done/start は除外）
 type TraceItem =
   | { type: "reasoning"; text: string }
@@ -18,6 +22,11 @@ export function isTraceItem(ev: StreamEvent): ev is TraceItem {
     ev.type === "graph" ||
     ev.type === "tool_result"
   );
+}
+
+// 対応グラフへスクロールするための DOM id（crime_id で対応づけ）
+export function graphAnchorId(crimeId: string): string {
+  return `graph-${crimeId}`;
 }
 
 function Collapsible({
@@ -71,7 +80,7 @@ function TraceEntry({ item }: { item: TraceItem }) {
         <div className="trace-entry trace-reasoning">
           <span className="trace-icon">🧠</span>
           <div className="trace-content">
-            <span className="trace-label">思考</span>
+            <span className="trace-label">検討メモ</span>
             <p className="reasoning-text">{item.text}</p>
           </div>
         </div>
@@ -81,7 +90,7 @@ function TraceEntry({ item }: { item: TraceItem }) {
         <div className="trace-entry trace-tool">
           <span className="trace-icon">🔧</span>
           <div className="trace-content">
-            <span className="trace-label">ツール呼び出し: {item.name}</span>
+            <span className="trace-label">参照アクション: {item.name}</span>
             <code className="trace-code">{JSON.stringify(item.input, null, 0)}</code>
           </div>
         </div>
@@ -91,7 +100,7 @@ function TraceEntry({ item }: { item: TraceItem }) {
         <div className="trace-entry trace-result-ev">
           <span className="trace-icon">📥</span>
           <div className="trace-content">
-            <span className="trace-label">ツール結果 ({item.status})</span>
+            <span className="trace-label">参照結果 ({item.status})</span>
             <code className="trace-code">{item.summary}</code>
           </div>
         </div>
@@ -101,7 +110,7 @@ function TraceEntry({ item }: { item: TraceItem }) {
         <div className="trace-entry trace-sparql">
           <span className="trace-icon">🔎</span>
           <div className="trace-content">
-            <Collapsible title={<span className="trace-label">実行SPARQL: {item.label}</span>}>
+            <Collapsible title={<span className="trace-label">参照クエリ (SPARQL): {item.label}</span>}>
               <pre className="sparql-block">{item.sparql}</pre>
             </Collapsible>
           </div>
@@ -109,13 +118,17 @@ function TraceEntry({ item }: { item: TraceItem }) {
       );
     case "graph":
       return (
-        <div className="trace-entry trace-graph">
+        <div
+          className="trace-entry trace-graph"
+          id={graphAnchorId(item.crime_id)}
+          tabIndex={-1}
+        >
           <span className="trace-icon">🕸️</span>
           <div className="trace-content">
             <Collapsible
               title={
                 <span className="trace-label">
-                  取得グラフ: {item.crime_id}（{item.triples.length} トリプル）
+                  ナレッジグラフ: {item.crime_id}（{item.triples.length} トリプル）
                 </span>
               }
               defaultOpen
@@ -136,7 +149,7 @@ export function AgentTrace({ items }: { items: TraceItem[] }) {
   return (
     <section className="agent-trace">
       <Collapsible
-        title={<strong>AI の思考回路・実行ログ（{items.length} ステップ）</strong>}
+        title={<strong>判定の進行（{items.length} ステップ）</strong>}
         defaultOpen
       >
         <div className="trace-timeline">

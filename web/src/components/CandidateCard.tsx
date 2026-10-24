@@ -1,48 +1,51 @@
 import type { CrimeCandidate } from "../api";
-import { ConfidenceBadge } from "./ConfidenceBadge";
+import { ConfidenceMeter } from "./ConfidenceMeter";
+import { ElementChecklist } from "./ElementChecklist";
 
-export function CandidateCard({ candidate }: { candidate: CrimeCandidate }) {
+// 構成要件チェックカード（SPEC §6.5 / §6.6）。
+// 既存 candidate の全項目（crime_label / article / confidence / matched / missing /
+// penalty_text / reasoning）を保持し、見せ方のみ変更する。
+// カードクリックで②のライブビューの対応グラフ/SPARQL へスクロール（crime_id で対応）。
+
+export function CandidateCard({
+  candidate,
+  onLocate,
+  locatable,
+}: {
+  candidate: CrimeCandidate;
+  onLocate?: () => void;
+  locatable?: boolean;
+}) {
   return (
-    <article className="card">
+    <article className="card judge-card">
       <header className="card-header">
         <h3 className="card-title">
           {candidate.crime_label}
           <span className="card-article">刑法 第{candidate.article}条</span>
         </h3>
-        <ConfidenceBadge confidence={candidate.confidence} />
+        <ConfidenceMeter confidence={candidate.confidence} />
       </header>
 
+      <ElementChecklist
+        matched={candidate.matched_elements}
+        missing={candidate.missing_elements}
+      />
+
       <div className="card-section">
-        <span className="section-label">法定刑</span>
+        <span className="section-label">成立した場合の刑</span>
         <p className="penalty-text">{candidate.penalty_text}</p>
       </div>
 
-      {candidate.matched_elements.length > 0 && (
-        <div className="card-section">
-          <span className="section-label">満たしうる構成要件</span>
-          <ul className="element-list matched">
-            {candidate.matched_elements.map((el, i) => (
-              <li key={i}>{el}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {candidate.missing_elements.length > 0 && (
-        <div className="card-section">
-          <span className="section-label">不足・要確認の構成要件</span>
-          <ul className="element-list missing">
-            {candidate.missing_elements.map((el, i) => (
-              <li key={i}>{el}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div className="card-section">
-        <span className="section-label">理由</span>
+        <span className="section-label">判定の根拠</span>
         <p className="reasoning">{candidate.reasoning}</p>
       </div>
+
+      {locatable && (
+        <button type="button" className="locate-link" onClick={onLocate}>
+          ② この罪の照合過程（グラフ・SPARQL）を見る →
+        </button>
+      )}
     </article>
   );
 }

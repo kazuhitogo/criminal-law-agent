@@ -24,7 +24,7 @@ export function ConsultForm({ loading, onSubmit }: Props) {
   return (
     <form className="consult-form" onSubmit={submit}>
       <label htmlFor="consult-text" className="form-label">
-        相談内容を入力してください
+        起きた出来事を入力してください
       </label>
       <textarea
         id="consult-text"
@@ -36,7 +36,7 @@ export function ConsultForm({ loading, onSubmit }: Props) {
         disabled={loading}
       />
       <div className="examples">
-        <span className="examples-label">例:</span>
+        <span className="examples-label">例で試す:</span>
         {EXAMPLES.map((ex) => (
           <button
             key={ex}
@@ -50,7 +50,7 @@ export function ConsultForm({ loading, onSubmit }: Props) {
         ))}
       </div>
       <button type="submit" className="submit-btn" disabled={loading || !text.trim()}>
-        {loading ? "照会中..." : "相談する"}
+        {loading ? "判定中..." : "判定を開始する"}
       </button>
     </form>
   );

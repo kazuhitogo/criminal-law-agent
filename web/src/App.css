@@ -559,3 +559,371 @@ body {
   font-size: 0.8rem;
   color: var(--muted);
 }
+
+/* ================= 判定体験 UI（リニューアル） ================= */
+
+/* スクリーンリーダ専用テキスト */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.header-tagline {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+/* --- ステージ（縦フロー） --- */
+.stage {
+  margin-top: 1.5rem;
+}
+
+.stage-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* 送信後、入力ブロックを縮小（情報は保持、見せ方のみ） */
+.stage-input {
+  transition: opacity 0.3s ease;
+}
+
+.stage-input.collapsed {
+  opacity: 0.72;
+}
+
+.stage-input.collapsed .stage-title {
+  margin-bottom: 0.4rem;
+}
+
+.stage-input.collapsed .consult-textarea {
+  rows: 2;
+  min-height: 2.6rem;
+}
+
+.stage-live {
+  scroll-margin-top: 1rem;
+}
+
+/* --- ステップ・インジケータ --- */
+.step-indicator {
+  list-style: none;
+  display: flex;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+
+.step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+  min-width: 0;
+}
+
+.step-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  color: var(--muted);
+  z-index: 1;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.step-label {
+  font-size: 0.74rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.step-bar {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.step-done .step-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.step-done .step-bar {
+  background: var(--primary);
+}
+
+.step-active .step-dot {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.12);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  animation: step-pulse 1.4s ease-in-out infinite;
+}
+
+.step-active .step-label {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@keyframes step-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(37, 99, 235, 0.08);
+  }
+}
+
+/* --- 判定ヘッダー --- */
+.judge-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  animation: judge-in 0.4s ease both;
+}
+
+@keyframes judge-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.judge-hit {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.judge-miss {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.judge-verdict {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.judge-hit .judge-verdict {
+  color: #b91c1c;
+}
+
+.judge-miss .judge-verdict {
+  color: #1d4ed8;
+}
+
+.judge-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* --- 判定カード --- */
+.judge-card {
+  animation: judge-in 0.4s ease both;
+}
+
+/* --- 確信度メーター --- */
+.confidence-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 96px;
+}
+
+.confidence-meter .section-label {
+  margin-bottom: 0;
+}
+
+.meter {
+  width: 92px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--fill, 0.33) * 100%);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.meter-high .meter-fill {
+  background: var(--high);
+}
+.meter-medium .meter-fill {
+  background: var(--medium);
+}
+.meter-low .meter-fill {
+  background: var(--low);
+}
+
+.meter-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.meter-value-high {
+  color: var(--high);
+}
+.meter-value-medium {
+  color: var(--medium);
+}
+.meter-value-low {
+  color: var(--low);
+}
+
+/* --- 構成要件チェックリスト + 充足ゲージ --- */
+.element-checklist {
+  margin-top: 0.5rem;
+}
+
+.gauge-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.gauge-head .section-label {
+  margin-bottom: 0.2rem;
+}
+
+.gauge-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.gauge {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+}
+
+.gauge-fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--ratio, 0) * 100%);
+  background: linear-gradient(90deg, #22c55e, #15803d);
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.check-list {
+  list-style: none;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.12rem 0;
+}
+
+.check-mark {
+  flex-shrink: 0;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.check-list.matched .check-mark {
+  color: #15803d;
+}
+
+.check-list.missing .check-mark {
+  color: #b45309;
+}
+
+.check-list.missing .check-text {
+  color: #92400e;
+}
+
+/* --- カード → ②ライブビュー スクロールリンク --- */
+.locate-link {
+  margin-top: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.locate-link:hover {
+  text-decoration: underline;
+}
+
+/* --- グラフアンカーのフォーカス強調（相互リンク着地点） --- */
+.trace-graph:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* --- レスポンシブ --- */
+@media (max-width: 560px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .confidence-meter {
+    align-items: flex-start;
+  }
+  .step-label {
+    font-size: 0.66rem;
+  }
+}
+
+/* --- prefers-reduced-motion 尊重：アニメーション無効化 --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
