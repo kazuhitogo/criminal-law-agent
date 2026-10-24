@@ -1,118 +1,146 @@
-# PLAN.md — 実装計画
+# PLAN.md — 実装計画と進捗
 
-詳細な要件・設計は [SPEC.md](./SPEC.md) を参照。本書は実装フェーズと手順を定義する。
-
-実装順序（ユーザー指定）:
-1. オントロジー
-2. エージェント
-3. Web UI
+詳細な仕様は [SPEC.md](./SPEC.md)、使い方は [README.md](./README.md) を参照。
+本書は「過去に何をしたか」「これから何をするか」の概要を記す。
 
 技術制約（必須）:
 - Python は **uv** で管理
-- Web は **TypeScript + React**
+- Web は **TypeScript + React（Vite）**
 - エージェントは **Strands Agents SDK**
 - オントロジーは **RDF + RDFS + OWL**（rdflib + owlrl）、セマンティックレイヤー（SKOS）込み
-- LLM は **Amazon Bedrock Claude Haiku 5.5**（`us.anthropic.claude-haiku-5-5-v1:0`, 環境変数で上書き可）
+- LLM は **Amazon Bedrock Claude Haiku 5.5**
+  （既定モデル ID `global.anthropic.claude-haiku-5-5`, 環境変数で上書き可。temperature 非対応）
+- 認証・リージョン・モデル ID はすべて環境変数で与え、リポジトリに固定しない
 
 ---
 
-## 実装再開ガイド（コンテキストクリア後に読む）
+## これまでに実装したこと（完了）
 
-現状: PLAN.md / SPEC.md のみ作成・コミット済み。コード未着手。
+実装順序はユーザー指定の「オントロジー → エージェント → Web UI」。全フェーズ完了済み。
 
-再開手順:
-1. SPEC.md を通読（特に §4 オントロジー, §4.1.1 各層サンプル, §4.6 セマンティックレイヤー, §5 エージェント）
-2. 本 PLAN のフェーズ1から順に着手。フェーズ順序は厳守（オントロジー → エージェント → Web）
-3. 各フェーズ完了時に対応する検証（pytest / build / tsc）を実行してからコミット
-4. 刑法データ（§4.5）は e-Gov 等の一次情報から転記。法定刑は拘禁刑（2025施行）反映
-5. Bedrock 認証が無い環境では、エージェントはツール層まで検証し、その旨を記録して次へ
+### フェーズ 1: オントロジー（`ontology/`）— 完了
+- uv プロジェクト。依存: rdflib / owlrl / pydantic / pyyaml（dev: pytest）
+- RDFS/OWL スキーマ `schema/schema.ttl`（クラス階層・プロパティ定義域/値域・
+  `owl:inverseOf` / `TransitiveProperty` / `disjointWith`）
+- 罪データ `data/crimes.yaml`（刑法第2編を章横断で **49 罪**収録、全 8 法益カテゴリ、
+  条文原文・構成要件・法定刑は拘禁刑 2025 施行を反映）
+- セマンティックレイヤー `data/semantics.yaml` + `semantics.py`（SKOS 概念 40 件、
+  日常語→法律概念の正規化、概念→罪マッピング）
+- pydantic モデル `models.py`、ビルダ `build.py`（YAML→Turtle）
+- 検索 API `query.py`（`resolve_concepts` / `search_by_text` / `get_crime` /
+  `list_categories`、owlrl による RDFS/OWL-RL 推論、SPARQL CONSTRUCT による
+  サブグラフ抽出 `crime_subgraph` / トレース付き検索 `search_by_text_traced`）
+- テスト **26 passed**。代表クエリで期待罪を確認
 
-参照の優先順位: 迷ったら SPEC.md が正。Strands SDK の API は実装時に
-strandsagents.com 公式ドキュメントで最新シグネチャを確認する。
+### フェーズ 2: エージェント（`agent/`）— 完了
+- uv プロジェクト。依存: strands-agents / strands-agents-tools / fastapi /
+  uvicorn / pydantic / boto3、ローカル依存として `ontology`（editable）
+- Strands ツール 4 種（`tools.py`、KB は `lru_cache` で一度だけロード）
+- エージェント定義（`agent.py`、`BedrockModel`、システムプロンプト、
+  構造化出力 `ConsultationResult`）
+- FastAPI（`api.py`）: `POST /consult`（構造化 JSON）、`GET /health`、CORS
+- **ストリーミング**: `POST /consult/stream`（SSE）。`consult_stream` が
+  思考(reasoning) / ツール呼び出し / 実行 SPARQL / ナレッジグラフ(トリプル) /
+  本文トークン / 最終結果 を逐次配信。LLM に渡すツール出力は軽量に保ち、
+  可視化データはストリーム側で別付与
+- テスト **17 passed**（ツール単体・トレース・SSE はモックで検証）
 
----
+### フェーズ 3: Web UI（`web/`）— 完了
+- Vite + React + TypeScript
+- 型付き API クライアント `api.ts`（`consult` / SSE `consultStream`）
+- コンポーネント: 入力フォーム / ローディング / 結果カード / 確信度バッジ /
+  免責、AI 思考回路・実行ログ（`AgentTrace`）、ナレッジグラフ（`GraphView`、
+  SVG ノード・エッジ図）、本文ストリーミング（`StreamingAnswer`）
+- `npm run build`（tsc 型チェック）通過
 
-## フェーズ 1: オントロジー構築
-
-ゴール: 相談文キーワードから罪候補・条文・構成要件・法定刑を返せるオントロジーと検索APIを完成させる。
-
-- [ ] 1-1. `ontology/` を uv プロジェクトとして初期化（`uv init` / `pyproject.toml`）
-  - 依存: `rdflib`, `owlrl`（OWL-RL/RDFS 推論）, `pydantic`, `pyyaml`, 開発依存: `pytest`
-- [ ] 1-2. RDFS/OWL スキーマ `schema/schema.ttl` 作成（SPEC §4.1-4.3）
-  - クラス階層（`rdfs:subClassOf`）、プロパティ定義域/値域、
-    `owl:inverseOf` / `owl:TransitiveProperty` / `owl:disjointWith` を定義
-- [ ] 1-3. pydantic モデル定義（`models.py`）: Crime / Element / Penalty / Article / Concept
-- [ ] 1-4. 罪データ `data/crimes.yaml` 作成（SPEC §4.5 の形式, **刑法第2編全編**）
-  - 刑法各則の全章（77〜264条）を章ごとに網羅収録
-  - 個人的法益・社会的法益・国家的法益すべてのカテゴリ
-  - 条文原文は e-Gov 一次情報から転記。法定刑は現行（拘禁刑, 2025施行）を反映
-  - 作業量が大きいため章単位で分割収録。章ごとに整合性テストを回す
-- [ ] 1-5. セマンティックレイヤー `data/semantics.yaml` + `semantics.py` 作成（SPEC §4.6）
-  - 概念辞書（SKOS）、同義語/言い換え、概念→罪マッピング
-  - 相談文 → 概念の正規化ロジック
-- [ ] 1-6. ビルダ `build.py`: YAML を検証し schema.ttl と統合して
-  Turtle(`build/criminal_law.ttl`, `build/semantics.ttl`) を生成
-- [ ] 1-7. 検索API `query.py`:
-  - `resolve_concepts(text) -> [concept]`（セマンティックレイヤー解決）
-  - `search_by_text(text) -> [candidate]`（概念経由2段階 + スコア）
-  - `get_crime(crime_id) -> detail`
-  - `list_categories() -> [...]`（SPARQL + RDFS/OWL 推論）
-- [ ] 1-8. テスト（`pytest`）: データ整合性・スキーマ妥当性・推論・検索結果・Turtle 生成
-- [ ] 1-9. 検証: `uv run pytest` が全通過。代表クエリ（「財布を盗まれた」等）で期待罪が返る
-
-完了条件: `uv run python -m criminal_ontology.query "財布を盗まれた"` 相当で窃盗235が返り、
-刑法全編が収録され、RDFS/OWL 推論とセマンティックレイヤーが機能し、テスト緑。
+### 運用・その他 — 完了
+- `run.sh`: agent と web を 1 コマンドで起動（Ctrl+C で一括停止、初回セットアップ冪等）
+- README 整備。GitHub（kazuhitogo/criminal-law-agent）へ push 済み
 
 ---
 
-## フェーズ 2: エージェント構築
+## これから実装すること（予定）: Web UI リニューアル
 
-ゴール: 相談文を受け、オントロジーを使って該当罪・条文・法定刑を構造化出力で返すエージェントとAPIを完成させる。
+目的: 現状の「相談フォーム + 結果カード一覧」を、**「この出来事は刑法上の
+犯罪にあたるのか」を判定する体験**へ再構成する。
 
-- [ ] 2-1. `agent/` を uv プロジェクトとして初期化
-  - 依存: `strands-agents`, `fastapi`, `uvicorn`, `pydantic`, ローカル依存として `ontology`
-- [ ] 2-2. Strands ツール実装（`tools.py`）: `resolve_concepts` / `search_crimes_by_text` /
-  `get_crime_detail` / `list_crime_categories`（フェーズ1の query を呼ぶ）
-- [ ] 2-3. エージェント定義（`agent.py`）: `BedrockModel` で **Claude Haiku 5.5**
-  （`us.anthropic.claude-haiku-5-5-v1:0`, 環境変数で上書き可）、
-  システムプロンプト（SPEC §5.3）、構造化出力スキーマ（§5.4）
-- [ ] 2-4. FastAPI（`api.py`）: `POST /consult` を実装、CORS 設定
-- [ ] 2-5. テスト: ツール単体テスト（オントロジーはモック/実データ）。API はスキーマ検証
-- [ ] 2-6. 検証: `uv run uvicorn` 起動 → curl で `/consult` に相談文を投げ、構造化JSONが返る
-  - LLM 呼び出しは Bedrock 認証 + Haiku 5.5 モデルアクセス有効化が必要。
-    未認証環境ではツール層までを検証し、その旨記録
+> **大前提（厳守）**: 表示する情報そのものは一切増減しない。既存 API が返す
+> 要素（要約 / 候補＝罪名・条番号・確信度・満たしうる構成要件・不足構成要件・
+> 法定刑・理由 / 該当なし判定 / 免責、および思考・ツール・SPARQL・グラフ・
+> 本文ストリーム）を変えず、**見せ方・順序・インタラクションのみ**変更する。
+> 仕様は SPEC.md §6 を参照。
 
-完了条件: ローカルで `/consult` が動作し、SPEC §5.4 スキーマ準拠のレスポンスを返す。
+対象は **フロントエンド（`web/`）のみ**。ontology / agent / API は変更しない。
+
+### フェーズ U1: 判定フレーム（骨格）
+- 画面を「① 事件の入力 → ② 判定ライブビュー → ③ 判定結果」の縦フローに再編
+- 送信後に入力ブロックを縮小し②へスクロール誘導
+- 判定ヘッダー用の派生状態を算出（no_crime / candidates 数から導出。新データなし）
+- 検証: `npm run build` 通過、表示情報が不変であること
+
+### フェーズ U2: 判定ライブビュー（ストリーミングの劇化）
+- `StepIndicator`（事実把握 → 候補抽出 → 構成要件照合 → 判定）を受信イベントで点灯
+- `AgentTrace` を判定文脈のラベルへ（文言のみ。GraphView 描画は不変）
+- `StreamingAnswer` を「判定文の生成」見出しに
+- 検証: end-to-end で実ストリーム、ステップ点灯とグラフ表示
+
+### フェーズ U3: 構成要件チェックカード + メーター
+- `ConfidenceMeter`（confidence を同値のままメーター表示）
+- `ElementChecklist`（matched=✓ / missing=？、件数比で充足ゲージ）
+- `CandidateCard` を再構成（罪名・条番号・法定刑・理由は保持、ラベル文言のみ変更）
+- `ResultView` に判定ヘッダー（成立しうる / あたらない）。no_crime 説明文は保持
+- 検証: 代表 4 シナリオで matched/missing・ゲージ・確信度が正しく出る
+
+### フェーズ U4: インタラクション & 仕上げ
+- 結果カード → ②の対応グラフ/SPARQL へのスクロール相互リンク（crime_id で対応）
+- メーター/ゲージ/ステップ/グラフノードのアニメーション（`prefers-reduced-motion` 尊重）
+- アクセシビリティ（`role="meter"`・aria・キーボード）とレスポンシブ
+- 検証: `npm run build`、情報不変の最終チェック（SPEC.md §6 の表と突合）
 
 ---
 
-## フェーズ 3: Web UI 構築
+## 検証・完了基準
 
-ゴール: 相談を入力し結果を表示するブラウザ画面を完成させる。
-
-- [ ] 3-1. `web/` を Vite + React + TypeScript で初期化
-- [ ] 3-2. API クライアント（`api.ts`）: `POST /consult` 型付きラッパ
-- [ ] 3-3. コンポーネント: 入力フォーム / ローディング / 結果カード / 免責表示（SPEC §6.2）
-- [ ] 3-4. `App.tsx` で状態管理と画面結線
-- [ ] 3-5. 検証: `npm run build`（tsc 型チェック通過）、`npm run dev` でエージェントAPIと疎通し画面表示
-
-完了条件: ブラウザで相談を入力 → エージェント経由の結果が表示される。型チェック・ビルド通過。
-
----
-
-## 全体の検証・完了基準
-
-- フェーズ1〜3それぞれの完了条件を満たす
-- 各フェーズで該当するビルド/テストが通過
-- 代表シナリオの end-to-end 動作:
-  - 「隣人に殴られた」→ 傷害/暴行が候補
-  - 「SNSで悪口を書かれた」→ 名誉毀損/侮辱が候補
-  - 「貸した金が返ってこない」→ 刑法上は該当なし（民事）と説明
+### 既存（維持）
+- `cd ontology && uv run pytest`（26 passed）
+- `cd agent && uv run pytest`（17 passed）
+- `cd web && npm run build`（tsc 通過）
+- `run.sh` で end-to-end 起動し、代表シナリオが動作:
+  - 財布を盗まれた → 窃盗罪（235 条）
+  - 隣人に殴られた → 暴行罪（208）/ 傷害罪（204）
+  - SNSで悪口を書かれた → 名誉毀損（230）/ 侮辱（231）
+  - 貸した金が返ってこない → 刑法上は該当なし（民事）
 - 全出力に免責が付与される
+
+### UI リニューアル（予定）
+- 表示される情報要素が SPEC.md §6 の情報マッピング表と完全一致（増減なし）
+- 判定ライブビューが段階表示され、ストリームイベントが進行ステップに対応して点灯
+- 罪ごとに構成要件の充足ゲージ（matched/missing 由来）と確信度メーターが表示
+- no_crime 時は判定ヘッダーで「あたらない可能性」が示され既存説明文が残る
+- ナレッジグラフは既存 SVG 図のまま。`prefers-reduced-motion` でアニメ無効化
+- API（ontology / agent / エンドポイント）に変更がない（`git diff --stat` で確認）
+
+---
+
+## 環境・起動（詳細は README.md）
+
+- 型チェック+ビルド: `cd web && npm run build`
+- dev 単体: `cd web && npm run dev -- --host 127.0.0.1 --port 5173`
+  （vite は既定 IPv6 バインドのため `--host 127.0.0.1` 指定で curl 疎通可）
+- end-to-end 一括: `AWS_PROFILE=<profile> ./run.sh`（agent=8099 / web=5173）
+  - AWS プロファイルが SSO の場合、期限切れ時は `aws sso login --profile <profile>`
+- SSE 実確認:
+  ```
+  curl -N -X POST http://127.0.0.1:8099/consult/stream \
+    -H "Content-Type: application/json" -d '{"text":"隣人に殴られた"}'
+  ```
 
 ## リスク・留意点
 
-- Bedrock 認証: LLM 実行には AWS 認証が必要。未整備の場合はツール層までで検証し明記。
-- 法的正確性: 本システムは情報提供であり助言ではない。条文・法定刑は一次情報に基づき、改正追従できる構造とする。
-- Strands SDK の API 変更: 実装時に公式ドキュメント（strandsagents.com）で最新シグネチャを確認する。
-- キーワードマッチの限界: 初期は辞書ベース。将来は埋め込み検索へ拡張可能な設計にとどめる。
+- **情報を増やさない制約**（UI リニューアル）: 新しい分析・スコア・文言の中身を
+  足さない。メーター/ゲージは既存の confidence / matched / missing から導出するに留める。
+- GraphView の描画ロジック（レイアウト・色・トリプル解釈）は変更しない。
+- API を変えないため、判定ヘッダーやステップはフロント側の導出で実現する。
+- Bedrock 認証: LLM 実行には AWS 認証が必要。未整備の環境ではビルド（tsc）/
+  ツール層までで検証し、実ストリーム目視はスキップして記録する。
+- 法的正確性: 本システムは情報提供であり助言ではない。条文・法定刑は一次情報に基づく。

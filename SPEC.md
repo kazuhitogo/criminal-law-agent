@@ -318,17 +318,21 @@ concepts:
 - Python（**uv** で環境・依存管理。`pyproject.toml`）
 - **Strands Agents SDK**（`strands-agents`）
 - モデルプロバイダ: Amazon Bedrock
-  - モデル: **Claude Haiku 5.5**（2026-10-07 リリース）
-  - ベースモデルID: `anthropic.claude-haiku-5-5`
-  - 実際の呼び出しはクロスリージョン推論プロファイルを使用（例: `us.anthropic.claude-haiku-5-5-v1:0`）。
-    リージョンにより `us.` / `apac.` / `eu.` プレフィックスが変わるため、環境変数で指定可能にする。
-- API サーバ: FastAPI（`/consult` エンドポイント）
+  - モデル: **Claude Haiku 5.5**
+  - 推論プロファイル ID を使用。既定は `global.anthropic.claude-haiku-5-5`
+    （リージョン非依存）。リージョン固定が必要なら `us.` / `apac.` 等の
+    プロファイルを環境変数 `CRIMINAL_AGENT_MODEL_ID` で指定する
+  - 認証・リージョンは環境変数（`AWS_PROFILE` / `AWS_REGION` ほか, boto3 既定解決）
+  - Claude Haiku 5.5 は `temperature` を受け付けないため指定しない
+- API サーバ: FastAPI（`/consult`, `/consult/stream`, `/health`）
 
 ```python
+import os
 from strands import Agent
 from strands.models import BedrockModel
 
-model = BedrockModel(model_id="us.anthropic.claude-haiku-5-5-v1:0")  # 環境変数で上書き可
+model_id = os.environ.get("CRIMINAL_AGENT_MODEL_ID", "global.anthropic.claude-haiku-5-5")
+model = BedrockModel(model_id=model_id)  # region は環境に委ねる。temperature 指定なし
 ```
 
 ### 5.2 エージェント構成
@@ -386,28 +390,128 @@ def list_crime_categories() -> list[dict]:
 }
 ```
 
+### 5.5 ストリーミング出力（SSE）
+
+`POST /consult/stream` は `/consult` と同じ body を受け、処理過程を
+Server-Sent Events で逐次配信する。各イベントは `data: <JSON>\n\n` 形式で、
+`type` により種別を判別する:
+
+| type | 内容 |
+|---|---|
+| `start` | 処理開始 |
+| `reasoning` | モデルの思考（extended thinking）の断片 |
+| `token` | 回答本文のテキスト断片 |
+| `tool_use` | ツール呼び出し（`name`, `input`） |
+| `sparql` | 実行した SPARQL（ツール呼び出しに対応, `label`, `sparql`） |
+| `graph` | 取得したナレッジグラフのサブグラフ（`crime_id`, `triples`, `turtle`） |
+| `tool_result` | ツール実行結果の要約（`status`, `summary`） |
+| `result` | 最終構造化結果（§5.4 の `ConsultationResult`） |
+| `done` | 完了 |
+| `error` | エラー（`message`） |
+
+ツール呼び出しを検知した時点で、オントロジー層から対応する SPARQL と
+サブグラフ（罪・条文・構成要件・法定刑・概念のトリプル）を取得して流す。
+LLM に渡すツール出力は軽量に保ち、可視化用データはストリーム側で別に付与する。
+
 ## 6. Web UI 仕様
 
 ### 6.1 使用技術
 - **TypeScript + React**
 - ビルド: Vite
-- スタイル: 最小限（CSS Modules もしくは Tailwind、実装時に確定）
-- 状態管理: React 標準（useState/useReducer）、外部ライブラリは必要時のみ
+- スタイル: プレーン CSS（`App.css`）。外部 UI ライブラリは追加しない
+- 状態管理: React 標準（useState）。SSE は fetch + ReadableStream で購読
 
-### 6.2 画面
+### 6.2 画面（現状実装）
 - 単一ページ
   - ヘッダー（タイトル + 免責表示）
-  - 相談入力テキストエリア + 送信ボタン
+  - 相談入力テキストエリア + 例チップ + 送信ボタン
   - ローディング表示
-  - 結果表示カード（候補罪ごとに: 罪名 / 条文 / 法定刑 / 該当理由 / 確信度バッジ）
+  - AI 思考回路・実行ログ（思考 / ツール呼び出し / 実行 SPARQL /
+    ナレッジグラフ / ツール結果）
+  - 本文ストリーミング表示
+  - 結果表示カード（候補罪ごとに: 罪名 / 条文 / 法定刑 / 満たしうる構成要件 /
+    不足構成要件 / 該当理由 / 確信度バッジ）
   - 「該当なし」時の説明表示
   - フッター免責文
 
 ### 6.3 API 連携
-- `POST /consult`  body: `{ "text": string }`
-- レスポンス: 5.4 の構造化出力
+- `POST /consult`  body: `{ "text": string }`、レスポンスは §5.4 の構造化出力
+- `POST /consult/stream`  同じ body。SSE で §5.5 のイベントを逐次受信（UI の既定）
 
-## 7. ディレクトリ構成（予定）
+### 6.4 ストリーミング可視化（現状実装）
+Web UI は `/consult/stream` を購読し、処理過程を逐次表示する:
+- **思考回路**: `reasoning` イベント（モデルの extended thinking）
+- **ツール呼び出し**: `tool_use`（ツール名・入力）/ `tool_result`（結果要約）
+- **実行 SPARQL**: `sparql`（ツール呼び出しに対応する実行クエリ）
+- **ナレッジグラフ**: `graph`（罪・条文・構成要件・法定刑・概念のトリプル）を
+  SVG のノード・エッジ図で描画（`GraphView`）。トリプル一覧（表）も併記
+- **本文ストリーミング**: `token`（回答本文のタイプライタ表示）
+- **最終結果**: `result`（§5.4 の構造化結果をカード表示）
+
+### 6.5 UI リニューアル仕様（犯罪成立判定体験・予定）
+
+現状の「相談フォーム + 結果カード一覧」を「**この出来事は刑法上の犯罪に
+あたるのか**」を判定する体験へ再構成する。実装計画は PLAN.md「これから実装すること」。
+
+> **大前提（厳守）**: 表示する情報そのものは一切増減しない。§6.6 の情報マッピングを
+> 厳守し、変更は見せ方・順序・インタラクション（ラベル文言・配置・アニメ・相互リンク）
+> に限定する。ontology / agent / API は変更しない。
+
+画面構成（単一ページ・縦フロー）:
+- ヘッダー（タイトル + 免責。常時表示・文言不変）
+- ① 事件の入力（旧・相談フォーム。送信ボタンは「判定を開始する」ラベル）
+- ② 判定ライブビュー（ストリーミング中に出現）
+  - **ステップ・インジケータ**: 「事実の把握 → 候補の抽出 → 構成要件の照合 → 判定」
+    の 4 段。受信イベント種別で点灯（事実把握=start/最初の reasoning、
+    候補抽出=tool_use(search_crimes_by_text)/sparql/graph、
+    構成要件照合=tool_use(get_crime_detail)/graph/reasoning、判定=result）
+  - 思考（検討メモ）/ ツール（参照アクション）/ SPARQL（参照クエリ）/
+    ナレッジグラフ（既存 SVG 描画のまま）/ 本文（判定文の生成）
+- ③ 判定結果（確定後）
+  - **判定ヘッダー**: 候補ありは「犯罪が成立しうる（◯件の罪に該当の可能性）」、
+    no_crime は「刑法上の犯罪にはあたらない可能性が高い」
+    （no_crime と candidates 数からフロント側で導出。新しい事実は足さない）
+  - 事件の要約（既存 summary）
+  - 罪ごとの**構成要件チェックカード**:
+    - 罪名 + 第 N 条 + **確信度メーター**（既存 confidence を同値で表示）
+    - **充足ゲージ**: matched 件数 /(matched + missing) 件数の帯グラフ。
+      matched=「✓ 満たしうる」、missing=「？ 要確認／不足」。各行の文字列は既存配列のまま
+    - 「成立した場合の刑」（既存 penalty_text、文言不変）
+    - 「判定の根拠」（既存 reasoning）
+    - カードクリックで②の対応グラフ/SPARQL へスクロール（crime_id で対応づけ）
+  - no_crime 時は既存説明文（民事にとどまる等）を保持
+
+マイクロインタラクション: メーター/ゲージの出現アニメ、ステップ点灯のフェード、
+グラフノードのポップ。すべて `prefers-reduced-motion` を尊重し無効時は即時表示。
+
+アクセシビリティ: メーター/ゲージに `role="meter"` / `aria-valuenow` 等。
+キーボード操作・スクリーンリーダで判定結果が読めること。
+
+### 6.6 情報マッピング（不変であることの保証）
+
+| 既存の情報要素 | 現 UI | リニューアル後の置き場所 | 変更 |
+|---|---|---|---|
+| 相談テキスト入力 | フォーム | ① 事件の入力 | 文言のみ |
+| 例チップ | フォーム | ① 例で試す | 文言のみ |
+| summary | 結果上部 | ③ 事件の要約 | なし |
+| candidate.crime_label | カード見出し | ③ チェックカード見出し | なし |
+| candidate.article | カード見出し | ③ チェックカード見出し | なし |
+| candidate.confidence | バッジ | ③ 確信度メーター（同値） | 表現のみ |
+| candidate.matched_elements | リスト | ③ 充足ゲージ＋✓行 | 表現のみ |
+| candidate.missing_elements | リスト | ③ 充足ゲージ＋？行 | 表現のみ |
+| candidate.penalty_text | カード | ③「成立した場合の刑」 | 文言ラベルのみ |
+| candidate.reasoning | カード | ③「判定の根拠」 | 文言ラベルのみ |
+| no_crime | 専用枠 | ③ 判定ヘッダー＋説明 | 表現のみ |
+| disclaimer | フッター | フッター（＋ヘッダー） | なし |
+| reasoning（stream） | AgentTrace | ② 検討メモ | 表現のみ |
+| tool_use / tool_result | AgentTrace | ② 判定の進行 | 表現のみ |
+| sparql | AgentTrace | ② 参照クエリ | 表現のみ |
+| graph（triples/turtle） | GraphView | ② ナレッジグラフ（同描画） | なし |
+| token（stream） | StreamingAnswer | ② 判定文の生成 | 表現のみ |
+
+> データ項目の増減はゼロ。ラベル文言・配置・アニメーション・相互リンクのみを変更する。
+
+## 7. ディレクトリ構成
 
 ```
 criminal-law-agent/
@@ -435,8 +539,8 @@ criminal-law-agent/
 │   ├── src/criminal_agent/
 │   │   ├── __init__.py
 │   │   ├── tools.py          # Strands ツール
-│   │   ├── agent.py          # Agent 定義
-│   │   └── api.py            # FastAPI
+│   │   ├── agent.py          # Agent 定義 + ストリーミング（consult_stream）
+│   │   └── api.py            # FastAPI（/consult, /consult/stream, /health）
 │   └── tests/
 └── web/                      # フェーズ3
     ├── package.json
@@ -444,10 +548,21 @@ criminal-law-agent/
     ├── vite.config.ts
     └── src/
         ├── main.tsx
-        ├── App.tsx
-        ├── api.ts
+        ├── App.tsx           # ストリーミング駆動の状態管理・結線
+        ├── api.ts            # 型 + consult / consultStream(SSE)
+        ├── App.css
         └── components/
+            ├── ConsultForm.tsx
+            ├── Loading.tsx
+            ├── ResultView.tsx
+            ├── CandidateCard.tsx
+            ├── ConfidenceBadge.tsx
+            ├── AgentTrace.tsx      # 思考/ツール/SPARQL/グラフのタイムライン
+            ├── GraphView.tsx       # SVG ナレッジグラフ
+            └── StreamingAnswer.tsx # 本文トークン
 ```
+
+> ルートには起動スクリプト `run.sh`（agent + web 一括起動）と `README.md` を置く。
 
 ## 8. 非機能・制約
 
