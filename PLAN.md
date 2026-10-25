@@ -255,7 +255,7 @@
 - 罪が増えると、1 つの相談で出る候補が増え、get_crime_detail の呼び出し（LLM のターン）とストリームのグラフも増える。応答時間が目立って伸びたら、候補の上限（上位 N 件）を別項目で検討する
 - README の件数更新は段階 5 で実施済み
 
-### 8. 関連罪に罪名・条番号を付ける — 未着手
+### 8. 関連罪に罪名・条番号を付ける — 完了（未コミット）
 経緯: 7 段階 5 の Bedrock 回帰で、「財布を盗まれた」の summary に LLM が「強盗罪（刑法236条）」と書いた。get_crime_detail(theft) の related_to は id `robbery` だけで、罪名・条番号は LLM の記憶だった。6 の禁止事項（ツール結果で確認できない罪に触れない）の境界にあたる。
 
 検討した案（ユーザーの判断で A）
@@ -272,3 +272,11 @@
 - AGENT_INTERNALS.md の get_crime_detail の出力説明（related_to）を更新する
 - Bedrock で「財布を盗まれた」を再実行し、強盗罪に触れる場合の条番号がツール出力どおりか確認する。既存シナリオ（隣人に殴られた / SNSで悪口 / 貸した金）の回帰も見る
 - プロンプト・スキーマ・API・UI は変えない
+
+結果
+- tools.py の get_crime_detail で related_to を `{"crime_id", "label", "article"}` に変換。罪名・条番号は KB.get_crime で引く。引けない id は `{"crime_id"}` だけで返す。オントロジー層は不変
+- agent テストに related_to の形と theft → robbery（強盗罪・236）の検証を追加。AGENT_INTERNALS.md の出力説明を更新
+- 結果: ontology 42 / agent 17 passed
+- Bedrock（dev-vm）
+  - 回帰 4 シナリオ（財布 / 隣人に殴られた / SNSで悪口 / 貸した金）は従来どおり。貸した金は no_crime=true、仮定の検索で詐欺罪（246条）のみ。免責文なし
+  - 「財布を盗まれた」を追加 3 回。1 回で reasoning が「強盗罪（236条）」に言及し、ツール出力の罪名・条番号と一致。法定刑には触れず

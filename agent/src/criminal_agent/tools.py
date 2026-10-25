@@ -57,8 +57,10 @@ def get_crime_detail(crime_id: str) -> dict:
 
     Returns:
         罪詳細の辞書。存在しない場合は {"error": ...}。
+        related_to の各要素は crime_id / label / article（オントロジーの値）。
     """
-    d = get_kb().get_crime(crime_id)
+    kb = get_kb()
+    d = kb.get_crime(crime_id)
     if d is None:
         return {"error": f"unknown crime_id: {crime_id}"}
     return {
@@ -70,8 +72,19 @@ def get_crime_detail(crime_id: str) -> dict:
         "statute_text": d.statute_text,
         "elements": d.elements,
         "penalties": d.penalties,
-        "related_to": d.related_to,
+        "related_to": [_related_ref(kb, rid) for rid in d.related_to],
     }
+
+
+def _related_ref(kb: CriminalLawKB, crime_id: str) -> dict:
+    """関連罪 ID に罪名・条番号を付ける（LLM に記憶で補わせないため）。
+
+    引けない ID は落とさず、id だけで返す。
+    """
+    r = kb.get_crime(crime_id)
+    if r is None:
+        return {"crime_id": crime_id}
+    return {"crime_id": crime_id, "label": r.label, "article": r.article}
 
 
 @tool

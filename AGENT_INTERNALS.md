@@ -71,7 +71,7 @@ flowchart LR
 ```
 
 - 構成要件は要素ごとに種別・説明・キーワードを持つ。③突合の材料になる。
-- 出力: `crime_id` / `label` / `article` / `category` / `legal_interest`（保護法益）/ `statute_text`（条文）/ `elements`（構成要件）/ `penalties`（法定刑）/ `related_to`（関連罪）。
+- 出力: `crime_id` / `label` / `article` / `category` / `legal_interest`（保護法益）/ `statute_text`（条文）/ `elements`（構成要件）/ `penalties`（法定刑）/ `related_to`（関連罪。各項目は `crime_id` / `label` / `article` で、罪名・条番号はオントロジーの値）。
 
 ### `list_crime_categories`
 

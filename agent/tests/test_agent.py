@@ -47,6 +47,14 @@ def test_tool_get_crime_detail():
     assert len(d["penalties"]) == 2
 
 
+def test_tool_get_crime_detail_related_labels():
+    d = get_crime_detail("theft")
+    assert d["related_to"]
+    for r in d["related_to"]:
+        assert set(r) == {"crime_id", "label", "article"}
+    assert {"crime_id": "robbery", "label": "強盗罪", "article": "236"} in d["related_to"]
+
+
 def test_tool_get_crime_detail_unknown():
     d = get_crime_detail("does-not-exist")
     assert "error" in d
