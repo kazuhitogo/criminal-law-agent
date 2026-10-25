@@ -1,6 +1,6 @@
 import type { Confidence } from "../api";
 
-// 確信度メーター（SPEC §6.5 / §6.6）。
+// 確信度メーター（SPEC §6.2 / §6.3）。
 // 既存 confidence（high/medium/low）を「同値のまま」メーター表現にするのみ。
 // 新しいスコアや数値は足さない。表示ラベルは従来バッジと同じ「高/中/低」。
 

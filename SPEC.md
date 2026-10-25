@@ -1,375 +1,135 @@
 # SPEC.md — 刑法オントロジー法律相談エージェント
 
+仕様のみを記す。経緯・理由は [PLAN.md](./PLAN.md)、使い方・環境変数は [README.md](./README.md)。
+コードを読めば分かる実装詳細（関数本体・ファイル構成・CSS 値など）は書かない。
+
 ## 1. 概要
 
-日本の刑法に基づくオントロジーを構築し、ユーザーの「訴えたい」相談文を入力として、
-該当しうる刑法条文・構成要件・法定刑を提示するエージェントシステム。
-
-「むかついたから訴える」といった日常の不満のうち、実際には刑法上の犯罪構成要件を
-満たさないケースが多い。本システムはオントロジーによる構成要件の形式化により、
-- 該当しうる罪名・条文
-- 構成要件の充足状況
-- 法定刑（懲役/罰金の範囲）
+相談文（日常語）を入力として、該当しうる日本の刑法上の罪を返す。返す内容:
+- 該当しうる罪名・条文番号
+- 構成要件の充足状況（満たしうる / 不足）
+- 法定刑
 - 「刑法上は該当なし」の判定とその理由
 
-を返す。
-
-> 民法上の論点（損害賠償、慰謝料等）は本システムの対象外。刑事のみを扱う。
+刑事のみを扱う。民事（損害賠償・慰謝料・貸金返還等）は対象外。
 
 ## 2. スコープ
 
 ### 対象
-- 日本国刑法（明治40年法律第45号）**第2編「罪」の全編（77条〜264条）を網羅収録**
-  - 個人的法益: 殺人・傷害・暴行・脅迫・強要・逮捕監禁・不同意性交・住居侵入・
-    名誉毀損・侮辱・業務妨害・窃盗・強盗・詐欺・恐喝・横領・背任・器物損壊 ほか
-  - 社会的法益: 放火・騒乱・往来妨害・通貨偽造・文書偽造・有価証券偽造・
-    わいせつ・賭博 ほか
-  - 国家的法益: 内乱・外患・公務執行妨害・逃走・犯人蔵匿・証拠隠滅・偽証・
-    虚偽告訴・収賄・職権濫用 ほか
-  - 刑法各則の章構成を RDFS クラス階層に対応させ、全章を収録する
-- 自然文の相談入力 → セマンティックレイヤーで概念化 → 構成要件マッチング →
-  条文・法定刑の回答
+- 刑法（明治40年法律第45号）第2編「罪」（77条〜264条）の全章
+  - 個人的法益 / 社会的法益 / 国家的法益の全カテゴリ
+- 相談文 → 概念 → 罪候補 → 構成要件の突合 → 回答
 
-### 非対象（初期リリース）
-- 民事（不法行為、債務不履行等）
-- 特別刑法（軽犯罪法、各種行政刑罰法規）… 構造上は拡張可能
-- 刑法総則（未遂・共犯・正当防衛等の一般規定）… 各罪の成立評価では参照するが、
-  独立した収録対象外。将来拡張可能
-- 量刑の具体的予測、判例検索
-- 法的助言としての確定的判断
+### 非対象
+- 民事
+- 特別刑法（軽犯罪法・行政刑罰法規等）
+- 刑法総則（未遂・共犯・正当防衛等）の独立収録
+- 量刑予測・判例検索
+- 確定的な法的判断
 
-## 3. 全体アーキテクチャ
+## 3. 構成
 
-```
-┌─────────────────────────────────────────────┐
-│  Web UI (TypeScript + React)                 │
-│  - 相談入力フォーム                           │
-│  - 回答表示（条文・構成要件・法定刑）         │
-└───────────────┬─────────────────────────────┘
-                │ HTTP (REST/JSON)
-┌───────────────▼─────────────────────────────┐
-│  Agent API (Python / uv / FastAPI)           │
-│  - Strands Agents SDK（Claude Haiku 5.5）    │
-│  - ツール: query_ontology, get_article       │
-└───────────────┬─────────────────────────────┘
-                │ 自然文 → 概念
-┌───────────────▼─────────────────────────────┐
-│  Semantic Layer（セマンティックレイヤー）     │
-│  - 自然文キーワード ⇄ オントロジー概念の対応  │
-│  - 同義語/言い換え辞書、概念正規化            │
-│  - ビジネス的な問い（相談意図）を SPARQL へ   │
-│    橋渡しする語彙マッピング                   │
-└───────────────┬─────────────────────────────┘
-                │ SPARQL / 概念クエリ
-┌───────────────▼─────────────────────────────┐
-│  Ontology Layer (Python / uv)                │
-│  - 刑法オントロジー（RDF / RDFS / OWL）       │
-│  - 罪名・構成要件・法定刑・保護法益           │
-│  - 推論（RDFS/OWL）+ SPARQL クエリ            │
-└──────────────────────────────────────────────┘
-```
+4 層。上から順に呼び出す。
+- Web UI（TypeScript + React / Vite）
+- Agent API（Python / uv / FastAPI + Strands Agents SDK + Bedrock Claude Haiku 5.5）
+- セマンティックレイヤー（日常語 ⇄ 法律概念）
+- オントロジー層（RDF / RDFS / OWL + SPARQL + 推論）
 
-## 4. オントロジー仕様
+## 4. オントロジー
 
 ### 4.1 表現形式
-
-**RDF + RDFS + OWL（rdflib）を採用。** 各層の役割:
-
-- **RDF**: 個々の罪・条文・構成要件・法定刑をトリプル（主語-述語-目的語）で表現する
-  データ本体。
-- **RDFS**: クラス階層（`rdfs:subClassOf`）とプロパティの定義域・値域
-  （`rdfs:domain` / `rdfs:range`）、ラベル（`rdfs:label`）を定義する語彙スキーマ。
-  罪カテゴリの is-a 階層や保護法益の分類はここで表現。
-- **OWL**: より強い意味制約と推論を担う。
-  - `owl:Class` / `owl:ObjectProperty` / `owl:DatatypeProperty` で語彙を宣言
-  - `owl:TransitiveProperty`（例: カテゴリ包含の推移性）
-  - `owl:inverseOf`（例: `definedIn` ⇔ `defines`）
-  - `owl:disjointWith`（例: 財産罪と生命身体罪のクラス排他）
-  - `owl:equivalentClass` / `owl:sameAs`（別名の同一視）
-  これにより「ある罪が個人的法益に対する罪か」等を明示せずとも推論で導ける。
-
-採用理由:
-- 法律の「構成要件 → 罪 → 法定刑」「罪 → 保護法益」は is-a / part-of 関係で
-  素直に表現でき、オントロジーの意味論と相性が良い。
-- 特別刑法・判例・民法へ拡張する際、名前空間分離とリンクが容易。
-- SPARQL による宣言的クエリ + RDFS/OWL 推論でツール実装を薄くできる。
-
-ソースは人間が書きやすい **YAML** で管理し、ビルド時に RDF(Turtle) へ変換する
-二層構成とする（編集容易性 + 推論能力の両立）。RDFS/OWL スキーマ（`schema.ttl`）は
-YAML とは別に固定定義として保持し、データ側 Turtle と合わせてグラフにロードする。
-
-**名前空間**:
-- 基底 IRI: `https://example.org/criminal-law#`（接頭辞 `cl:`）
-- 併用語彙: `rdf:` / `rdfs:` / `owl:` / `skos:` / `xsd:`
-
-**推論エンジン**: rdflib 単体は RDFS/OWL の推論を自動適用しない。
-`owl:inverseOf` / `owl:TransitiveProperty` / `rdfs:subClassOf` 連鎖などを有効化するため、
-**`owlrl`（OWL-RL / RDFS クロージャ）を依存に加え**、グラフロード後に推論を適用する。
-推論を使わない単純一致検索のみで足りる場合も、クラス階層解決のため最低限 RDFS 推論は適用する。
-
-### 4.1.1 各層に実際に書く内容（サンプル）
-
-RDFS/OWL = スキーマ（型・ルール, ほぼ固定, `schema.ttl`）。
-RDF = データ（個々の罪・条文, 罪ごとに増える, YAML→`*.ttl`）。
-
-**RDFS（クラス階層・プロパティ定義）**:
-```turtle
-cl:Crime                a rdfs:Class ; rdfs:label "罪" .
-cl:CrimeAgainstPerson   rdfs:subClassOf cl:Crime ; rdfs:label "個人的法益に対する罪" .
-cl:CrimeAgainstProperty rdfs:subClassOf cl:CrimeAgainstPerson ; rdfs:label "財産に対する罪" .
-cl:Element  a rdfs:Class . cl:Penalty a rdfs:Class . cl:Article a rdfs:Class .
-cl:hasElement a rdf:Property ; rdfs:domain cl:Crime ; rdfs:range cl:Element .
-cl:hasPenalty a rdf:Property ; rdfs:domain cl:Crime ; rdfs:range cl:Penalty .
-cl:definedIn  a rdf:Property ; rdfs:domain cl:Crime ; rdfs:range cl:Article .
-```
-
-**OWL（推論制約）**:
-```turtle
-cl:hasPenalty a owl:ObjectProperty .
-cl:maxYears   a owl:DatatypeProperty ; rdfs:range xsd:integer .
-cl:definedIn  a owl:ObjectProperty ; owl:inverseOf cl:defines .   # 条文⇄罪 双方向
-cl:broaderConcept a owl:TransitiveProperty .                      # 概念階層の推移
-cl:CrimeAgainstProperty owl:disjointWith cl:CrimeAgainstLifeBody . # 法益カテゴリ排他
-cl:injury owl:equivalentClass cl:bodilyHarm .                     # 別名の同一視
-```
-
-**RDF（罪インスタンス = YAML から生成）**:
-```turtle
-cl:theft a cl:CrimeAgainstProperty ;
-    rdfs:label "窃盗罪" ;
-    cl:definedIn cl:art235 ;
-    cl:protectsLegalInterest cl:property-possession ;
-    cl:hasElement cl:theft-object ;
-    cl:hasPenalty cl:theft-pen-imprisonment , cl:theft-pen-fine .
-cl:art235 a cl:Article ;
-    cl:statuteText "他人の財物を窃取した者は、窃盗の罪とし、十年以下の拘禁刑又は五十万円以下の罰金に処する。" .
-cl:theft-object a cl:ObjectElement ; rdfs:label "他人の財物" ; cl:hasConcept cl:concept-theft .
-cl:theft-pen-imprisonment a cl:Imprisonment ; cl:maxYears 10 ; cl:note "10年以下の拘禁刑" .
-```
-
-**SKOS（セマンティックレイヤー = semantics.yaml から生成）**:
-```turtle
-cl:concept-theft a skos:Concept ;
-    skos:prefLabel "財物の窃取" ;
-    skos:altLabel "盗まれた" , "取られた" , "万引き" , "スられた" ;
-    cl:indicatesCrime cl:theft .
-```
-
-> 推論で得られること: `cl:theft a cl:CrimeAgainstProperty` だけ書けば subClassOf 連鎖で
-> `cl:theft a cl:Crime` が導ける。`definedIn` を書けば inverseOf で `defines` も導ける。
-> 概念の `broaderConcept` は推移的にたどれる。= 書かない事実を推論が補う。
+- RDF + RDFS + OWL（rdflib）。推論は owlrl（OWL-RL / RDFS クロージャ）を、グラフをロードした後に適用する
+- データの元は YAML（人間が編集）。ビルド時に Turtle へ変換する。RDFS/OWL スキーマは YAML とは別に固定の Turtle で持つ
+- 名前空間: `https://example.org/criminal-law#`（`cl:`）。ほかに `rdf:` `rdfs:` `owl:` `skos:` `xsd:` を使う
+- OWL で使う制約: `owl:inverseOf`（`definedIn` ⇔ `defines`）、`owl:TransitiveProperty`（`broaderConcept`）、`owl:disjointWith`（法益カテゴリ同士の排他）
+- 罪インスタンスには最下層のカテゴリ型だけを書く。上位カテゴリ型は推論で導く
 
 ### 4.2 クラス階層
 
 ```
 Entity
 ├── Crime（罪）
-│   ├── CrimeAgainstPerson（個人的法益に対する罪）
+│   ├── CrimeAgainstPerson（個人的法益）
 │   │   ├── CrimeAgainstLifeBody（生命・身体）
-│   │   │   例: 殺人199, 傷害204, 傷害致死205, 暴行208, 過失致死210,
-│   │   │       遺棄217, 堕胎212 ほか
 │   │   ├── CrimeAgainstFreedomHonor（自由・名誉・秘密）
-│   │   │   例: 逮捕監禁220, 脅迫222, 強要223, 略取誘拐224,
-│   │   │       不同意性交177, 住居侵入130, 信書開封133,
-│   │   │       名誉毀損230, 侮辱231 ほか
 │   │   └── CrimeAgainstProperty（財産）
-│   │       例: 窃盗235, 強盗236, 詐欺246, 恐喝249, 横領252,
-│   │           背任247, 盗品関与256, 器物損壊261 ほか
-│   ├── CrimeAgainstSociety（社会的法益に対する罪）
+│   ├── CrimeAgainstSociety（社会的法益）
 │   │   ├── CrimeAgainstPublicSafety（公共の安全）
-│   │   │   例: 騒乱106, 放火108-, 往来妨害124, 激発物破裂117 ほか
 │   │   ├── CrimeAgainstPublicTrust（公共の信用）
-│   │   │   例: 通貨偽造148, 文書偽造155-, 有価証券偽造162,
-│   │   │       支払用カード電磁的記録163の2, 印章偽造164 ほか
 │   │   └── CrimeAgainstPublicMorals（風俗・健康）
-│   │       例: わいせつ175, 賭博185, 礼拝所不敬188,
-│   │           飲料水汚染142 ほか
-│   └── CrimeAgainstState（国家的法益に対する罪）
+│   └── CrimeAgainstState（国家的法益）
 │       ├── CrimeAgainstStateExistence（国家存立）
-│       │   例: 内乱77, 外患誘致81 ほか
 │       └── CrimeAgainstStateFunction（国家作用）
-│           例: 公務執行妨害95, 逃走97, 犯人蔵匿103,
-│               証拠隠滅104, 偽証169, 虚偽告訴172,
-│               収賄197-, 職権濫用193 ほか
-├── Element（構成要件要素）
-│   ├── ConductElement（行為）
-│   ├── ResultElement（結果）
-│   ├── ObjectElement（客体）
-│   ├── CircumstanceElement（状況・付随事情）
-│   └── IntentElement（故意・目的・過失）
-├── Penalty（法定刑）
-│   ├── DeathPenalty（死刑）
-│   ├── Imprisonment（拘禁刑/懲役/禁錮）
-│   └── Fine（罰金・科料）
+├── Element（構成要件要素）: Conduct / Result / Object / Circumstance / Intent
+├── Penalty（法定刑）: DeathPenalty / Imprisonment / Fine
 ├── LegalInterest（保護法益）
 └── Article（条文）
 ```
 
-> 刑法第2編（罪, 77条〜264条）の全章を対象とする。章立て（各則の編別）を
-> RDFS クラス階層にそのまま対応させ、刑法全編を網羅的に収録する。
+8 つの最下層カテゴリのすべてに、1 罪以上を収録する。
 
-### 4.3 プロパティ（述語）
+### 4.3 プロパティ
 
 | プロパティ | 定義域 → 値域 | 意味 |
-|-----------|--------------|------|
-| `definedIn` | Crime → Article | 罪が規定される条文 |
-| `hasElement` | Crime → Element | 構成要件要素を持つ |
-| `hasPenalty` | Crime → Penalty | 法定刑を持つ |
-| `requiresIntent` | Crime → IntentElement | 故意/目的の要否 |
+|---|---|---|
+| `definedIn` | Crime → Article | 規定条文 |
+| `hasElement` | Crime → Element | 構成要件要素 |
+| `hasPenalty` | Crime → Penalty | 法定刑 |
 | `protectsLegalInterest` | Crime → LegalInterest | 保護法益 |
 | `relatedTo` | Crime → Crime | 関連罪（択一・加重等） |
 | `hasKeyword` | Element → Literal | 自然文マッチ用キーワード |
-| `hasConcept` | Element → Concept | セマンティックレイヤーの概念への参照 |
-| `inChapter` | Crime → Chapter | 刑法各則の章 |
+| `hasConcept` | Element → Concept | セマンティックレイヤー概念への参照 |
 
-RDFS/OWL レベルでは以下も定義する。
-- `rdfs:subClassOf`: 罪カテゴリの is-a 階層
-- `owl:inverseOf`: `definedIn` ⇔ `defines`
-- `owl:TransitiveProperty`: `broaderConcept`（上位概念の推移）
-- `owl:disjointWith`: 法益カテゴリ間の排他
+### 4.4 罪データの必須項目
+- id / 罪名 / 条番号 / 最下層カテゴリ / 保護法益
+- 構成要件要素（種別・説明・キーワード）
+- 法定刑（種別 death | imprisonment | fine、下限、上限（上限なしは null）、単位 month | year | yen、原文表記）。1 罪につき 1 件以上
+- 条文原文。1 罪につき必須
+- 法定刑は拘禁刑への一本化（2025年6月施行）を反映する。条文は e-Gov などの一次情報から転記する
 
-### 4.4 Penalty のデータモデル
+### 4.5 セマンティックレイヤー
+- 概念は `skos:Concept` として表す。各概念が持つ項目:
+  - 正式名（prefLabel）
+  - 表層語（altLabel。日常語の言い換え）
+  - 上位概念（推移的にたどれる。循環は禁止）
+  - 指す罪（`indicatesCrime`）。1 概念が複数の罪を指してよい
+- 照合: 相談文に表層語が文字列として含まれるか（部分一致）で判定する
+- 概念のスコア: マッチした表層語 1 つごとに `1.0 + 文字数 × 0.1` を加算する
+- 罪候補: 概念が指す罪を集める。同じ罪を指す概念が複数あれば、スコアを合算して 1 件にまとめる。スコアの高い順に並べる
+- 概念・表層語が指す罪 ID は、すべて収録済みの罪でなければならない
 
-```
-Penalty:
-  type: death | imprisonment | fine
-  min: 数値（月 or 円）, 単位は unit で保持
-  max: 数値（上限なしは null）
-  unit: month | year | yen | null
-  note: 自由記述（「10年以下の懲役」「死刑又は無期拘禁刑」等の原文）
-```
+## 5. エージェント
 
-### 4.5 データ項目（1罪あたり）
+### 5.1 モデル・実行環境
+- Amazon Bedrock Claude Haiku 5.5。既定の推論プロファイル ID は `global.anthropic.claude-haiku-5-5`。環境変数で上書きできる
+- 認証・リージョン・モデル ID はリポジトリに固定せず、実行環境から与える
+- `temperature` は指定しない（モデルが受け付けない）
+- エンドポイント: `POST /consult`、`POST /consult/stream`、`GET /health`
 
-```yaml
-- id: theft
-  label: 窃盗罪
-  article: "235"
-  category: CrimeAgainstProperty
-  legal_interest: 財産（占有）
-  elements:
-    - type: object
-      desc: 他人の財物
-      keywords: [盗む, 盗まれた, 取られた, 持ち去, 万引き, スリ, 財布, 自転車]
-    - type: conduct
-      desc: 窃取（占有者の意思に反する占有移転）
-      keywords: [盗む, こっそり, 勝手に持って]
-    - type: intent
-      desc: 故意 + 不法領得の意思
-      keywords: []
-  penalties:
-    - type: imprisonment
-      max: 10
-      unit: year
-      note: 10年以下の拘禁刑
-    - type: fine
-      max: 500000
-      unit: yen
-      note: 50万円以下の罰金
-  statute_text: "他人の財物を窃取した者は、窃盗の罪とし、十年以下の拘禁刑又は五十万円以下の罰金に処する。"
-```
+### 5.2 ツール
+単一エージェント + 3 ツール。
 
-> 法定刑は刑法改正（拘禁刑の創設, 2025年6月施行）を反映。条文原文は e-Gov 等の
-> 公開一次情報を参照し、`statute_text` に転記する。
+- `search_crimes_by_text(consultation)` → 罪候補のリスト。該当なしは空リスト
+  - 各候補の項目: crime_id / 罪名 / 条番号 / カテゴリ / 法定刑の概要 / score / via_concepts（経由した概念 ID）/ matched_surface（相談文中でマッチした表層語。重複なし）
+- `get_crime_detail(crime_id)` → 条文原文・構成要件・法定刑・保護法益・関連罪。未知の ID のときはエラーを返す
+- `list_crime_categories()` → カテゴリ一覧。各カテゴリの項目:
+  - count: 推論込みの所属罪数
+  - direct_count: 直接そのカテゴリに収録した罪数
+  - leaf: 最下層かどうか
 
-### 4.6 セマンティックレイヤー
-
-生の相談文（日常語）と、厳密なオントロジー語彙（法律概念）の間を橋渡しする層。
-RDF グラフ上の `skos:Concept` 群と、それに紐づく語彙マッピングで構成する。
-
-役割:
-1. **概念正規化**: 「殴られた」「ボコられた」「叩かれた」→ 概念 `physical-assault` に集約。
-2. **同義語/言い換え辞書**: 概念ごとに表層語リスト（`skos:altLabel`）を保持し、
-   相談文の表現ゆらぎを吸収する。
-3. **概念 → 罪のマッピング**: 概念から関連する罪候補へのリンク
-   （`concept → indicatesCrime → Crime`）。1概念が複数罪を指しうる
-   （例: `threat-of-harm` → 脅迫222 / 強要223 / 恐喝249）。
-4. **問い合わせ変換**: 「訴えたい」という相談意図を、
-   「どの保護法益が侵害されたか」という SPARQL クエリ可能な形へ変換する語彙を提供。
-
-データ形式（`data/semantics.yaml`）:
-
-```yaml
-concepts:
-  - id: physical-assault
-    pref_label: 身体への有形力の行使
-    alt_labels: [殴られた, 叩かれた, ボコられた, 蹴られた, 突き飛ばされた, 暴力]
-    broader: bodily-harm          # 上位概念（推移的）
-    indicates_crimes: [assault, injury]   # 暴行208 / 傷害204
-  - id: threat-of-harm
-    pref_label: 害悪の告知
-    alt_labels: [脅された, 殺すと言われた, 脅迫, 危害を加えると]
-    indicates_crimes: [intimidation, compulsion, extortion]
-```
-
-ビルド時にこの YAML も Turtle（`build/semantics.ttl`）へ変換し、SKOS 語彙として
-オントロジーグラフに統合する。セマンティックレイヤーはオントロジー層内の
-サブモジュール（`semantics.py`）として実装し、検索API（`query.py`）が
-「相談文 → 概念 → 罪候補」の2段階解決に利用する。
-
-セマンティックレイヤー採用の意義:
-- 罪ごとの `keywords` を直接増やすより、概念を介した方が保守性・再利用性が高い。
-- 「訴えたい動機（怒り・被害感情）」と「法的に保護される利益」のギャップを
-  概念レベルで可視化でき、「刑法上は該当しない」の説明根拠になる。
-
-## 5. エージェント仕様
-
-### 5.1 使用技術
-- Python（**uv** で環境・依存管理。`pyproject.toml`）
-- **Strands Agents SDK**（`strands-agents`）
-- モデルプロバイダ: Amazon Bedrock
-  - モデル: **Claude Haiku 5.5**
-  - 推論プロファイル ID を使用。既定は `global.anthropic.claude-haiku-5-5`
-    （リージョン非依存）。リージョン固定が必要なら `us.` / `apac.` 等の
-    プロファイルを環境変数 `CRIMINAL_AGENT_MODEL_ID` で指定する
-  - 認証・リージョンは環境変数（`AWS_PROFILE` / `AWS_REGION` ほか, boto3 既定解決）
-  - Claude Haiku 5.5 は `temperature` を受け付けないため指定しない
-- API サーバ: FastAPI（`/consult`, `/consult/stream`, `/health`）
-
-```python
-import os
-from strands import Agent
-from strands.models import BedrockModel
-
-model_id = os.environ.get("CRIMINAL_AGENT_MODEL_ID", "global.anthropic.claude-haiku-5-5")
-model = BedrockModel(model_id=model_id)  # region は環境に委ねる。temperature 指定なし
-```
-
-### 5.2 エージェント構成
-
-単一エージェント + カスタムツール。
-
-```python
-from strands import Agent, tool
-
-@tool
-def resolve_concepts(consultation: str) -> list[dict]:
-    """相談文をセマンティックレイヤーで概念へ正規化する（表現ゆらぎ吸収）"""
-
-@tool
-def search_crimes_by_text(consultation: str) -> list[dict]:
-    """相談文 → 概念 → 罪候補を解決して返す（概念経由の2段階検索）"""
-
-@tool
-def get_crime_detail(crime_id: str) -> dict:
-    """罪IDから条文・構成要件・法定刑の詳細を取得する"""
-
-@tool
-def list_crime_categories() -> list[dict]:
-    """収録している罪のカテゴリ一覧を返す"""
-```
+概念だけを返すツール（相談文 → 概念）はエージェントに提供しない。概念の解決結果はオントロジー層の API として可視化に使う。
 
 ### 5.3 システムプロンプト（要旨）
-- 役割: 日本の刑法に関する「情報提供」。確定的な法的助言ではない旨を必ず付す。
+- 役割: 刑法に関する情報提供。確定的な法的助言は行わない。断定を避け「該当しうる」と表現する
 - 手順:
-  1. 相談文から事実関係を抽出
-  2. `search_crimes_by_text` で候補罪を取得
-  3. 候補ごとに `get_crime_detail` で構成要件を確認
-  4. 構成要件の充足/不充足を評価
-  5. 該当しうる罪があれば条文・法定刑を提示。なければ「刑法上は該当しない可能性が高い」と理由を説明
-- 民事論点は扱わない旨を明示。
+  1. 相談文から事実関係を把握する
+  2. `search_crimes_by_text` で候補を得る。各候補の matched_surface を理由説明の根拠に使う
+  3. 候補ごとに `get_crime_detail` で構成要件を確認する
+  4. 構成要件の充足（matched）/ 不足（missing）を評価する
+  5. 該当しうる罪があれば条文・法定刑・理由を示す。候補が無い、または民事のみの問題なら no_crime=true とし、理由を平易に説明する
+- 出力はすべて日本語。confidence は構成要件の充足度から high / medium / low を付ける
 
-### 5.4 構造化出力（レスポンススキーマ）
+### 5.4 構造化出力
 
 ```json
 {
@@ -389,206 +149,81 @@ def list_crime_categories() -> list[dict]:
 }
 ```
 
-### 5.5 ストリーミング出力（SSE）
+免責事項のフィールドは持たない。
 
-`POST /consult/stream` は `/consult` と同じ body を受け、処理過程を
-Server-Sent Events で逐次配信する。各イベントは `data: <JSON>\n\n` 形式で、
-`type` により種別を判別する:
+### 5.5 ストリーミング（SSE）
+`POST /consult/stream` は `/consult` と同じ body を受け取り、`data: <JSON>\n\n` 形式で次のイベントを順に配信する。
 
 | type | 内容 |
 |---|---|
-| `start` | 処理開始 |
-| `reasoning` | モデルの思考（extended thinking）の断片 |
-| `token` | 回答本文のテキスト断片 |
+| `start` / `done` / `error` | 開始 / 完了 / エラー（`message`） |
+| `reasoning` | モデルの思考の断片 |
+| `token` | 回答本文の断片 |
 | `tool_use` | ツール呼び出し（`name`, `input`） |
-| `sparql` | 実行した SPARQL（ツール呼び出しに対応, `label`, `sparql`） |
-| `graph` | 取得したナレッジグラフのサブグラフ（`crime_id`, `triples`, `turtle`） |
-| `tool_result` | ツール実行結果の要約（`status`, `summary`） |
-| `result` | 最終構造化結果（§5.4 の `ConsultationResult`） |
-| `done` | 完了 |
-| `error` | エラー（`message`） |
+| `sparql` | ツール呼び出しに対応する SPARQL（`label`, `sparql`） |
+| `graph` | 対応するサブグラフ（`crime_id`, `triples`, `turtle`） |
+| `tool_result` | ツール結果の要約（`status`, `summary`） |
+| `result` | §5.4 の構造化結果 |
 
-ツール呼び出しを検知した時点で、オントロジー層から対応する SPARQL と
-サブグラフ（罪・条文・構成要件・法定刑・概念のトリプル）を取得して流す。
-LLM に渡すツール出力は軽量に保ち、可視化用データはストリーム側で別に付与する。
+- `sparql` / `graph` を出すのは `search_crimes_by_text` と `get_crime_detail` の呼び出し時だけ
+- LLM に渡すツール出力とは別に、ストリーム側で付けて配信する
+- 可視化に失敗しても、回答の処理は止めない
 
-## 6. Web UI 仕様
+## 6. Web UI
 
-### 6.1 使用技術
-- **TypeScript + React**
-- ビルド: Vite
-- スタイル: プレーン CSS（`App.css`）。外部 UI ライブラリは追加しない
-- 状態管理: React 標準（useState）。SSE は fetch + ReadableStream で購読
+### 6.1 技術
+- TypeScript + React（Vite）。スタイルはプレーン CSS で、外部 UI ライブラリは使わない
+- `/consult/stream` を既定で購読する
 
-### 6.2 画面（現状実装）
-- 単一ページ
-  - ヘッダー（タイトル）
-  - 相談入力テキストエリア + 例チップ + 送信ボタン
-  - ローディング表示
-  - AI 思考回路・実行ログ（思考 / ツール呼び出し / 実行 SPARQL /
-    ナレッジグラフ / ツール結果）
-  - 本文ストリーミング表示
-  - 結果表示カード（候補罪ごとに: 罪名 / 条文 / 法定刑 / 満たしうる構成要件 /
-    不足構成要件 / 該当理由 / 確信度バッジ）
-  - 「該当なし」時の説明表示
+### 6.2 画面構成（単一ページ・縦フロー）
+- ① 事件の入力: 相談文、例チップ、「判定を開始する」ボタン
+- ② 判定ライブビュー（ストリーミング中に出る）
+  - 4 段のステップインジケータ。受信したイベントで点灯する
+    - 事実の把握: start / 最初の reasoning
+    - 候補の抽出: search の tool_use / sparql / graph
+    - 構成要件の照合: detail の tool_use / graph / reasoning
+    - 判定: result
+  - 思考・ツール・SPARQL・ナレッジグラフ（ノード・エッジ図 + トリプル一覧）・本文ストリーム
+- ③ 判定結果
+  - 判定ヘッダー: 候補ありなら「犯罪が成立しうる」と候補件数、no_crime なら「罪に問うは難し」
+  - 事件の要約
+  - 罪ごとのカード
+    - 罪名・条番号
+    - 確信度メーター
+    - 充足ゲージ（matched 件数 / (matched + missing) 件数）
+    - ✓ 満たしうる行 / ？ 要確認・不足 行
+    - 「成立した場合の刑」
+    - 「判定の根拠」
+  - カードをクリックすると、②の対応するグラフ / SPARQL へスクロールする（crime_id で対応づける）
+- 画面末尾に「出力結果の利用は自己責任でお願いします。」
 
-### 6.3 API 連携
-- `POST /consult`  body: `{ "text": string }`、レスポンスは §5.4 の構造化出力
-- `POST /consult/stream`  同じ body。SSE で §5.5 のイベントを逐次受信（UI の既定）
+### 6.3 表示情報の不変条件
+UI が表示するのは API が返す情報だけ。新しい分析・スコア・事実は足さない。判定ヘッダー・メーター・ゲージ・ステップは、既存の値（no_crime / candidates 数 / confidence / matched / missing / イベント種別）から導くだけにする。
 
-### 6.4 ストリーミング可視化（現状実装）
-Web UI は `/consult/stream` を購読し、処理過程を逐次表示する:
-- **思考回路**: `reasoning` イベント（モデルの extended thinking）
-- **ツール呼び出し**: `tool_use`（ツール名・入力）/ `tool_result`（結果要約）
-- **実行 SPARQL**: `sparql`（ツール呼び出しに対応する実行クエリ）
-- **ナレッジグラフ**: `graph`（罪・条文・構成要件・法定刑・概念のトリプル）を
-  SVG のノード・エッジ図で描画（`GraphView`）。トリプル一覧（表）も併記
-- **本文ストリーミング**: `token`（回答本文のタイプライタ表示）
-- **最終結果**: `result`（§5.4 の構造化結果をカード表示）
+| 情報要素 | 置き場所 |
+|---|---|
+| 相談テキスト・例チップ | ① |
+| summary | ③ 事件の要約 |
+| crime_label / article | ③ カード見出し |
+| confidence | ③ 確信度メーター（同値） |
+| matched_elements / missing_elements | ③ 充足ゲージ + ✓ / ？行 |
+| penalty_text | ③「成立した場合の刑」 |
+| reasoning | ③「判定の根拠」 |
+| no_crime | ③ 判定ヘッダー + 説明 |
+| reasoning / tool_use / tool_result / sparql（stream） | ② |
+| graph（stream） | ② ナレッジグラフ |
+| token（stream） | ② 判定文の生成 |
 
-### 6.5 UI リニューアル仕様（犯罪成立判定体験・予定）
+### 6.4 視覚デザイン（法廷テーマ）
+- 配色: 羊皮紙調の地、紺（威厳）、ゴールド（格式）。成立しうる = 深紅系、該当なし = 紺系
+- 見出し（H1・ステージ見出し・罪名・判定文言）は明朝体、本文はゴシック体
+- ヘッダー: 紺地 + ゴールドの下罫 + 天秤のクレスト。タイトルは「刑法あてはめ判定」（「判定」をゴールドで強調）
+- ファビコン: 天秤。ページタイトルは「刑法あてはめ判定 ⚖」
+- アニメーション: `prefers-reduced-motion` を尊重し、無効のときは即時に表示する
+- アクセシビリティ: メーター・ゲージに `role="meter"` と aria 属性を付ける。キーボードとスクリーンリーダーで判定結果を読めるようにする
 
-現状の「相談フォーム + 結果カード一覧」を「**この出来事は刑法上の犯罪に
-あたるのか**」を判定する体験へ再構成する。実装計画は PLAN.md「これから実装すること」。
-
-> **大前提（厳守）**: 表示する情報そのものは一切増減しない。§6.6 の情報マッピングを
-> 厳守し、変更は見せ方・順序・インタラクション（ラベル文言・配置・アニメ・相互リンク）
-> に限定する。ontology / agent / API は変更しない。
-
-画面構成（単一ページ・縦フロー）:
-- ヘッダー（タイトル・文言不変）
-- ① 事件の入力（旧・相談フォーム。送信ボタンは「判定を開始する」ラベル）
-- ② 判定ライブビュー（ストリーミング中に出現）
-  - **ステップ・インジケータ**: 「事実の把握 → 候補の抽出 → 構成要件の照合 → 判定」
-    の 4 段。受信イベント種別で点灯（事実把握=start/最初の reasoning、
-    候補抽出=tool_use(search_crimes_by_text)/sparql/graph、
-    構成要件照合=tool_use(get_crime_detail)/graph/reasoning、判定=result）
-  - 思考（検討メモ）/ ツール（参照アクション）/ SPARQL（参照クエリ）/
-    ナレッジグラフ（既存 SVG 描画のまま）/ 本文（判定文の生成）
-- ③ 判定結果（確定後）
-  - **判定ヘッダー**: 候補ありは「犯罪が成立しうる（◯件の罪に該当の可能性）」、
-    no_crime は「罪に問うは難し」（verdict 文言は §6.7 の法廷テーマに準拠。
-    no_crime と candidates 数からフロント側で導出。新しい事実は足さない）
-  - 事件の要約（既存 summary）
-  - 罪ごとの**構成要件チェックカード**:
-    - 罪名 + 第 N 条 + **確信度メーター**（既存 confidence を同値で表示）
-    - **充足ゲージ**: matched 件数 /(matched + missing) 件数の帯グラフ。
-      matched=「✓ 満たしうる」、missing=「？ 要確認／不足」。各行の文字列は既存配列のまま
-    - 「成立した場合の刑」（既存 penalty_text、文言不変）
-    - 「判定の根拠」（既存 reasoning）
-    - カードクリックで②の対応グラフ/SPARQL へスクロール（crime_id で対応づけ）
-  - no_crime 時は既存説明文（民事にとどまる等）を保持
-
-マイクロインタラクション: メーター/ゲージの出現アニメ、ステップ点灯のフェード、
-グラフノードのポップ。すべて `prefers-reduced-motion` を尊重し無効時は即時表示。
-
-アクセシビリティ: メーター/ゲージに `role="meter"` / `aria-valuenow` 等。
-キーボード操作・スクリーンリーダで判定結果が読めること。
-
-### 6.6 情報マッピング（不変であることの保証）
-
-| 既存の情報要素 | 現 UI | リニューアル後の置き場所 | 変更 |
-|---|---|---|---|
-| 相談テキスト入力 | フォーム | ① 事件の入力 | 文言のみ |
-| 例チップ | フォーム | ① 例で試す | 文言のみ |
-| summary | 結果上部 | ③ 事件の要約 | なし |
-| candidate.crime_label | カード見出し | ③ チェックカード見出し | なし |
-| candidate.article | カード見出し | ③ チェックカード見出し | なし |
-| candidate.confidence | バッジ | ③ 確信度メーター（同値） | 表現のみ |
-| candidate.matched_elements | リスト | ③ 充足ゲージ＋✓行 | 表現のみ |
-| candidate.missing_elements | リスト | ③ 充足ゲージ＋？行 | 表現のみ |
-| candidate.penalty_text | カード | ③「成立した場合の刑」 | 文言ラベルのみ |
-| candidate.reasoning | カード | ③「判定の根拠」 | 文言ラベルのみ |
-| no_crime | 専用枠 | ③ 判定ヘッダー＋説明 | 表現のみ |
-| reasoning（stream） | AgentTrace | ② 検討メモ | 表現のみ |
-| tool_use / tool_result | AgentTrace | ② 判定の進行 | 表現のみ |
-| sparql | AgentTrace | ② 参照クエリ | 表現のみ |
-| graph（triples/turtle） | GraphView | ② ナレッジグラフ（同描画） | なし |
-| token（stream） | StreamingAnswer | ② 判定文の生成 | 表現のみ |
-
-> データ項目の増減はゼロ。ラベル文言・配置・アニメーション・相互リンクのみを変更する。
-
-### 6.7 視覚デザイン（法廷テーマ）
-
-「犯罪にあたるのか／あたらないのか」を見極める体験の格式・緊張感を高めるため、
-配色・タイポグラフィ・象徴モチーフを**法廷（判決）テーマ**で統一する。
-§6.6 の情報マッピングは厳守し、表示する情報要素は増減しない。本節が規定するのは
-あくまで見せ方（配色・書体・装飾・象徴・一部 verdict 文言）のみ。
-
-- **カラーパレット**（`App.css` の CSS 変数）:
-  - 地: 羊皮紙調ライト（`--bg #f4f1ea`）
-  - 威厳: 紺（`--navy #0f172a` / `--navy-soft #1e293b`。ヘッダー地・ボタン・主要見出し）
-  - 格式アクセント: ゴールド（`--gold #b8860b` / `--gold-bright #d4a017`。罫線・強調・象徴）
-  - 判定色: 成立しうる=深紅系（`--high #991b1b`）、該当なし=紺系
-  - 旧テーマの青（`#2563eb` 系）は紺・ゴールドへ置換
-- **タイポグラフィ**: 見出し（ヘッダー H1・ステージ見出し・罪名・verdict）は明朝体
-  （`--serif`: Hiragino Mincho ProN / Yu Mincho / Noto Serif JP 等）。本文は従来のゴシック。
-- **ヘッダー**: 紺グラデ地にゴールド下罫、中央に天秤（正義の秤）クレスト（インライン SVG）、
-  タイトルは「刑法あてはめ**判定**」（「判定」をゴールド強調）。
-- **判定ヘッダー（③）**: 左色帯 + グラデ地 + 浮き上がりアニメ（`prefers-reduced-motion` 尊重）。
-  verdict 文言は成立しうる=「犯罪が成立しうる」、no_crime=「罪に問うは難し」
-  （導出のみ。新しい事実は足さない）。
-- **ファビコン**: `web/public/favicon.svg` を天秤モチーフ（紺角丸地 + ゴールド線）に。
-  `index.html` の `theme-color` は紺（`#0f172a`）、`title` は「刑法あてはめ判定 ⚖」。
-- 外部 UI ライブラリは追加しない（§6.1 を踏襲、プレーン CSS のまま）。
-
-## 7. ディレクトリ構成
-
-```
-criminal-law-agent/
-├── PLAN.md
-├── SPEC.md
-├── ontology/                 # フェーズ1
-│   ├── pyproject.toml        # uv
-│   ├── data/
-│   │   ├── crimes.yaml       # 罪データ（人間が編集, 刑法全編）
-│   │   └── semantics.yaml    # セマンティックレイヤー概念辞書
-│   ├── schema/
-│   │   └── schema.ttl        # RDFS/OWL スキーマ（固定定義）
-│   ├── src/criminal_ontology/
-│   │   ├── __init__.py
-│   │   ├── models.py         # pydantic モデル
-│   │   ├── build.py          # YAML → Turtle 変換（schema.ttl と統合）
-│   │   ├── semantics.py      # セマンティックレイヤー（概念正規化）
-│   │   └── query.py          # SPARQL/検索 API（概念経由2段階）
-│   ├── build/
-│   │   ├── criminal_law.ttl  # 生成物（罪データ）
-│   │   └── semantics.ttl     # 生成物（SKOS 概念）
-│   └── tests/
-├── agent/                    # フェーズ2
-│   ├── pyproject.toml        # uv（ontology を依存に）
-│   ├── src/criminal_agent/
-│   │   ├── __init__.py
-│   │   ├── tools.py          # Strands ツール
-│   │   ├── agent.py          # Agent 定義 + ストリーミング（consult_stream）
-│   │   └── api.py            # FastAPI（/consult, /consult/stream, /health）
-│   └── tests/
-└── web/                      # フェーズ3
-    ├── package.json
-    ├── tsconfig.json
-    ├── vite.config.ts
-    └── src/
-        ├── main.tsx
-        ├── App.tsx           # ストリーミング駆動の状態管理・結線
-        ├── api.ts            # 型 + consult / consultStream(SSE)
-        ├── App.css
-        └── components/
-            ├── ConsultForm.tsx
-            ├── Loading.tsx
-            ├── ResultView.tsx
-            ├── CandidateCard.tsx
-            ├── ConfidenceBadge.tsx
-            ├── AgentTrace.tsx      # 思考/ツール/SPARQL/グラフのタイムライン
-            ├── GraphView.tsx       # SVG ナレッジグラフ
-            └── StreamingAnswer.tsx # 本文トークン
-```
-
-> ルートには起動スクリプト `run.sh`（agent + web 一括起動）と `README.md` を置く。
-
-## 8. 非機能・制約
-
-- 本システムは**情報提供ツール**であり、弁護士による法的助言の代替ではない。
-- オントロジーは一次情報（e-Gov 法令データ）に基づき、条文原文を保持する。
-- 法改正（拘禁刑への一本化等）に追従できるようデータとロジックを分離する。
-- オフライン（ネット接続なし）でもオントロジー検索は動作。LLM 呼び出しのみ Bedrock 接続要。
-
+## 7. 非機能・制約
+- 情報提供ツールであり、弁護士の法的助言の代替ではない
+- 条文原文は一次情報（e-Gov 法令データ）を保持する
+- 法改正に追従できるよう、データとロジックを分離する
+- オントロジー検索はオフラインで動く。ネット接続が要るのは LLM 呼び出し（Bedrock）だけ

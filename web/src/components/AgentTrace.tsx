@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { StreamEvent, Triple } from "../api";
 import { GraphView } from "./GraphView";
 
-// 判定ライブビューの進行ログ（SPEC §6.5 / §6.6）。
+// 判定ライブビューの進行ログ（SPEC §6.2 / §6.3）。
 // 表示するイベントは従来と同一（reasoning/tool_use/sparql/graph/tool_result）。
 // ラベル文言のみ「判定の文脈」に変更する。GraphView の描画ロジックは不変。
 

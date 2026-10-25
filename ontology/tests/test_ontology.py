@@ -141,6 +141,10 @@ def test_search_theft(kb: CriminalLawKB):
     assert cands
     assert cands[0].crime_id == "theft"
     assert cands[0].article == "235"
+    # 根拠語: 重複なく保持される
+    ms = cands[0].matched_surface
+    assert "盗まれた" in ms and "財布を盗まれた" in ms
+    assert len(ms) == len(set(ms))
 
 
 def test_search_assault_injury(kb: CriminalLawKB):

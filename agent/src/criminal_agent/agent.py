@@ -15,7 +15,6 @@ from strands.models import BedrockModel
 from .tools import (
     get_crime_detail,
     list_crime_categories,
-    resolve_concepts,
     search_crimes_by_text,
 )
 
@@ -33,6 +32,7 @@ SYSTEM_PROMPT = """\
 手順（必ずツールを使って根拠を得ること）:
 1. 相談文から事実関係を把握する。
 2. search_crimes_by_text で候補となる罪を取得する。
+   各候補の matched_surface は相談文中で該当の根拠となった語。理由の説明に用いる。
 3. 候補ごとに get_crime_detail で構成要件・法定刑・条文を確認する。
 4. 相談文の事実が各構成要件を満たすか（matched / missing）を評価する。
 5. 該当しうる罪があれば条文番号・法定刑・理由を提示する。
@@ -89,7 +89,6 @@ def build_agent(model_id: str | None = None) -> Agent:
         model=build_model(model_id),
         system_prompt=SYSTEM_PROMPT,
         tools=[
-            resolve_concepts,
             search_crimes_by_text,
             get_crime_detail,
             list_crime_categories,
@@ -112,7 +111,7 @@ def consult(text: str, model_id: str | None = None) -> ConsultationResult:
 # オントロジー層から実行SPARQLとサブグラフ(トリプル)を取得し、別イベントとして流す。
 
 # ツール名 → 可視化の種類
-_GRAPH_TOOLS = {"search_crimes_by_text", "resolve_concepts"}
+_SEARCH_TOOL = "search_crimes_by_text"
 _DETAIL_TOOL = "get_crime_detail"
 
 
@@ -122,7 +121,7 @@ def _trace_for_tool(tool_name: str, tool_input: dict) -> dict | None:
 
     kb = get_kb()
     try:
-        if tool_name in _GRAPH_TOOLS:
+        if tool_name == _SEARCH_TOOL:
             consultation = tool_input.get("consultation") or ""
             traced = kb.search_by_text_traced(consultation)
             return {

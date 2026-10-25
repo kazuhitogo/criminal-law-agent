@@ -2,7 +2,7 @@ import type { CrimeCandidate } from "../api";
 import { ConfidenceMeter } from "./ConfidenceMeter";
 import { ElementChecklist } from "./ElementChecklist";
 
-// 構成要件チェックカード（SPEC §6.5 / §6.6）。
+// 構成要件チェックカード（SPEC §6.2 / §6.3）。
 // 既存 candidate の全項目（crime_label / article / confidence / matched / missing /
 // penalty_text / reasoning）を保持し、見せ方のみ変更する。
 // カードクリックで②のライブビューの対応グラフ/SPARQL へスクロール（crime_id で対応）。

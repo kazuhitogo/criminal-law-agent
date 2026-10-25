@@ -14,7 +14,6 @@ from criminal_agent.agent import ConsultationResult, CrimeCandidateOut
 from criminal_agent.tools import (
     get_crime_detail,
     list_crime_categories,
-    resolve_concepts,
     search_crimes_by_text,
 )
 
@@ -22,16 +21,12 @@ from criminal_agent.tools import (
 # -------------------------------------------------------------------
 # ツール単体（実オントロジー）
 # -------------------------------------------------------------------
-def test_tool_resolve_concepts():
-    r = resolve_concepts("財布を盗まれた")
-    assert any(c["concept_id"] == "property-taking" for c in r)
-
-
 def test_tool_search_theft():
     r = search_crimes_by_text("財布を盗まれた")
     assert r
     assert r[0]["crime_id"] == "theft"
     assert r[0]["article"] == "235"
+    assert "盗まれた" in r[0]["matched_surface"]
 
 
 def test_tool_search_assault_injury():

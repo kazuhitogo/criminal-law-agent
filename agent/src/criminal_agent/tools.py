@@ -19,20 +19,6 @@ def get_kb() -> CriminalLawKB:
 
 
 @tool
-def resolve_concepts(consultation: str) -> list[dict]:
-    """相談文をセマンティックレイヤーで法律概念へ正規化する（表現ゆらぎを吸収）。
-
-    Args:
-        consultation: 利用者の相談文（日常語）。
-
-    Returns:
-        マッチした概念のリスト。各要素は concept_id / pref_label /
-        matched_surface / indicates_crimes / score を含む。
-    """
-    return get_kb().resolve_concepts(consultation)
-
-
-@tool
 def search_crimes_by_text(consultation: str) -> list[dict]:
     """相談文 → 概念 → 罪候補を解決して返す（概念経由の2段階検索）。
 
@@ -43,7 +29,8 @@ def search_crimes_by_text(consultation: str) -> list[dict]:
 
     Returns:
         罪候補のリスト。各要素は crime_id / label / article / category /
-        penalties / score / via_concepts を含む。スコア降順。
+        penalties / score / via_concepts / matched_surface を含む。スコア降順。
+        matched_surface は相談文中で辞書にマッチした語（判断根拠）。
     """
     cands = get_kb().search_by_text(consultation)
     return [
@@ -55,6 +42,7 @@ def search_crimes_by_text(consultation: str) -> list[dict]:
             "penalties": c.penalties,
             "score": round(c.score, 2),
             "via_concepts": c.via_concepts,
+            "matched_surface": c.matched_surface,
         }
         for c in cands
     ]

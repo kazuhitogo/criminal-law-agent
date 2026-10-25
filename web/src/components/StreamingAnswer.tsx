@@ -1,4 +1,4 @@
-// 本文ストリーミング（SPEC §6.5 / §6.6）。
+// 本文ストリーミング（SPEC §6.2 / §6.3）。
 // 表示内容（token 連結）は不変。見出しのみ「判定文の生成」に変更。
 
 export function StreamingAnswer({ text, streaming }: { text: string; streaming: boolean }) {

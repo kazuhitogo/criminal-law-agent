@@ -1,161 +1,67 @@
-# PLAN.md — 実装計画と進捗
+# PLAN.md — 履歴と今後
 
-詳細な仕様は [SPEC.md](./SPEC.md)、使い方は [README.md](./README.md) を参照。
-本書は「過去に何をしたか」「これから何をするか」の概要を記す。
-
-技術制約（必須）:
-- Python は **uv** で管理
-- Web は **TypeScript + React（Vite）**
-- エージェントは **Strands Agents SDK**
-- オントロジーは **RDF + RDFS + OWL**（rdflib + owlrl）、セマンティックレイヤー（SKOS）込み
-- LLM は **Amazon Bedrock Claude Haiku 5.5**
-  （既定モデル ID `global.anthropic.claude-haiku-5-5`, 環境変数で上書き可。temperature 非対応）
-- 認証・リージョン・モデル ID はすべて環境変数で与え、リポジトリに固定しない
+仕様は [SPEC.md](./SPEC.md)、使い方は [README.md](./README.md)。
+本書は「何をしたか / これから何をするか」と、その理由・経緯のみを記す。
 
 ---
 
-## これまでに実装したこと（完了）
+## 履歴
 
-実装順序はユーザー指定の「オントロジー → エージェント → Web UI」。全フェーズ完了済み。
+### 1. 初期構築（オントロジー → エージェント → Web UI）— 完了
+実装順はユーザー指定。下の層から積み上げ、各層をテストで固めてから次へ進めた。
 
-### フェーズ 1: オントロジー（`ontology/`）— 完了
-- uv プロジェクト。依存: rdflib / owlrl / pydantic / pyyaml（dev: pytest）
-- RDFS/OWL スキーマ `schema/schema.ttl`（クラス階層・プロパティ定義域/値域・
-  `owl:inverseOf` / `TransitiveProperty` / `disjointWith`）
-- 罪データ `data/crimes.yaml`（刑法第2編を章横断で **49 罪**収録、全 8 法益カテゴリ、
-  条文原文・構成要件・法定刑は拘禁刑 2025 施行を反映）
-- セマンティックレイヤー `data/semantics.yaml` + `semantics.py`（SKOS 概念 40 件、
-  日常語→法律概念の正規化、概念→罪マッピング）
-- pydantic モデル `models.py`、ビルダ `build.py`（YAML→Turtle）
-- 検索 API `query.py`（`resolve_concepts` / `search_by_text` / `get_crime` /
-  `list_categories`、owlrl による RDFS/OWL-RL 推論、SPARQL CONSTRUCT による
-  サブグラフ抽出 `crime_subgraph` / トレース付き検索 `search_by_text_traced`）
-- テスト **26 passed**。代表クエリで期待罪を確認
+- オントロジー: 刑法第2編を 49 罪、8 カテゴリで収録。セマンティックレイヤーの概念は 40 件
+  - RDF/RDFS/OWL を採用した理由
+    - 「構成要件 → 罪 → 法定刑」「罪 → 保護法益」は is-a / part-of 関係で素直に表せる
+    - 特別刑法・判例・民法へ拡張するとき、名前空間を分けてリンクしやすい
+    - SPARQL と推論があればツールの実装を薄くできる
+  - YAML → Turtle の二層構成にした理由: 人が編集しやすい形式と、推論できる形式を両立するため
+  - owlrl を加えた理由: rdflib 単体では RDFS/OWL の推論が自動で適用されないため
+  - セマンティックレイヤーを挟んだ理由
+    - 罪ごとにキーワードを増やすより、概念を介したほうが保守・再利用しやすい
+    - 「訴えたい感情」と「法が保護する利益」のずれを概念の単位で説明でき、「刑法上は該当しない」の根拠になる
+- エージェント: Strands + Bedrock Claude Haiku 5.5、FastAPI
+  - 当初のモデル ID `us.anthropic.claude-haiku-5-5-v1:0` を、リージョン非依存の `global.` プロファイルに変更
+  - 認証・リージョンは環境変数で与える方式にし、リポジトリに固定しない
+- SSE ストリーミング（`/consult/stream`）を追加
+  - 理由: AI の思考・ツール呼び出し・SPARQL・グラフを見せ、オントロジーに基づいて判断していることを示すため
+  - 可視化用のデータを LLM へのツール出力とは別にストリーム側で付けるのは、LLM の入力を軽く保つため
+- Web UI: Vite + React + TypeScript、`run.sh` で agent と web を一括起動。GitHub へ push 済み
 
-### フェーズ 2: エージェント（`agent/`）— 完了
-- uv プロジェクト。依存: strands-agents / strands-agents-tools / fastapi /
-  uvicorn / pydantic / boto3、ローカル依存として `ontology`（editable）
-- Strands ツール 4 種（`tools.py`、KB は `lru_cache` で一度だけロード）
-- エージェント定義（`agent.py`、`BedrockModel`、システムプロンプト、
-  構造化出力 `ConsultationResult`）
-- FastAPI（`api.py`）: `POST /consult`（構造化 JSON）、`GET /health`、CORS
-- **ストリーミング**: `POST /consult/stream`（SSE）。`consult_stream` が
-  思考(reasoning) / ツール呼び出し / 実行 SPARQL / ナレッジグラフ(トリプル) /
-  本文トークン / 最終結果 を逐次配信。LLM に渡すツール出力は軽量に保ち、
-  可視化データはストリーム側で別付与
-- テスト **17 passed**（ツール単体・トレース・SSE はモックで検証）
+### 2. Web UI リニューアル（判定体験）— 完了
+- 「相談フォーム + 結果カード」を「① 入力 → ② 判定ライブビュー → ③ 判定結果」の縦フローに再構成した
+- 追加したもの: ステップ点灯、確信度メーター、充足ゲージ、カード → グラフへの相互リンク
+- 理由: 「この出来事は犯罪にあたるのか」を判定する体験として見せるため
+- 制約: 表示する情報は一切増減させない（SPEC §6.3）。ontology / agent / API は変えず、見せ方だけを変えた
 
-### フェーズ 3: Web UI（`web/`）— 完了
-- Vite + React + TypeScript
-- 型付き API クライアント `api.ts`（`consult` / SSE `consultStream`）
-- コンポーネント: 入力フォーム / ローディング / 結果カード / 確信度バッジ /
-  AI 思考回路・実行ログ（`AgentTrace`）、ナレッジグラフ（`GraphView`、
-  SVG ノード・エッジ図）、本文ストリーミング（`StreamingAnswer`）
-- `npm run build`（tsc 型チェック）通過
+### 3. 法廷テーマ化 + 免責事項の撤去 — 完了
+- 紺 × ゴールド、明朝体の見出し、天秤のファビコン。理由: 判定の格式・緊張感を出すため
+- 免責事項（disclaimer）を API の応答と UI から撤去し、画面末尾の「自己責任」の注記 1 行に置き換えた
 
-### 運用・その他 — 完了
-- `run.sh`: agent と web を 1 コマンドで起動（Ctrl+C で一括停止、初回セットアップ冪等）
-- README 整備。GitHub（kazuhitogo/criminal-law-agent）へ push 済み
+### 4. 検索ツール整理 — 完了（未コミット）
+経緯: AGENT_INTERNALS.md（ツール解説）を書く過程で、ツール間に重複があると分かった。
 
----
-
-## これから実装すること（予定）: Web UI リニューアル
-
-目的: 現状の「相談フォーム + 結果カード一覧」を、**「この出来事は刑法上の
-犯罪にあたるのか」を判定する体験**へ再構成する。
-
-> **大前提（厳守）**: 表示する情報そのものは一切増減しない。既存 API が返す
-> 要素（要約 / 候補＝罪名・条番号・確信度・満たしうる構成要件・不足構成要件・
-> 法定刑・理由 / 該当なし判定、および思考・ツール・SPARQL・グラフ・
-> 本文ストリーム）を変えず、**見せ方・順序・インタラクションのみ**変更する。
-> 仕様は SPEC.md §6 を参照。
-
-対象は **フロントエンド（`web/`）のみ**。ontology / agent / API は変更しない。
-
-### フェーズ U1: 判定フレーム（骨格）
-- 画面を「① 事件の入力 → ② 判定ライブビュー → ③ 判定結果」の縦フローに再編
-- 送信後に入力ブロックを縮小し②へスクロール誘導
-- 判定ヘッダー用の派生状態を算出（no_crime / candidates 数から導出。新データなし）
-- 検証: `npm run build` 通過、表示情報が不変であること
-
-### フェーズ U2: 判定ライブビュー（ストリーミングの劇化）
-- `StepIndicator`（事実把握 → 候補抽出 → 構成要件照合 → 判定）を受信イベントで点灯
-- `AgentTrace` を判定文脈のラベルへ（文言のみ。GraphView 描画は不変）
-- `StreamingAnswer` を「判定文の生成」見出しに
-- 検証: end-to-end で実ストリーム、ステップ点灯とグラフ表示
-
-### フェーズ U3: 構成要件チェックカード + メーター
-- `ConfidenceMeter`（confidence を同値のままメーター表示）
-- `ElementChecklist`（matched=✓ / missing=？、件数比で充足ゲージ）
-- `CandidateCard` を再構成（罪名・条番号・法定刑・理由は保持、ラベル文言のみ変更）
-- `ResultView` に判定ヘッダー（成立しうる / あたらない）。no_crime 説明文は保持
-- 検証: 代表 4 シナリオで matched/missing・ゲージ・確信度が正しく出る
-
-### フェーズ U4: インタラクション & 仕上げ
-- 結果カード → ②の対応グラフ/SPARQL へのスクロール相互リンク（crime_id で対応）
-- メーター/ゲージ/ステップ/グラフノードのアニメーション（`prefers-reduced-motion` 尊重）
-- アクセシビリティ（`role="meter"`・aria・キーボード）とレスポンシブ
-- 検証: `npm run build`、情報不変の最終チェック（SPEC.md §6 の表と突合）
-
-### フェーズ U5: 視覚デザイン（法廷テーマ）— 完了
-仕様は SPEC.md §6.7。情報マッピング（§6.6）は不変のまま、配色・書体・象徴を刷新。
-- カラーを法廷テーマへ（羊皮紙地 / 紺の威厳 / ゴールドの格式）。旧・青（`#2563eb` 系）は
-  紺・ゴールドへ置換（`App.css` の CSS 変数と `focus` / `step-pulse` の rgba を統一）
-- 見出し（ヘッダー H1・ステージ見出し・罪名・verdict）を明朝体（`--serif`）に
-- ヘッダーを紺グラデ地 + ゴールド下罫 + 天秤クレスト（インライン SVG）に。
-  タイトル「刑法あてはめ**判定**」（「判定」ゴールド強調）
-- 判定ヘッダー（③）に左色帯 + グラデ + 浮き上がりアニメ。verdict 文言を
-  no_crime 時「罪に問うは難し」へ（導出のみ・新データなし）
-- ファビコンを天秤モチーフ（`web/public/favicon.svg`）に差し替え。
-  `index.html` に `theme-color #0f172a`、`title` を「刑法あてはめ判定 ⚖」
-- 対象は `web/` のみ（ontology / agent / API 不変）
-- 検証: `npm run build`（tsc 型チェック + vite 本番ビルド）通過
+- エージェントのツールから `resolve_concepts` を削除した（4 種 → 3 種）
+  - 理由: `search_crimes_by_text` が内部で同じ概念解決をしている。辞書の全 40 概念が罪に対応づいているため、概念だけヒットして罪が出ないケースもない。呼ばせても判断材料は増えず、LLM のターンが 1 つ増えるだけ
+  - オントロジー層の `KB.resolve_concepts` は残した。トレース付き検索（Web UI の可視化）と CLI が使っているため
+- `search_crimes_by_text` の候補に `matched_surface`（根拠語）を追加し、システムプロンプトで理由の説明に使うよう指示した
+  - 理由: 照合は部分一致なので、否定文などでも誤ってマッチする。当たった語を LLM に渡せば、根拠語と回答理由のずれを防げ、文脈上該当しないときに確信度を下げる判断ができる
+  - 渡さない場合、LLM は概念 ID しか受け取れず、根拠語を推測で書くことになる
+- 不要になったテスト（`resolve_concepts` ツールの単体テスト）を削除し、根拠語の検証を追加した。ontology 26 / agent 16 passed
+- 手順の逸脱: 本件は PLAN / SPEC を更新する前に実装してしまい、ドキュメントは後から追従させた
 
 ---
 
-## 検証・完了基準
-
-### 既存（維持）
-- `cd ontology && uv run pytest`（26 passed）
-- `cd agent && uv run pytest`（17 passed）
-- `cd web && npm run build`（tsc 通過）
-- `run.sh` で end-to-end 起動し、代表シナリオが動作:
-  - 財布を盗まれた → 窃盗罪（235 条）
-  - 隣人に殴られた → 暴行罪（208）/ 傷害罪（204）
-  - SNSで悪口を書かれた → 名誉毀損（230）/ 侮辱（231）
-  - 貸した金が返ってこない → 刑法上は該当なし（民事）
-
-### UI リニューアル（予定）
-- 表示される情報要素が SPEC.md §6 の情報マッピング表と完全一致（増減なし）
-- 判定ライブビューが段階表示され、ストリームイベントが進行ステップに対応して点灯
-- 罪ごとに構成要件の充足ゲージ（matched/missing 由来）と確信度メーターが表示
-- no_crime 時は判定ヘッダーで「あたらない可能性」が示され既存説明文が残る
-- ナレッジグラフは既存 SVG 図のまま。`prefers-reduced-motion` でアニメ無効化
-- 視覚デザインが法廷テーマ（SPEC.md §6.7）: 紺×ゴールド配色・明朝見出し・天秤ファビコン。
-  旧・青系の配色が残っていない。情報マッピング（§6.6）は不変
-- API（ontology / agent / エンドポイント）に変更がない（`git diff --stat` で確認）
+- Bedrock 実機確認（代表 4 シナリオ）: 済
+  - 財布を盗まれた / 隣人に殴られた / SNSで悪口を書かれた → reasoning が根拠語（「財布を盗まれた」「殴られた」「悪口」）を引用。プロンプト修正不要
+  - 貸した金が返ってこない → 候補なし、no_crime=true
+- SPEC の節番号追従: 済。SPEC 整理で節番号が変わった（旧 §6.5 / §6.6 → 新 §6.2 / §6.3）ため、`web/src/components/*.tsx` のコメントを直した
 
 ---
 
-## 環境・起動（詳細は README.md）
+## これから
 
-- 型チェック+ビルド: `cd web && npm run build`
-- dev 単体: `cd web && npm run dev -- --host 127.0.0.1 --port 5173`
-  （vite は既定 IPv6 バインドのため `--host 127.0.0.1` 指定で curl 疎通可）
-- end-to-end 一括: `AWS_PROFILE=<profile> ./run.sh`（agent=8099 / web=5173）
-  - AWS プロファイルが SSO の場合、期限切れ時は `aws sso login --profile <profile>`
-- SSE 実確認:
-  ```
-  curl -N -X POST http://127.0.0.1:8099/consult/stream \
-    -H "Content-Type: application/json" -d '{"text":"隣人に殴られた"}'
-  ```
-
-## リスク・留意点
-
-- **情報を増やさない制約**（UI リニューアル）: 新しい分析・スコア・文言の中身を
-  足さない。メーター/ゲージは既存の confidence / matched / missing から導出するに留める。
-- GraphView の描画ロジック（レイアウト・色・トリプル解釈）は変更しない。
-- API を変えないため、判定ヘッダーやステップはフロント側の導出で実現する。
-- Bedrock 認証: LLM 実行には AWS 認証が必要。未整備の環境ではビルド（tsc）/
-  ツール層までで検証し、実ストリーム目視はスキップして記録する。
-- 法的正確性: 本システムは情報提供であり助言ではない。条文・法定刑は一次情報に基づく。
+- ユーザーの許可を得て 4 をコミットする
+- 検討事項（未決）
+  - matched_surface が正規化後の小文字（例 `snsで悪口`）で返り、相談文の表記と一致しない。原文表記で返すか
+  - no_crime=true のとき、理由は summary にしか書かれず「なぜ刑法上該当しないか」の説明が薄い。出力スキーマかプロンプトで補うか

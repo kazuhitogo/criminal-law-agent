@@ -37,6 +37,8 @@ class CrimeCandidate:
     penalties: list[str] = field(default_factory=list)
     score: float = 0.0
     via_concepts: list[str] = field(default_factory=list)
+    # 相談文中でマッチした辞書の語（判断根拠。重複なし・出現順）
+    matched_surface: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -122,6 +124,9 @@ class CriminalLawKB:
                     agg[crime_id] = cand
                 cand.score += cm.score
                 cand.via_concepts.append(cm.concept_id)
+                for s in cm.matched_surface:
+                    if s not in cand.matched_surface:
+                        cand.matched_surface.append(s)
 
         return sorted(agg.values(), key=lambda c: c.score, reverse=True)
 
@@ -338,6 +343,7 @@ SELECT ?concept ?crime ?label WHERE {{
                     "penalties": c.penalties,
                     "score": round(c.score, 2),
                     "via_concepts": c.via_concepts,
+                    "matched_surface": c.matched_surface,
                 }
                 for c in cands
             ],

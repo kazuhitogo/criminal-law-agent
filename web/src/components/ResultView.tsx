@@ -1,7 +1,7 @@
 import type { ConsultationResult } from "../api";
 import { CandidateCard } from "./CandidateCard";
 
-// 判定結果ビュー（SPEC §6.5 / §6.6）。
+// 判定結果ビュー（SPEC §6.2 / §6.3）。
 // 判定ヘッダーは no_crime と candidates 数からフロント側で導出する（新データなし）。
 // onLocateCrime: 罪名から②のライブビューの対応グラフへスクロールする結線。
 //   引数の crime_label に一致する graph(crime_id) が無い場合は null を返し、
