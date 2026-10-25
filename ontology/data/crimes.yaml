@@ -2291,6 +2291,114 @@ crimes:
         note: 6月以上10年以下の拘禁刑
     statute_text: "次に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、わいせつな行為をした者は、婚姻関係の有無にかかわらず、六月以上十年以下の拘禁刑に処する。\n一　暴行若しくは脅迫を用いること又はそれらを受けたこと。\n二　心身の障害を生じさせること又はそれがあること。\n三　アルコール若しくは薬物を摂取させること又はそれらの影響があること。\n四　睡眠その他の意識が明瞭でない状態にさせること又はその状態にあること。\n五　同意しない意思を形成し、表明し又は全うするいとまがないこと。\n六　予想と異なる事態に直面させて恐怖させ、若しくは驚愕させること又はその事態に直面して恐怖し、若しくは驚愕していること。\n七　虐待に起因する心理的反応を生じさせること又はそれがあること。\n八　経済的又は社会的関係上の地位に基づく影響力によって受ける不利益を憂慮させること又はそれを憂慮していること。\n２　行為がわいせつなものではないとの誤信をさせ、若しくは行為をする者について人違いをさせ、又はそれらの誤信若しくは人違いをしていることに乗じて、わいせつな行為をした者も、前項と同様とする。\n３　十六歳未満の者に対し、わいせつな行為をした者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）も、第一項と同様とする。"
 
+  - id: guardian-indecency
+    label: 監護者わいせつ及び監護者性交等罪
+    article: "179"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 性的自由・性的自己決定権
+    elements:
+      - type: object
+        desc: 18歳未満の者
+        keywords: [18歳未満, 子ども, 娘, 息子]
+      - type: circumstance
+        desc: 現に監護する者であることによる影響力があることに乗じる
+        keywords: [親, 父親, 継父, 養父, 監護者]
+      - type: conduct
+        desc: （1項）わいせつな行為をする
+        keywords: [性的虐待, 体を触る]
+      - type: conduct
+        desc: （2項）性交等をする
+        keywords: [性的虐待, 性交]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 120
+        unit: month
+        note: （1項）第百七十六条第一項の例による（6月以上10年以下の拘禁刑）
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: （2項）第百七十七条第一項の例による（5年以上の有期拘禁刑）
+    statute_text: "十八歳未満の者に対し、その者を現に監護する者であることによる影響力があることに乗じてわいせつな行為をした者は、第百七十六条第一項の例による。\n２　十八歳未満の者に対し、その者を現に監護する者であることによる影響力があることに乗じて性交等をした者は、第百七十七条第一項の例による。"
+    related_to: [non-consensual-indecency, non-consensual-sexual-intercourse]
+
+  - id: sexual-offense-causing-death-injury
+    label: 不同意わいせつ等致死傷罪
+    article: "181"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 性的自由・人の生命身体
+    elements:
+      - type: conduct
+        desc: （1項）不同意わいせつ罪（176条）・監護者わいせつ罪（179条1項）又はこれらの未遂罪を犯す
+        keywords: [わいせつ, 痴漢, 性被害]
+      - type: conduct
+        desc: （2項）不同意性交等罪（177条）・監護者性交等罪（179条2項）又はこれらの未遂罪を犯す
+        keywords: [性的暴行, レイプ]
+      - type: result
+        desc: よって人を死傷させる
+        keywords: [怪我, 死亡, 死傷]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: （1項）無期又は3年以上の拘禁刑
+      - type: imprisonment
+        min: 6
+        max: null
+        unit: year
+        note: （2項）無期又は6年以上の拘禁刑
+    statute_text: "第百七十六条若しくは第百七十九条第一項の罪又はこれらの罪の未遂罪を犯し、よって人を死傷させた者は、無期又は三年以上の拘禁刑に処する。\n２　第百七十七条若しくは第百七十九条第二項の罪又はこれらの罪の未遂罪を犯し、よって人を死傷させた者は、無期又は六年以上の拘禁刑に処する。"
+    related_to: [non-consensual-indecency, non-consensual-sexual-intercourse, guardian-indecency]
+
+  - id: meeting-request-to-child
+    label: 十六歳未満の者に対する面会要求等罪
+    article: "182"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 16歳未満の者の性的自由・健全な発達
+    elements:
+      - type: object
+        desc: 16歳未満の者（13歳以上16歳未満の場合は5歳以上年長の者による行為に限る）
+        keywords: [16歳未満, 中学生, 小学生, 子ども]
+      - type: conduct
+        desc: （1項）威迫・偽計・誘惑して、拒まれても反復して、又は金銭等の利益の供与・申込み・約束をして面会を要求する
+        keywords: [会おうと誘う, しつこく会おう, お金をあげるから会おう]
+      - type: conduct
+        desc: （2項）前項の罪を犯し、よってわいせつの目的で面会する
+        keywords: [実際に会った]
+      - type: conduct
+        desc: （3項）性交等をする姿態、性的な部位を露出した姿態等をとってその映像を送信するよう要求する
+        keywords: [裸の写真を送れ, 裸の画像を要求, 自撮りを送れ]
+      - type: intent
+        desc: わいせつの目的（1項・2項）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: （1項・3項）1年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: （1項・3項）50万円以下の罰金
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: （2項・面会）2年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: （2項・面会）100万円以下の罰金
+    statute_text: "わいせつの目的で、十六歳未満の者に対し、次の各号に掲げるいずれかの行為をした者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）は、一年以下の拘禁刑又は五十万円以下の罰金に処する。\n一　威迫し、偽計を用い又は誘惑して面会を要求すること。\n二　拒まれたにもかかわらず、反復して面会を要求すること。\n三　金銭その他の利益を供与し、又はその申込み若しくは約束をして面会を要求すること。\n２　前項の罪を犯し、よってわいせつの目的で当該十六歳未満の者と面会をした者は、二年以下の拘禁刑又は百万円以下の罰金に処する。\n３　十六歳未満の者に対し、次の各号に掲げるいずれかの行為（第二号に掲げる行為については、当該行為をさせることがわいせつなものであるものに限る。）を要求した者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）は、一年以下の拘禁刑又は五十万円以下の罰金に処する。\n一　性交、肛門性交又は口腔性交をする姿態をとってその映像を送信すること。\n二　前号に掲げるもののほか、膣又は肛門に身体の一部（陰茎を除く。）又は物を挿入し又は挿入される姿態、性的な部位（性器若しくは肛門若しくはこれらの周辺部、臀部又は胸部をいう。以下この号において同じ。）を触り又は触られる姿態、性的な部位を露出した姿態その他の姿態をとってその映像を送信すること。"
+    related_to: [non-consensual-indecency, non-consensual-sexual-intercourse]
+
   - id: solicitation-of-lewdness
     label: 淫行勧誘罪
     article: "183"
@@ -2818,6 +2926,50 @@ crimes:
         note: 死刑又は無期若しくは5年以上の拘禁刑
     statute_text: "人を殺した者は、死刑又は無期若しくは五年以上の拘禁刑に処する。"
 
+  - id: homicide-preparation
+    label: 殺人予備罪
+    article: "201"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命
+    elements:
+      - type: conduct
+        desc: 殺人の予備（凶器・毒物の準備等）をする
+        keywords: [殺害の準備, 凶器を用意, 毒を用意]
+      - type: intent
+        desc: 殺人罪（199条）を犯す目的
+        keywords: [殺すつもり]
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑（情状により刑を免除できる）
+    statute_text: "第百九十九条の罪を犯す目的で、その予備をした者は、二年以下の拘禁刑に処する。ただし、情状により、その刑を免除することができる。"
+    related_to: [homicide]
+
+  - id: suicide-involvement
+    label: 自殺関与及び同意殺人罪
+    article: "202"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命
+    elements:
+      - type: conduct
+        desc: 人を教唆し若しくは幇助して自殺させる（自殺教唆・自殺幇助）
+        keywords: [自殺をそそのかす, 自殺を手伝う, 自殺幇助]
+      - type: conduct
+        desc: 人の嘱託を受け若しくは承諾を得て殺す（嘱託殺人・承諾殺人）
+        keywords: [頼まれて殺す, 嘱託殺人, 同意殺人]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: 6月以上7年以下の拘禁刑
+    statute_text: "人を教唆し若しくは幇助して自殺させ、又は人をその嘱託を受け若しくはその承諾を得て殺した者は、六月以上七年以下の拘禁刑に処する。"
+    related_to: [homicide]
+
   # --- 第27章 傷害の罪 (204-208の2) ---
   - id: injury
     label: 傷害罪
@@ -2872,6 +3024,33 @@ crimes:
         note: 3年以上の有期拘禁刑
     statute_text: "身体を傷害し、よって人を死亡させた者は、三年以上の有期拘禁刑に処する。"
 
+  - id: abetting-at-scene
+    label: 現場助勢罪
+    article: "206"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の身体・生命
+    elements:
+      - type: circumstance
+        desc: 傷害罪・傷害致死罪（204条・205条）の犯罪が行われている現場
+        keywords: [喧嘩の現場, けんか]
+      - type: conduct
+        desc: 現場において勢いを助ける（はやし立てる等。自ら傷害しなくても成立）
+        keywords: [はやし立てる, 煽る, 野次を飛ばす]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金若しくは科料
+    statute_text: "前二条の犯罪が行われるに当たり、現場において勢いを助けた者は、自ら人を傷害しなくても、一年以下の拘禁刑又は十万円以下の罰金若しくは科料に処する。"
+    related_to: [injury, injury-causing-death]
+
   - id: assault
     label: 暴行罪
     article: "208"
@@ -2896,7 +3075,66 @@ crimes:
     statute_text: "暴行を加えた者が人を傷害するに至らなかったときは、二年以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
     related_to: [injury]
 
+  - id: dangerous-weapon-assembly
+    label: 凶器準備集合及び結集罪
+    article: "208の2"
+    category: CrimeAgainstLifeBody
+    legal_interest: 個人の生命・身体・財産・公共の平穏
+    elements:
+      - type: circumstance
+        desc: 2人以上の者が他人の生命・身体・財産に対し共同して害を加える目的で集合した場合
+        keywords: [集団, 抗争, 襲撃]
+      - type: conduct
+        desc: （1項・凶器準備集合）凶器を準備して又はその準備があることを知って集合する
+        keywords: [凶器を持って集まる, 鉄パイプ, 木刀, 金属バット]
+      - type: conduct
+        desc: （2項・凶器準備結集）凶器を準備して又はその準備があることを知って人を集合させる
+        keywords: [人を集める, 招集]
+      - type: intent
+        desc: 共同加害の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: （1項）2年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: （1項）30万円以下の罰金
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: （2項・結集）3年以下の拘禁刑
+    statute_text: "二人以上の者が他人の生命、身体又は財産に対し共同して害を加える目的で集合した場合において、凶器を準備して又はその準備があることを知って集合した者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。\n２　前項の場合において、凶器を準備して又はその準備があることを知って人を集合させた者は、三年以下の拘禁刑に処する。"
+    related_to: [injury, assault]
+
   # --- 第28章 過失傷害の罪 (209-211) ---
+  - id: negligent-injury
+    label: 過失傷害罪
+    article: "209"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の身体
+    elements:
+      - type: conduct
+        desc: 過失により人を傷害する
+        keywords: [不注意, うっかり, ぶつかって怪我]
+      - type: result
+        desc: 傷害
+        keywords: [怪我, けが, 負傷]
+      - type: circumstance
+        desc: （2項）告訴がなければ公訴を提起できない
+        keywords: [告訴]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金又は科料
+    statute_text: "過失により人を傷害した者は、三十万円以下の罰金又は科料に処する。\n２　前項の罪は、告訴がなければ公訴を提起することができない。"
+    related_to: [negligent-homicide, professional-negligence]
   - id: negligent-homicide
     label: 過失致死罪
     article: "210"
@@ -2919,6 +3157,36 @@ crimes:
         note: 50万円以下の罰金
     statute_text: "過失により人を死亡させた者は、五十万円以下の罰金に処する。"
 
+  - id: professional-negligence
+    label: 業務上過失致死傷等罪
+    article: "211"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命・身体
+    elements:
+      - type: conduct
+        desc: 業務上必要な注意を怠り、人を死傷させる（業務上過失致死傷）
+        keywords: [業務上過失, 医療ミス, 作業中の事故]
+      - type: conduct
+        desc: 重大な過失により人を死傷させる（重過失致死傷）
+        keywords: [重過失, 重大な過失, 自転車事故]
+      - type: result
+        desc: 人の死傷
+        keywords: [死亡, 怪我, 負傷]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: 100万円以下の罰金
+    statute_text: "業務上必要な注意を怠り、よって人を死傷させた者は、五年以下の拘禁刑又は百万円以下の罰金に処する。重大な過失により人を死傷させた者も、同様とする。"
+    related_to: [negligent-injury, negligent-homicide]
+
   # --- 第29章 堕胎の罪 (212-216) ---
   - id: self-abortion
     label: 堕胎罪
@@ -2938,6 +3206,111 @@ crimes:
         unit: year
         note: 1年以下の拘禁刑
     statute_text: "妊娠中の女子が薬物を用い、又はその他の方法により、堕胎したときは、一年以下の拘禁刑に処する。"
+
+  - id: consensual-abortion
+    label: 同意堕胎及び同致死傷罪
+    article: "213"
+    category: CrimeAgainstLifeBody
+    legal_interest: 胎児の生命・母体
+    elements:
+      - type: conduct
+        desc: 女子の嘱託を受け、又はその承諾を得て堕胎させる
+        keywords: [堕胎させる, 中絶させる]
+      - type: result
+        desc: （後段）よって女子を死傷させる
+        keywords: [死傷, 死亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: （致死傷）3月以上5年以下の拘禁刑
+    statute_text: "女子の嘱託を受け、又はその承諾を得て堕胎させた者は、二年以下の拘禁刑に処する。よって女子を死傷させた者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [self-abortion, professional-abortion]
+
+  - id: professional-abortion
+    label: 業務上堕胎及び同致死傷罪
+    article: "214"
+    category: CrimeAgainstLifeBody
+    legal_interest: 胎児の生命・母体
+    elements:
+      - type: object
+        desc: 行為者が医師・助産師・薬剤師・医薬品販売業者
+        keywords: [医師, 助産師, 薬剤師]
+      - type: conduct
+        desc: 女子の嘱託を受け、又はその承諾を得て堕胎させる
+        keywords: [堕胎させる, 中絶させる]
+      - type: result
+        desc: （後段）よって女子を死傷させる
+        keywords: [死傷, 死亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: （致死傷）6月以上7年以下の拘禁刑
+    statute_text: "医師、助産師、薬剤師又は医薬品販売業者が女子の嘱託を受け、又はその承諾を得て堕胎させたときは、三月以上五年以下の拘禁刑に処する。よって女子を死傷させたときは、六月以上七年以下の拘禁刑に処する。"
+    related_to: [consensual-abortion]
+
+  - id: non-consensual-abortion
+    label: 不同意堕胎罪
+    article: "215"
+    category: CrimeAgainstLifeBody
+    legal_interest: 胎児の生命・母体
+    elements:
+      - type: conduct
+        desc: 女子の嘱託を受けないで、又はその承諾を得ないで堕胎させる
+        keywords: [無理やり中絶, 勝手に中絶, 流産させる]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: 6月以上7年以下の拘禁刑
+    statute_text: "女子の嘱託を受けないで、又はその承諾を得ないで堕胎させた者は、六月以上七年以下の拘禁刑に処する。\n２　前項の罪の未遂は、罰する。"
+    related_to: [consensual-abortion]
+
+  - id: non-consensual-abortion-causing-death-injury
+    label: 不同意堕胎致死傷罪
+    article: "216"
+    category: CrimeAgainstLifeBody
+    legal_interest: 胎児の生命・母体
+    elements:
+      - type: conduct
+        desc: 不同意堕胎罪（215条）を犯す
+        keywords: [無理やり中絶]
+      - type: result
+        desc: よって女子を死傷させる
+        keywords: [死傷, 死亡, 怪我]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 傷害の罪と比較して、重い刑により処断する
+    statute_text: "前条の罪を犯し、よって女子を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [non-consensual-abortion, injury, injury-causing-death]
 
   # --- 第30章 遺棄の罪 (217-219) ---
   - id: abandonment
@@ -2962,6 +3335,57 @@ crimes:
         note: 1年以下の拘禁刑
     statute_text: "老年、幼年、身体障害又は疾病のために扶助を必要とする者を遺棄した者は、一年以下の拘禁刑に処する。"
 
+  - id: abandonment-by-guardian
+    label: 保護責任者遺棄等罪
+    article: "218"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命・身体の安全
+    elements:
+      - type: object
+        desc: 老年者・幼年者・身体障害者・病者
+        keywords: [子ども, 乳児, 高齢者, 病人]
+      - type: circumstance
+        desc: これらの者を保護する責任のある者（親・介護者等）
+        keywords: [親, 保護者, 介護者]
+      - type: conduct
+        desc: 遺棄し、又はその生存に必要な保護をしない（不保護）
+        keywords: [育児放棄, ネグレクト, 食事を与えない, 車内に放置]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "老年者、幼年者、身体障害者又は病者を保護する責任のある者がこれらの者を遺棄し、又はその生存に必要な保護をしなかったときは、三月以上五年以下の拘禁刑に処する。"
+    related_to: [abandonment]
+
+  - id: abandonment-causing-death-injury
+    label: 遺棄等致死傷罪
+    article: "219"
+    category: CrimeAgainstLifeBody
+    legal_interest: 人の生命・身体
+    elements:
+      - type: conduct
+        desc: 遺棄罪（217条）又は保護責任者遺棄等罪（218条）を犯す
+        keywords: [置き去り, 放置, 育児放棄]
+      - type: result
+        desc: よって人を死傷させる
+        keywords: [死亡, 衰弱, 怪我]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 傷害の罪と比較して、重い刑により処断する
+    statute_text: "前二条の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [abandonment, abandonment-by-guardian, injury, injury-causing-death]
+
   # --- 第31章 逮捕及び監禁の罪 (220-221) ---
   - id: unlawful-capture-confinement
     label: 逮捕監禁罪
@@ -2985,6 +3409,30 @@ crimes:
         unit: month
         note: 3月以上7年以下の拘禁刑
     statute_text: "不法に人を逮捕し、又は監禁した者は、三月以上七年以下の拘禁刑に処する。"
+
+  - id: confinement-causing-death-injury
+    label: 逮捕等致死傷罪
+    article: "221"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の身体活動の自由・生命身体
+    elements:
+      - type: conduct
+        desc: 逮捕監禁罪（220条）を犯す
+        keywords: [監禁, 閉じ込める, 拘束]
+      - type: result
+        desc: よって人を死傷させる
+        keywords: [死亡, 怪我, 衰弱]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 傷害の罪と比較して、重い刑により処断する
+    statute_text: "前条の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [unlawful-capture-confinement, injury, injury-causing-death]
 
   # --- 第32章 脅迫の罪 (222-223) ---
   - id: intimidation
@@ -3060,6 +3508,206 @@ crimes:
         unit: month
         note: 3月以上7年以下の拘禁刑
     statute_text: "未成年者を略取し、又は誘拐した者は、三月以上七年以下の拘禁刑に処する。"
+
+  - id: kidnapping-for-profit
+    label: 営利目的等略取誘拐罪
+    article: "225"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者の自由・安全
+    elements:
+      - type: object
+        desc: 人（成年・未成年を問わない）
+        keywords: [連れ去り, 拉致, さらわれた]
+      - type: conduct
+        desc: 略取し又は誘拐する
+        keywords: [誘拐, 略取, 連れ去る]
+      - type: intent
+        desc: 営利・わいせつ・結婚又は生命若しくは身体に対する加害の目的
+        keywords: [営利目的, わいせつ目的, 結婚目的]
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "営利、わいせつ、結婚又は生命若しくは身体に対する加害の目的で、人を略取し、又は誘拐した者は、一年以上十年以下の拘禁刑に処する。"
+    related_to: [kidnapping-minor]
+
+  - id: kidnapping-for-ransom
+    label: 身の代金目的略取等罪
+    article: "225の2"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者の自由・安全・近親者等の財産
+    elements:
+      - type: conduct
+        desc: （1項）安否を憂慮する者の憂慮に乗じて財物を交付させる目的で、人を略取し又は誘拐する
+        keywords: [身代金目的の誘拐]
+      - type: conduct
+        desc: （2項）人を略取・誘拐した者が、安否を憂慮する者の憂慮に乗じて財物を交付させ、又は要求する
+        keywords: [身代金を要求, 身代金]
+      - type: intent
+        desc: 身の代金を交付させる目的（1項）・故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 無期又は3年以上の拘禁刑
+    statute_text: "近親者その他略取され又は誘拐された者の安否を憂慮する者の憂慮に乗じてその財物を交付させる目的で、人を略取し、又は誘拐した者は、無期又は三年以上の拘禁刑に処する。\n２　人を略取し又は誘拐した者が近親者その他略取され又は誘拐された者の安否を憂慮する者の憂慮に乗じて、その財物を交付させ、又はこれを要求する行為をしたときも、前項と同様とする。"
+    related_to: [kidnapping-minor, kidnapping-for-profit, ransom-kidnapping-preparation]
+
+  - id: kidnapping-for-transport-abroad
+    label: 所在国外移送目的略取誘拐罪
+    article: "226"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者の自由・安全
+    elements:
+      - type: conduct
+        desc: 人を略取し又は誘拐する
+        keywords: [連れ去り, 誘拐]
+      - type: intent
+        desc: 所在国外に移送する目的
+        keywords: [海外に連れ去る, 国外に連れ出す]
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+    statute_text: "所在国外に移送する目的で、人を略取し、又は誘拐した者は、二年以上の有期拘禁刑に処する。"
+    related_to: [kidnapping-minor, transporting-kidnapped-abroad]
+
+  - id: human-trafficking
+    label: 人身売買罪
+    article: "226の2"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被売買者の自由・安全
+    elements:
+      - type: conduct
+        desc: （1項）人を買い受ける
+        keywords: [人身売買, 人を買う]
+      - type: object
+        desc: （2項）未成年者を買い受ける
+        keywords: [未成年者, 子ども]
+      - type: conduct
+        desc: （3項）営利・わいせつ・結婚・生命身体加害の目的で人を買い受ける（4項）人を売り渡す
+        keywords: [売り飛ばす, 人を売る]
+      - type: conduct
+        desc: （5項）所在国外に移送する目的で人を売買する
+        keywords: [海外に売る]
+      - type: intent
+        desc: 故意（3項・5項は各目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: （1項）3月以上5年以下の拘禁刑
+      - type: imprisonment
+        min: 3
+        max: 84
+        unit: month
+        note: （2項・未成年者）3月以上7年以下の拘禁刑
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: （3項・4項）1年以上10年以下の拘禁刑
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: （5項・国外移送目的）2年以上の有期拘禁刑
+    statute_text: "人を買い受けた者は、三月以上五年以下の拘禁刑に処する。\n２　未成年者を買い受けた者は、三月以上七年以下の拘禁刑に処する。\n３　営利、わいせつ、結婚又は生命若しくは身体に対する加害の目的で、人を買い受けた者は、一年以上十年以下の拘禁刑に処する。\n４　人を売り渡した者も、前項と同様とする。\n５　所在国外に移送する目的で、人を売買した者は、二年以上の有期拘禁刑に処する。"
+    related_to: [kidnapping-for-profit, kidnapping-for-transport-abroad]
+
+  - id: transporting-kidnapped-abroad
+    label: 被略取者等所在国外移送罪
+    article: "226の3"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者等の自由・安全
+    elements:
+      - type: object
+        desc: 略取され、誘拐され、又は売買された者
+        keywords: [誘拐された人, 売られた人]
+      - type: conduct
+        desc: 所在国外に移送する
+        keywords: [海外に連れ出す, 国外に移送]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+    statute_text: "略取され、誘拐され、又は売買された者を所在国外に移送した者は、二年以上の有期拘禁刑に処する。"
+    related_to: [kidnapping-for-transport-abroad, human-trafficking]
+
+  - id: delivering-kidnapped-person
+    label: 被略取者引渡し等罪
+    article: "227"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者等の自由・安全
+    elements:
+      - type: object
+        desc: 略取され、誘拐され、又は売買された者
+        keywords: [誘拐された人, 連れ去られた子ども]
+      - type: conduct
+        desc: 引き渡し、収受し、輸送し、蔵匿し、又は隠避させる
+        keywords: [匿う, 引き渡す, 運ぶ, 受け取る]
+      - type: intent
+        desc: （1項・2項）略取誘拐等の犯人を幇助する目的（3項）営利・わいせつ・生命身体加害の目的（4項）身の代金目的
+        keywords: []
+      - type: conduct
+        desc: （4項後段）収受した者が、安否を憂慮する者の憂慮に乗じて財物を交付させ、又は要求する
+        keywords: [身代金]
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: （1項）3月以上5年以下の拘禁刑
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: （2項）1年以上10年以下の拘禁刑
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: （3項）6月以上7年以下の拘禁刑
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: （4項）2年以上の有期拘禁刑
+    statute_text: "第二百二十四条、第二百二十五条又は前三条の罪を犯した者を幇助する目的で、略取され、誘拐され、又は売買された者を引き渡し、収受し、輸送し、蔵匿し、又は隠避させた者は、三月以上五年以下の拘禁刑に処する。\n２　第二百二十五条の二第一項の罪を犯した者を幇助する目的で、略取され又は誘拐された者を引き渡し、収受し、輸送し、蔵匿し、又は隠避させた者は、一年以上十年以下の拘禁刑に処する。\n３　営利、わいせつ又は生命若しくは身体に対する加害の目的で、略取され、誘拐され、又は売買された者を引き渡し、収受し、輸送し、又は蔵匿した者は、六月以上七年以下の拘禁刑に処する。\n４　第二百二十五条の二第一項の目的で、略取され又は誘拐された者を収受した者は、二年以上の有期拘禁刑に処する。略取され又は誘拐された者を収受した者が近親者その他略取され又は誘拐された者の安否を憂慮する者の憂慮に乗じて、その財物を交付させ、又はこれを要求する行為をしたときも、同様とする。"
+    related_to: [kidnapping-minor, kidnapping-for-profit, kidnapping-for-ransom, human-trafficking]
+
+  - id: ransom-kidnapping-preparation
+    label: 身の代金目的略取等予備罪
+    article: "228の3"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 被拐取者の自由・安全
+    elements:
+      - type: conduct
+        desc: 身の代金目的略取等の予備（下見・道具や隠れ家の準備等）をする
+        keywords: [誘拐の準備, 誘拐を計画]
+      - type: intent
+        desc: 身の代金目的略取等罪（225条の2第1項）を犯す目的
+        keywords: [身代金目的]
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑（実行の着手前に自首したときは減軽又は免除）
+    statute_text: "第二百二十五条の二第一項の罪を犯す目的で、その予備をした者は、二年以下の拘禁刑に処する。ただし、実行に着手する前に自首した者は、その刑を減軽し、又は免除する。"
+    related_to: [kidnapping-for-ransom]
 
   # --- 第34章 名誉に対する罪 (230-232) ---
   - id: defamation
@@ -3168,6 +3816,36 @@ crimes:
     statute_text: "威力を用いて人の業務を妨害した者も、前条の例による。"
     related_to: [defamation-of-credit]
 
+  - id: computer-obstruction-of-business
+    label: 電子計算機損壊等業務妨害罪
+    article: "234の2"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 人の業務
+    elements:
+      - type: object
+        desc: 人の業務に使用する電子計算機・その用に供する電磁的記録
+        keywords: [サーバー, 会社のシステム, パソコン]
+      - type: conduct
+        desc: 電子計算機・電磁的記録を損壊し、虚偽の情報・不正な指令を与え、又はその他の方法で、使用目的に沿う動作をさせず又は反する動作をさせる
+        keywords: [サイバー攻撃, DDoS攻撃, データを消去, システムを停止]
+      - type: result
+        desc: 人の業務を妨害する
+        keywords: [業務妨害, 業務が止まった]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: 100万円以下の罰金
+    statute_text: "人の業務に使用する電子計算機若しくはその用に供する電磁的記録を損壊し、若しくは人の業務に使用する電子計算機に虚偽の情報若しくは不正な指令を与え、又はその他の方法により、電子計算機に使用目的に沿うべき動作をさせず、又は使用目的に反する動作をさせて、人の業務を妨害した者は、五年以下の拘禁刑又は百万円以下の罰金に処する。\n２　前項の罪の未遂は、罰する。"
+    related_to: [defamation-of-credit, forcible-obstruction-of-business]
+
   # --- 第36章 窃盗及び強盗の罪 (235-245) ---
   - id: theft
     label: 窃盗罪
@@ -3196,6 +3874,29 @@ crimes:
     statute_text: "他人の財物を窃取した者は、窃盗の罪とし、十年以下の拘禁刑又は五十万円以下の罰金に処する。"
     related_to: [robbery]
 
+  - id: real-estate-usurpation
+    label: 不動産侵奪罪
+    article: "235の2"
+    category: CrimeAgainstProperty
+    legal_interest: 不動産の占有
+    elements:
+      - type: object
+        desc: 他人の不動産（土地・建物）
+        keywords: [土地, 空き地, 建物]
+      - type: conduct
+        desc: 侵奪する（占有者の意思に反して不動産の占有を排除し、自己の占有を設定する）
+        keywords: [勝手に建物を建てる, 土地を占拠, 不法占拠]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "他人の不動産を侵奪した者は、十年以下の拘禁刑に処する。"
+    related_to: [theft]
+
   - id: robbery
     label: 強盗罪
     article: "236"
@@ -3223,6 +3924,139 @@ crimes:
     statute_text: "暴行又は脅迫を用いて他人の財物を強取した者は、強盗の罪とし、五年以上の有期拘禁刑に処する。\n２　前項の方法により、財産上不法の利益を得、又は他人にこれを得させた者も、同項と同様とする。"
     related_to: [theft]
 
+  - id: robbery-preparation
+    label: 強盗予備罪
+    article: "237"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・人の身体の安全
+    elements:
+      - type: conduct
+        desc: 強盗の予備（凶器の準備・下見等）をする
+        keywords: [強盗の準備, 強盗の計画, 下見]
+      - type: intent
+        desc: 強盗の罪を犯す目的
+        keywords: [強盗するつもり]
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+    statute_text: "強盗の罪を犯す目的で、その予備をした者は、二年以下の拘禁刑に処する。"
+    related_to: [robbery]
+
+  - id: constructive-robbery
+    label: 事後強盗罪
+    article: "238"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・人の身体の安全
+    elements:
+      - type: object
+        desc: 窃盗（窃盗の既遂犯・未遂犯）
+        keywords: [万引き, 窃盗, 泥棒]
+      - type: conduct
+        desc: 暴行又は脅迫をする
+        keywords: [殴る, 突き飛ばす, 脅す]
+      - type: intent
+        desc: 財物を取り返されることを防ぎ、逮捕を免れ、又は罪跡を隠滅する目的
+        keywords: [逃げるため, 捕まらないように, 取り返されないように]
+    penalties:
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 強盗として論ずる（5年以上の有期拘禁刑）
+    statute_text: "窃盗が、財物を得てこれを取り返されることを防ぎ、逮捕を免れ、又は罪跡を隠滅するために、暴行又は脅迫をしたときは、強盗として論ずる。"
+    related_to: [theft, robbery]
+
+  - id: robbery-by-stupefaction
+    label: 昏酔強盗罪
+    article: "239"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・人の身体の安全
+    elements:
+      - type: conduct
+        desc: 人を昏酔させる（睡眠薬・酒等で意識作用に障害を生じさせる）
+        keywords: [睡眠薬, 薬を盛る, 酔わせる]
+      - type: conduct
+        desc: その財物を盗取する
+        keywords: [盗む, 奪う]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 強盗として論ずる（5年以上の有期拘禁刑）
+    statute_text: "人を昏酔させてその財物を盗取した者は、強盗として論ずる。"
+    related_to: [robbery, theft]
+
+  - id: robbery-causing-death-injury
+    label: 強盗致死傷罪
+    article: "240"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・人の生命身体
+    elements:
+      - type: object
+        desc: 強盗（強盗罪・事後強盗罪・昏酔強盗罪の既遂犯・未遂犯）
+        keywords: [強盗]
+      - type: result
+        desc: 人を負傷させ（強盗致傷・強盗傷人）、又は死亡させる（強盗致死・強盗殺人）
+        keywords: [怪我, 負傷, 死亡, 刺された]
+      - type: intent
+        desc: 強盗の故意（死傷結果の故意は問わない）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: null
+        unit: year
+        note: 負傷させたときは無期又は6年以上の拘禁刑
+      - type: death
+        note: 死亡させたときは死刑又は無期拘禁刑
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 死亡させたときは死刑又は無期拘禁刑
+    statute_text: "強盗が、人を負傷させたときは無期又は六年以上の拘禁刑に処し、死亡させたときは死刑又は無期拘禁刑に処する。"
+    related_to: [robbery, constructive-robbery, robbery-by-stupefaction]
+
+  - id: robbery-and-sexual-intercourse
+    label: 強盗・不同意性交等及び同致死罪
+    article: "241"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・性的自由・人の生命身体
+    elements:
+      - type: conduct
+        desc: （1項）強盗の罪（未遂を含む）と不同意性交等罪（177条。未遂を含む）をともに犯す（先後を問わない）
+        keywords: [強盗, 性的暴行, レイプ]
+      - type: circumstance
+        desc: （2項）いずれも未遂のときは、人を死傷させたときを除き刑を減軽できる。自己の意思で中止したときは減軽又は免除
+        keywords: []
+      - type: result
+        desc: （3項）1項の罪に当たる行為により人を死亡させる
+        keywords: [死亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 7
+        max: null
+        unit: year
+        note: 無期又は7年以上の拘禁刑
+      - type: death
+        note: （3項・致死）死刑又は無期拘禁刑
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: （3項・致死）死刑又は無期拘禁刑
+    statute_text: "強盗の罪若しくはその未遂罪を犯した者が第百七十七条の罪若しくはその未遂罪をも犯したとき、又は同条の罪若しくはその未遂罪を犯した者が強盗の罪若しくはその未遂罪をも犯したときは、無期又は七年以上の拘禁刑に処する。\n２　前項の場合のうち、その犯した罪がいずれも未遂罪であるときは、人を死傷させたときを除き、その刑を減軽することができる。ただし、自己の意思によりいずれかの犯罪を中止したときは、その刑を減軽し、又は免除する。\n３　第一項の罪に当たる行為により人を死亡させた者は、死刑又は無期拘禁刑に処する。"
+    related_to: [robbery, non-consensual-sexual-intercourse]
+
   # --- 第37章 詐欺及び恐喝の罪 (246-251) ---
   - id: fraud
     label: 詐欺罪
@@ -3249,6 +4083,52 @@ crimes:
         note: 10年以下の拘禁刑
     statute_text: "人を欺いて財物を交付させた者は、十年以下の拘禁刑に処する。\n２　前項の方法により、財産上不法の利益を得、又は他人にこれを得させた者も、同項と同様とする。"
     related_to: [extortion]
+
+  - id: computer-fraud
+    label: 電子計算機使用詐欺罪
+    article: "246の2"
+    category: CrimeAgainstProperty
+    legal_interest: 財産
+    elements:
+      - type: conduct
+        desc: 人の事務処理に使用する電子計算機に虚偽の情報・不正な指令を与えて財産権の得喪・変更に係る不実の電磁的記録を作り、又は虚偽の電磁的記録を人の事務処理の用に供する
+        keywords: [不正送金, ネットバンキング, 不正にチャージ, 他人のID]
+      - type: result
+        desc: 財産上不法の利益を得、又は他人に得させる
+        keywords: [送金, 残高]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "前条に規定するもののほか、人の事務処理に使用する電子計算機に虚偽の情報若しくは不正な指令を与えて財産権の得喪若しくは変更に係る不実の電磁的記録を作り、又は財産権の得喪若しくは変更に係る虚偽の電磁的記録を人の事務処理の用に供して、財産上不法の利益を得、又は他人にこれを得させた者は、十年以下の拘禁刑に処する。"
+    related_to: [fraud]
+
+  - id: quasi-fraud
+    label: 準詐欺罪
+    article: "248"
+    category: CrimeAgainstProperty
+    legal_interest: 財産
+    elements:
+      - type: circumstance
+        desc: 未成年者の知慮浅薄又は人の心神耗弱に乗じる
+        keywords: [認知症, 判断能力, 未成年者]
+      - type: conduct
+        desc: 財物を交付させ、又は財産上不法の利益を得、若しくは他人に得させる
+        keywords: [お金を出させる, 契約させる]
+      - type: intent
+        desc: 故意 + 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "未成年者の知慮浅薄又は人の心神耗弱に乗じて、その財物を交付させ、又は財産上不法の利益を得、若しくは他人にこれを得させた者は、十年以下の拘禁刑に処する。"
+    related_to: [fraud]
 
   - id: extortion
     label: 恐喝罪
@@ -3296,6 +4176,59 @@ crimes:
         note: 5年以下の拘禁刑
     statute_text: "自己の占有する他人の物を横領した者は、五年以下の拘禁刑に処する。\n２　自己の物であっても、公務所から保管を命ぜられた場合において、これを横領した者も、前項と同様とする。"
     related_to: [breach-of-trust]
+
+  - id: professional-embezzlement
+    label: 業務上横領罪
+    article: "253"
+    category: CrimeAgainstProperty
+    legal_interest: 財産・委託信任関係
+    elements:
+      - type: object
+        desc: 業務上自己の占有する他人の物
+        keywords: [会社の金, 売上金, 預かり金, 会費]
+      - type: circumstance
+        desc: 業務（社会生活上の地位に基づき反復継続して行う事務）として占有していること
+        keywords: [経理, 業務上]
+      - type: conduct
+        desc: 横領する
+        keywords: [横領, 着服, 使い込み]
+      - type: intent
+        desc: 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: 10年以下の拘禁刑
+    statute_text: "業務上自己の占有する他人の物を横領した者は、十年以下の拘禁刑に処する。"
+    related_to: [embezzlement]
+
+  - id: embezzlement-of-lost-property
+    label: 遺失物等横領罪
+    article: "254"
+    category: CrimeAgainstProperty
+    legal_interest: 財産（所有権）
+    elements:
+      - type: object
+        desc: 遺失物・漂流物その他占有を離れた他人の物
+        keywords: [落とし物, 拾った, 忘れ物, 放置自転車]
+      - type: conduct
+        desc: 横領する（自分の物にする）
+        keywords: [ネコババ, 持ち帰る, 届けない]
+      - type: intent
+        desc: 不法領得の意思
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金若しくは科料
+    statute_text: "遺失物、漂流物その他占有を離れた他人の物を横領した者は、一年以下の拘禁刑又は十万円以下の罰金若しくは科料に処する。"
+    related_to: [embezzlement, theft]
 
   - id: breach-of-trust
     label: 背任罪
@@ -3359,6 +4292,87 @@ crimes:
     statute_text: "盗品その他財産に対する罪に当たる行為によって領得された物を無償で譲り受けた者は、三年以下の拘禁刑に処する。\n２　前項に規定する物を運搬し、保管し、若しくは有償で譲り受け、又はその有償の処分のあっせんをした者は、十年以下の拘禁刑及び五十万円以下の罰金に処する。"
 
   # --- 第40章 毀棄及び隠匿の罪 (258-264) ---
+  - id: damaging-official-document
+    label: 公用文書等毀棄罪
+    article: "258"
+    category: CrimeAgainstProperty
+    legal_interest: 公務所の文書・電磁的記録の効用
+    elements:
+      - type: object
+        desc: 公務所の用に供する文書又は電磁的記録
+        keywords: [公文書, 役所の書類, 調書]
+      - type: conduct
+        desc: 毀棄する（破る・隠す・消去する等、効用を害する一切の行為）
+        keywords: [破る, 捨てる, 消去]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 84
+        unit: month
+        note: 3月以上7年以下の拘禁刑
+    statute_text: "公務所の用に供する文書又は電磁的記録を毀棄した者は、三月以上七年以下の拘禁刑に処する。"
+    related_to: [damaging-private-document]
+
+  - id: damaging-private-document
+    label: 私用文書等毀棄罪
+    article: "259"
+    category: CrimeAgainstProperty
+    legal_interest: 権利義務に関する文書・電磁的記録の効用
+    elements:
+      - type: object
+        desc: 権利又は義務に関する他人の文書又は電磁的記録
+        keywords: [契約書, 借用書, 証書]
+      - type: conduct
+        desc: 毀棄する
+        keywords: [破る, 捨てる, 燃やす, 消去]
+      - type: circumstance
+        desc: 告訴がなければ公訴を提起できない（264条）
+        keywords: [告訴]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+    statute_text: "権利又は義務に関する他人の文書又は電磁的記録を毀棄した者は、五年以下の拘禁刑に処する。"
+    related_to: [damaging-official-document, property-damage]
+
+  - id: damaging-building
+    label: 建造物等損壊及び同致死傷罪
+    article: "260"
+    category: CrimeAgainstProperty
+    legal_interest: 財産（建造物・艦船の効用）
+    elements:
+      - type: object
+        desc: 他人の建造物又は艦船
+        keywords: [家, 建物, 壁, 船]
+      - type: conduct
+        desc: 損壊する
+        keywords: [壊す, 損壊, 破壊]
+      - type: result
+        desc: （後段・致死傷）よって人を死傷させる
+        keywords: [死傷]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: （致死傷）傷害の罪と比較して、重い刑により処断する
+    statute_text: "他人の建造物又は艦船を損壊した者は、五年以下の拘禁刑に処する。よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [property-damage]
+
   - id: property-damage
     label: 器物損壊罪
     article: "261"
@@ -3384,6 +4398,98 @@ crimes:
         unit: yen
         note: 30万円以下の罰金又は科料
     statute_text: "前三条に規定するもののほか、他人の物を損壊し、又は傷害した者は、三年以下の拘禁刑又は三十万円以下の罰金若しくは科料に処する。"
+
+  - id: damaging-own-property
+    label: 自己の物の損壊等罪
+    article: "262"
+    category: CrimeAgainstProperty
+    legal_interest: 財産（差押え・物権・賃借権等）
+    elements:
+      - type: object
+        desc: 自己の物で、差押えを受け、物権を負担し、賃貸し、又は配偶者居住権が設定されたもの
+        keywords: [差し押さえられた物, 担保, 賃貸している物]
+      - type: conduct
+        desc: 損壊し、又は傷害する
+        keywords: [壊す, 損壊]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 前三条の例による（文書等：259条の例で5年以下の拘禁刑）
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 前三条の例による（建造物・艦船：260条の例で5年以下の拘禁刑）
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 前三条の例による（その他の物：261条の例で3年以下の拘禁刑）
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 前三条の例による（その他の物：261条の例で30万円以下の罰金若しくは科料）
+    statute_text: "自己の物であっても、差押えを受け、物権を負担し、賃貸し、又は配偶者居住権が設定されたものを損壊し、又は傷害したときは、前三条の例による。"
+    related_to: [damaging-private-document, damaging-building, property-damage]
+
+  - id: boundary-damage
+    label: 境界損壊罪
+    article: "262の2"
+    category: CrimeAgainstProperty
+    legal_interest: 土地の権利関係の明確性
+    elements:
+      - type: object
+        desc: 境界標（杭・石・ブロック等）・土地の境界
+        keywords: [境界標, 境界杭, 境界]
+      - type: conduct
+        desc: 境界標を損壊・移動・除去し、又はその他の方法で土地の境界を認識できないようにする
+        keywords: [杭を抜く, 杭を動かす, 境界を移動]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "境界標を損壊し、移動し、若しくは除去し、又はその他の方法により、土地の境界を認識することができないようにした者は、五年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [property-damage]
+
+  - id: concealing-letters
+    label: 信書隠匿罪
+    article: "263"
+    category: CrimeAgainstProperty
+    legal_interest: 信書の効用
+    elements:
+      - type: object
+        desc: 他人の信書
+        keywords: [手紙, 郵便物, はがき]
+      - type: conduct
+        desc: 隠匿する
+        keywords: [隠す, 渡さない]
+      - type: circumstance
+        desc: 告訴がなければ公訴を提起できない（264条）
+        keywords: [告訴]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 6
+        unit: month
+        note: 6月以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金若しくは科料
+    statute_text: "他人の信書を隠匿した者は、六月以下の拘禁刑又は十万円以下の罰金若しくは科料に処する。"
+    related_to: [opening-letters, property-damage]
 
   # --- 第12章 住居を侵す罪 (130-132) ---
   - id: breaking-into-residence
@@ -3438,6 +4544,36 @@ crimes:
         unit: yen
         note: 20万円以下の罰金
     statute_text: "正当な理由がないのに、封をしてある信書を開けた者は、一年以下の拘禁刑又は二十万円以下の罰金に処する。"
+
+  - id: disclosure-of-secrets
+    label: 秘密漏示罪
+    article: "134"
+    category: CrimeAgainstFreedomHonor
+    legal_interest: 個人の秘密
+    elements:
+      - type: object
+        desc: 医師・薬剤師・医薬品販売業者・助産師・弁護士・弁護人・公証人又はこれらの職にあった者（2項：宗教・祈祷・祭祀の職にある者又はあった者）
+        keywords: [医師, 薬剤師, 助産師, 弁護士, 公証人, 僧侶, 牧師]
+      - type: conduct
+        desc: 正当な理由なく、業務上取り扱ったことについて知り得た人の秘密を漏らす
+        keywords: [秘密を漏らす, 守秘義務違反, 病歴を話す]
+      - type: circumstance
+        desc: 告訴がなければ公訴を提起できない（135条）
+        keywords: [告訴]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 6
+        unit: month
+        note: 6月以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金
+    statute_text: "医師、薬剤師、医薬品販売業者、助産師、弁護士、弁護人、公証人又はこれらの職にあった者が、正当な理由がないのに、その業務上取り扱ったことについて知り得た人の秘密を漏らしたときは、六月以下の拘禁刑又は十万円以下の罰金に処する。\n２　宗教、祈祷若しくは祭祀の職にある者又はこれらの職にあった者が、正当な理由がないのに、その業務上取り扱ったことについて知り得た人の秘密を漏らしたときも、前項と同様とする。"
+    related_to: [opening-letters]
 
   # --- 第11章 往来を妨害する罪 (124-129) ---
   - id: obstruction-of-traffic

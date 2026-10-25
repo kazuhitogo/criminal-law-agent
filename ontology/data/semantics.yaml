@@ -25,16 +25,73 @@ concepts:
     alt_labels: [事故で死なせた, うっかり死なせた, 不注意, 過失致死]
     indicates_crimes: [negligent-homicide]
 
+  - id: negligent-injury-concept
+    pref_label: 過失による傷害
+    alt_labels: [過失で怪我, 不注意で怪我, うっかり怪我, 誤って怪我, 過失傷害, ぶつかって怪我]
+    broader: bodily-harm
+    indicates_crimes: [negligent-injury]
+
+  - id: professional-negligence-concept
+    pref_label: 業務上過失・重過失による死傷
+    alt_labels: [業務上過失, 医療ミス, 医療過誤, 手術ミス, 作業中の事故, 工事中の事故, 重過失, 重大な過失, 安全管理を怠]
+    indicates_crimes: [professional-negligence]
+
+  - id: bicycle-accident
+    pref_label: 自転車事故による死傷
+    alt_labels: [自転車でぶつか, 自転車事故, 自転車にぶつけられ, 自転車にはねられ, 自転車と衝突]
+    broader: professional-negligence-concept
+    indicates_crimes: [professional-negligence, negligent-injury, negligent-homicide]
+
+  - id: homicide-preparation-concept
+    pref_label: 殺人の予備
+    alt_labels: [殺害の準備, 殺す準備, 殺人の準備, 殺害を計画, 殺すために, 殺すための]
+    broader: killing
+    indicates_crimes: [homicide-preparation]
+
+  - id: suicide-involvement-concept
+    pref_label: 自殺関与・同意殺人
+    alt_labels: [自殺を手伝, 自殺の手伝い, 自殺幇助, 自殺をそそのか, 自殺を教唆, 嘱託殺人, 同意殺人, 承諾殺人, 頼まれて殺, 殺してほしいと頼まれ, 安楽死させ]
+    broader: killing
+    indicates_crimes: [suicide-involvement]
+
+  - id: scene-abetting
+    pref_label: 傷害の現場での助勢
+    alt_labels: [はやし立て, 囃し立て, 喧嘩を煽, 喧嘩をあお, けんかを煽, けんかをあお, もっとやれ]
+    broader: bodily-harm
+    indicates_crimes: [abetting-at-scene]
+
+  - id: weapon-assembly-concept
+    pref_label: 凶器準備集合・結集
+    alt_labels: [凶器準備集合, 凶器を持って集, 凶器を準備して集, 武器を持って集, 鉄パイプを持って集, 木刀を持って集, 金属バットを持って集]
+    indicates_crimes: [dangerous-weapon-assembly]
+
+  - id: abortion-concept
+    pref_label: 堕胎
+    alt_labels: [堕胎, 闇中絶, ヤミ中絶, 違法な中絶, 自分で中絶]
+    indicates_crimes: [self-abortion, consensual-abortion, professional-abortion]
+
+  - id: non-consensual-abortion-concept
+    pref_label: 不同意堕胎
+    alt_labels: [無理やり中絶, 勝手に中絶, 中絶させられ, 中絶薬を飲ませ, 中絶薬を盛, 流産させ]
+    broader: abortion-concept
+    indicates_crimes: [non-consensual-abortion, non-consensual-abortion-causing-death-injury]
+
   - id: abandonment-concept
     pref_label: 要扶助者の遺棄
     alt_labels: [置き去り, 見捨てられた, 放置された]
-    indicates_crimes: [abandonment]
+    indicates_crimes: [abandonment, abandonment-by-guardian]
+
+  - id: neglect-concept
+    pref_label: 保護責任者による遺棄・不保護
+    alt_labels: [育児放棄, ネグレクト, 食事を与えな, 食事を与えず, ご飯を与えな, ご飯を与えず, 車内に放置, 車に放置, 介護放棄, 子どもを放置, 子供を放置, 放置して死, 衰弱死]
+    broader: abandonment-concept
+    indicates_crimes: [abandonment-by-guardian, abandonment-causing-death-injury]
 
   # --- 自由 ---
   - id: confinement
     pref_label: 身体活動の自由の侵害
     alt_labels: [監禁, 閉じ込められた, 拘束, 縛られた, 軟禁]
-    indicates_crimes: [unlawful-capture-confinement]
+    indicates_crimes: [unlawful-capture-confinement, confinement-causing-death-injury]
 
   - id: threat-of-harm
     pref_label: 害悪の告知
@@ -51,10 +108,63 @@ concepts:
     alt_labels: [誘拐, 連れ去り, 略取, 子供が連れ去られた]
     indicates_crimes: [kidnapping-minor]
 
+  - id: adult-kidnapping
+    pref_label: 営利・わいせつ・結婚・加害目的の略取誘拐
+    alt_labels: [拉致, さらわれ, 人さらい, 連れ去られ, 無理やり車に乗せ]
+    broader: kidnapping
+    indicates_crimes: [kidnapping-for-profit, kidnapping-minor]
+
+  - id: ransom-concept
+    pref_label: 身の代金目的の略取誘拐
+    alt_labels: [身代金, 身の代金]
+    broader: kidnapping
+    indicates_crimes: [kidnapping-for-ransom, ransom-kidnapping-preparation, delivering-kidnapped-person]
+
+  - id: kidnapping-preparation
+    pref_label: 誘拐の予備
+    alt_labels: [誘拐の準備, 誘拐を計画, 誘拐の計画, 誘拐の下見]
+    broader: kidnapping
+    indicates_crimes: [ransom-kidnapping-preparation]
+
+  - id: transport-abroad
+    pref_label: 所在国外への移送
+    alt_labels: [海外に連れ去, 国外に連れ去, 外国に連れ去, 海外へ連れ去, 海外に連れて行かれ, 国外に連れ出, 国外に移送]
+    broader: kidnapping
+    indicates_crimes: [kidnapping-for-transport-abroad, transporting-kidnapped-abroad]
+
+  - id: human-trafficking-concept
+    pref_label: 人身売買
+    alt_labels: [人身売買, 人身取引, 人を買い受け, 人を売り渡, 子供を売, 子どもを売, 女性を売り, 人を売り飛ば]
+    indicates_crimes: [human-trafficking, delivering-kidnapped-person]
+
+  - id: kidnapped-person-handling
+    pref_label: 被略取者等の引渡し・蔵匿
+    alt_labels: [誘拐された人を匿, 誘拐された子を匿, 誘拐を手伝, 誘拐の手伝い, 誘拐犯を手伝, 連れ去られた子を匿]
+    broader: kidnapping
+    indicates_crimes: [delivering-kidnapped-person]
+
   - id: sexual-violence
     pref_label: 性的自由の侵害
     alt_labels: [性的暴行, レイプ, 性被害, 無理やり, 痴漢, 体を触られた]
     indicates_crimes: [non-consensual-sexual-intercourse, non-consensual-indecency]
+
+  - id: guardian-sexual-abuse
+    pref_label: 監護者による性的行為
+    alt_labels: [親から性的, 父親から性的, 父から性的, 母親から性的, 継父から性的, 養父から性的, 義父から性的, 母の交際相手から性的, 母親の交際相手から性的, 監護者わいせつ, 監護者性交, 性的虐待]
+    broader: sexual-violence
+    indicates_crimes: [guardian-indecency]
+
+  - id: sexual-violence-injury
+    pref_label: 性犯罪による死傷
+    alt_labels: [レイプされて怪我, 性的暴行で怪我, 性的暴行を受けて怪我, 押し倒されて怪我]
+    broader: sexual-violence
+    indicates_crimes: [sexual-offense-causing-death-injury]
+
+  - id: child-grooming
+    pref_label: 16歳未満の者への面会要求・映像送信要求
+    alt_labels: [16歳未満, 十六歳未満, 中学生に会おう, 小学生に会おう, 中学生の娘に会おう, 裸の写真を送れ, 裸の画像を送れ, 裸の写真を要求, 裸の画像を要求, 裸の自撮り, 性的な画像を要求, 性的な写真を要求, グルーミング]
+    broader: sexual-violence
+    indicates_crimes: [meeting-request-to-child]
 
   - id: intrusion
     pref_label: 住居の平穏の侵害
@@ -65,6 +175,12 @@ concepts:
     pref_label: 秘密の侵害
     alt_labels: [手紙を勝手に開けられた, 信書開封, 郵便を開けられた]
     indicates_crimes: [opening-letters]
+
+  - id: secret-disclosure
+    pref_label: 業務上知り得た秘密の漏示
+    alt_labels: [守秘義務違反, 秘密を漏らさ, 秘密をばら, 秘密を漏らした, 病歴をばら, 病歴を漏ら, 病気をばら, カルテを漏ら, 診療内容を漏ら, 相談内容を漏ら, 相談内容をばら, 懺悔の内容]
+    broader: secret-violation
+    indicates_crimes: [disclosure-of-secrets]
 
   # --- 名誉・信用・業務 ---
   - id: reputation-harm
@@ -83,6 +199,12 @@ concepts:
     alt_labels: [業務妨害, 営業妨害, 信用毀損, 嘘の噂で商売を邪魔された]
     indicates_crimes: [defamation-of-credit, forcible-obstruction-of-business]
 
+  - id: computer-business-obstruction
+    pref_label: 電子計算機の損壊等による業務妨害
+    alt_labels: [DDoS, サイバー攻撃, サーバー攻撃, サーバーを攻撃, サーバーをダウン, サイトをダウン, システムを停止させ, システムを止められ, システムを壊, 会社のシステム, 業務用のパソコン, 会社のパソコンを, データを消され, データを削除され, ホームページを改ざん, サイトを改ざん]
+    broader: business-obstruction
+    indicates_crimes: [computer-obstruction-of-business]
+
   # --- 財産 ---
   - id: property-taking
     pref_label: 財物の窃取
@@ -95,10 +217,57 @@ concepts:
     broader: property-taking
     indicates_crimes: [robbery]
 
+  - id: robbery-preparation-concept
+    pref_label: 強盗の予備
+    alt_labels: [強盗の準備, 強盗を計画, 強盗の計画, 強盗するつもり, 強盗しようと, 強盗の下見]
+    broader: robbery-concept
+    indicates_crimes: [robbery-preparation]
+
+  - id: constructive-robbery-concept
+    pref_label: 事後強盗
+    alt_labels: [事後強盗, 万引きを見つか, 万引きがばれ, 万引き犯に殴, 万引き犯に突き飛ば, 泥棒に殴, 泥棒に突き飛ば, 取り返そうとしたら, 捕まえようとしたら, 逃げるために殴, 逃げようとして殴, 追いかけたら殴]
+    broader: robbery-concept
+    indicates_crimes: [constructive-robbery]
+
+  - id: stupefaction-robbery
+    pref_label: 昏酔強盗
+    alt_labels: [昏酔強盗, 睡眠薬を飲ませ, 睡眠薬を飲まされ, 睡眠薬を盛, 睡眠薬を入れ, 薬を盛られ, 酒に薬, 眠らされ, 酔い潰され, 酔いつぶされ]
+    broader: robbery-concept
+    indicates_crimes: [robbery-by-stupefaction]
+
+  - id: robbery-injury
+    pref_label: 強盗による死傷
+    alt_labels: [強盗致傷, 強盗致死, 強盗殺人, 強盗傷人, 強盗に怪我, 強盗に刺され, 強盗に殴られ, 強盗に襲われて怪我, ひったくりで怪我, ひったくられて転倒, ひったくられて怪我]
+    broader: robbery-concept
+    indicates_crimes: [robbery-causing-death-injury]
+
+  - id: robbery-sexual
+    pref_label: 強盗と不同意性交等
+    alt_labels: [強盗にレイプ, 強盗に性的暴行, 強盗強姦, 強盗・不同意性交, 強盗不同意性交]
+    broader: robbery-concept
+    indicates_crimes: [robbery-and-sexual-intercourse]
+
+  - id: real-estate-usurpation-concept
+    pref_label: 不動産の侵奪
+    alt_labels: [不動産侵奪, 土地を勝手に, 土地を占拠, 土地を不法占拠, 他人の土地に勝手, 勝手に家を建て, 勝手に建物を建て, 勝手に小屋を建て, 空き地を勝手に, 空き家に住み着]
+    indicates_crimes: [real-estate-usurpation]
+
   - id: deception
     pref_label: 欺罔による財産取得
     alt_labels: [詐欺, 騙され, だまされ, だまし取られた, 振り込め, 架空請求]
     indicates_crimes: [fraud]
+
+  - id: computer-fraud-concept
+    pref_label: 電子計算機使用詐欺
+    alt_labels: [電子計算機使用詐欺, 不正送金, 勝手に送金され, 勝手に送金し, 不正にチャージ, 勝手にチャージ, ネットバンキングで不正, 他人のIDで, 他人のアカウントで, アカウントを乗っ取られて, 盗んだカード番号で]
+    broader: deception
+    indicates_crimes: [computer-fraud]
+
+  - id: quasi-fraud-concept
+    pref_label: 判断能力の弱さに乗じた財産取得
+    alt_labels: [準詐欺, 認知症の母, 認知症の父, 認知症の祖母, 認知症の祖父, 認知症に付け込, 認知症につけこ, 判断能力が, 知慮浅薄, 心神耗弱]
+    broader: deception
+    indicates_crimes: [quasi-fraud]
 
   - id: extortion-concept
     pref_label: 恐喝による財産取得
@@ -110,6 +279,18 @@ concepts:
     pref_label: 委託物の横領
     alt_labels: [横領, 着服, 使い込み, ネコババ, 預けた金が返らない]
     indicates_crimes: [embezzlement]
+
+  - id: professional-embezzlement-concept
+    pref_label: 業務上の横領
+    alt_labels: [業務上横領, 会社の金を, 会社のお金を, 店の売上金, 売上金を着服, 売上を着服, 会費を着服, 集金した金, 経理担当者が, 経理担当が]
+    broader: embezzlement-concept
+    indicates_crimes: [professional-embezzlement]
+
+  - id: lost-property-concept
+    pref_label: 遺失物・占有離脱物の横領
+    alt_labels: [遺失物横領, 占有離脱物, 拾った財布, 拾ったお金, 拾った物, 拾ったスマホ, 落とし物を, 落とした財布, 落とした物, 置き忘れ, 忘れ物を持ち, 放置自転車]
+    broader: embezzlement-concept
+    indicates_crimes: [embezzlement-of-lost-property]
 
   - id: breach-of-trust-concept
     pref_label: 任務違背による損害
@@ -125,6 +306,41 @@ concepts:
     pref_label: 物の損壊
     alt_labels: [器物損壊, 壊された, 破損, 傷つけられた, 落書き, 割られた]
     indicates_crimes: [property-damage]
+
+  - id: building-damage
+    pref_label: 建造物・艦船の損壊
+    alt_labels: [家を壊, 建物を壊, 壁を壊, 壁に穴, ドアを壊, 玄関を壊, 窓ガラスを割, 店のシャッター, 建造物損壊, 船を壊]
+    broader: property-destruction
+    indicates_crimes: [damaging-building, property-damage]
+
+  - id: document-destruction
+    pref_label: 文書・電磁的記録の毀棄
+    alt_labels: [書類を破, 書類を捨て, 書類を燃や, 契約書を破, 契約書を捨て, 借用書を破, 借用書を捨て, 証書を破, 遺言書を破, 遺言書を捨て, 文書を破棄, 文書を毀棄, 文書毀棄]
+    broader: property-destruction
+    indicates_crimes: [damaging-private-document]
+
+  - id: official-document-destruction
+    pref_label: 公用文書等の毀棄
+    alt_labels: [公文書を破, 公文書を捨て, 役所の書類を破, 役所の書類を捨て, 調書を破, 公用文書, 役所のデータを消]
+    broader: document-destruction
+    indicates_crimes: [damaging-official-document]
+
+  - id: own-property-damage
+    pref_label: 差押え等を受けた自己の物の損壊
+    alt_labels: [自分の物でも, 差し押さえられた物を壊, 差押えられた物を壊, 担保に入っている, 貸している家を壊, 賃貸中の家を壊]
+    broader: property-destruction
+    indicates_crimes: [damaging-own-property]
+
+  - id: boundary-concept
+    pref_label: 境界の損壊
+    alt_labels: [境界標, 境界杭, 境界石, 境界ブロック, 境界の杭, 杭を抜, 杭を動か, 境界を移動, 境界が分からな, 境界損壊]
+    indicates_crimes: [boundary-damage]
+
+  - id: letter-concealment
+    pref_label: 信書の隠匿
+    alt_labels: [手紙を隠, 郵便物を隠, 手紙を捨てられ, 郵便物を捨て, 信書隠匿, 郵便物を渡さな, 手紙を渡さな]
+    broader: property-destruction
+    indicates_crimes: [concealing-letters]
 
   # --- 社会的法益 ---
   # 公共の安全: 放火・失火（第9章）
