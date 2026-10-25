@@ -668,6 +668,36 @@ crimes:
         note: 付和随行した者は10万円以下の罰金
     statute_text: "多衆で集合して暴行又は脅迫をした者は、騒乱の罪とし、次の区別に従って処断する。\n一　首謀者は、一年以上十年以下の拘禁刑に処する。\n二　他人を指揮し、又は他人に率先して勢いを助けた者は、六月以上七年以下の拘禁刑に処する。\n三　付和随行した者は、十万円以下の罰金に処する。"
 
+  - id: failure-to-disperse
+    label: 多衆不解散罪
+    article: "107"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の平穏
+    elements:
+      - type: circumstance
+        desc: 暴行又は脅迫をするため多衆が集合した場合
+        keywords: [多衆, 集団, 群衆]
+      - type: circumstance
+        desc: 権限のある公務員から解散の命令を3回以上受けた
+        keywords: [解散命令]
+      - type: conduct
+        desc: なお解散しない
+        keywords: [解散しない, 居座る]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 首謀者は3年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: その他の者は10万円以下の罰金
+    statute_text: "暴行又は脅迫をするため多衆が集合した場合において、権限のある公務員から解散の命令を三回以上受けたにもかかわらず、なお解散しなかったときは、首謀者は三年以下の拘禁刑に処し、その他の者は十万円以下の罰金に処する。"
+    related_to: [riot]
+
   # --- 第9章 放火及び失火の罪 (108-118) ---
   - id: arson-inhabited
     label: 現住建造物等放火罪
@@ -693,6 +723,512 @@ crimes:
         unit: year
         note: 死刑又は無期若しくは5年以上の拘禁刑
     statute_text: "放火して、現に人が住居に使用し又は現に人がいる建造物、汽車、電車、艦船又は鉱坑を焼損した者は、死刑又は無期若しくは五年以上の拘禁刑に処する。"
+
+  - id: arson-uninhabited
+    label: 非現住建造物等放火罪
+    article: "109"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 現に人が住居に使用せず、かつ、現に人がいない建造物・艦船・鉱坑
+        keywords: [空き家, 倉庫, 小屋, 物置, 空きビル]
+      - type: conduct
+        desc: 放火して焼損する
+        keywords: [放火, 火をつける, 燃やす]
+      - type: circumstance
+        desc: （2項）自己の所有に係る物の場合は、公共の危険を生じさせたときに限り罰する
+        keywords: [自分の家, 公共の危険]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: （2項・自己所有）6月以上7年以下の拘禁刑。公共の危険を生じなかったときは罰しない
+    statute_text: "放火して、現に人が住居に使用せず、かつ、現に人がいない建造物、艦船又は鉱坑を焼損した者は、二年以上の有期拘禁刑に処する。\n２　前項の物が自己の所有に係るときは、六月以上七年以下の拘禁刑に処する。ただし、公共の危険を生じなかったときは、罰しない。"
+    related_to: [arson-inhabited]
+
+  - id: arson-other-property
+    label: 建造物等以外放火罪
+    article: "110"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 108条・109条に規定する物以外の物（自動車・ゴミ集積所の物等）
+        keywords: [車, バイク, ゴミ, 自転車]
+      - type: conduct
+        desc: 放火して焼損する
+        keywords: [放火, 火をつける, 燃やす]
+      - type: result
+        desc: よって公共の危険を生じさせる
+        keywords: [公共の危険, 燃え広がる]
+      - type: circumstance
+        desc: （2項）自己の所有に係る物の場合
+        keywords: [自分の物]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: （2項・自己所有）1年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: （2項・自己所有）10万円以下の罰金
+    statute_text: "放火して、前二条に規定する物以外の物を焼損し、よって公共の危険を生じさせた者は、一年以上十年以下の拘禁刑に処する。\n２　前項の物が自己の所有に係るときは、一年以下の拘禁刑又は十万円以下の罰金に処する。"
+    related_to: [arson-inhabited, arson-uninhabited]
+
+  - id: spread-of-fire
+    label: 延焼罪
+    article: "111"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: conduct
+        desc: 自己所有の非現住建造物等放火（109条2項）又は自己所有の建造物等以外放火（110条2項）の罪を犯す
+        keywords: [自分の物に放火]
+      - type: result
+        desc: よって108条・109条1項の物に延焼させる（2項：110条2項の罪により同条1項の物に延焼させる）
+        keywords: [延焼, 燃え移った, 隣の家に燃え移った]
+      - type: intent
+        desc: 基本犯の故意（延焼結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 3月以上10年以下の拘禁刑
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: （2項）3年以下の拘禁刑
+    statute_text: "第百九条第二項又は前条第二項の罪を犯し、よって第百八条又は第百九条第一項に規定する物に延焼させたときは、三月以上十年以下の拘禁刑に処する。\n２　前条第二項の罪を犯し、よって同条第一項に規定する物に延焼させたときは、三年以下の拘禁刑に処する。"
+    related_to: [arson-uninhabited, arson-other-property, arson-inhabited]
+
+  - id: arson-preparation
+    label: 放火予備罪
+    article: "113"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: conduct
+        desc: 現住建造物等放火（108条）又は他人所有の非現住建造物等放火（109条1項）の予備をする
+        keywords: [灯油を用意, ガソリンを用意, 放火の準備]
+      - type: intent
+        desc: 108条又は109条1項の罪を犯す目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑。情状により刑を免除することができる
+    statute_text: "第百八条又は第百九条第一項の罪を犯す目的で、その予備をした者は、二年以下の拘禁刑に処する。ただし、情状により、その刑を免除することができる。"
+    related_to: [arson-inhabited, arson-uninhabited]
+
+  - id: obstruction-of-firefighting
+    label: 消火妨害罪
+    article: "114"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: circumstance
+        desc: 火災の際
+        keywords: [火災, 火事]
+      - type: conduct
+        desc: 消火用の物を隠匿・損壊し、その他の方法により消火を妨害する
+        keywords: [消火器を隠, 消火栓, 消火を妨害, 消防車を妨害]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "火災の際に、消火用の物を隠匿し、若しくは損壊し、又はその他の方法により、消火を妨害した者は、一年以上十年以下の拘禁刑に処する。"
+
+  - id: negligent-fire
+    label: 失火罪
+    article: "116"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: conduct
+        desc: 失火により108条の物又は他人所有の109条の物を焼損する
+        keywords: [失火, 火の不始末, タバコの火, 火事を出した]
+      - type: result
+        desc: （2項）自己所有の109条の物又は110条の物を焼損し、よって公共の危険を生じさせる
+        keywords: [公共の危険]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "失火により、第百八条に規定する物又は他人の所有に係る第百九条に規定する物を焼損した者は、五十万円以下の罰金に処する。\n２　失火により、第百九条に規定する物であって自己の所有に係るもの又は第百十条に規定する物を焼損し、よって公共の危険を生じさせた者も、前項と同様とする。"
+
+  - id: explosion
+    label: 激発物破裂罪
+    article: "117"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 火薬・ボイラーその他の激発すべき物
+        keywords: [火薬, ボイラー, 爆発物, ガスボンベ]
+      - type: conduct
+        desc: 破裂させて108条の物又は他人所有の109条の物を損壊する（自己所有の109条の物・110条の物は公共の危険を生じさせた場合）
+        keywords: [爆発, 破裂, 爆破]
+      - type: intent
+        desc: 故意（2項は過失）
+        keywords: []
+    penalties:
+      - type: death
+        note: 放火の例による（108条の物：死刑又は無期若しくは5年以上の拘禁刑）
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: 放火の例による（108条の物：死刑又は無期若しくは5年以上の拘禁刑）
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 放火の例による（他人所有の109条の物：2年以上の有期拘禁刑。自己所有の109条の物・110条の物は109条2項・110条の例）
+      - type: fine
+        max: 500000
+        unit: yen
+        note: （2項・過失）失火の例による（50万円以下の罰金）
+    statute_text: "火薬、ボイラーその他の激発すべき物を破裂させて、第百八条に規定する物又は他人の所有に係る第百九条に規定する物を損壊した者は、放火の例による。第百九条に規定する物であって自己の所有に係るもの又は第百十条に規定する物を損壊し、よって公共の危険を生じさせた者も、同様とする。\n２　前項の行為が過失によるときは、失火の例による。"
+    related_to: [arson-inhabited, arson-uninhabited, arson-other-property, negligent-fire]
+
+  - id: professional-negligent-fire
+    label: 業務上失火等罪
+    article: "117の2"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: conduct
+        desc: 失火（116条）又は過失による激発物破裂（117条1項の行為）をする
+        keywords: [失火, 火事を出した, 爆発]
+      - type: intent
+        desc: 業務上必要な注意を怠ったこと、又は重大な過失
+        keywords: [業務上, 重過失, 重大な過失]
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 1500000
+        unit: yen
+        note: 150万円以下の罰金
+    statute_text: "第百十六条又は前条第一項の行為が業務上必要な注意を怠ったことによるとき、又は重大な過失によるときは、三年以下の拘禁刑又は百五十万円以下の罰金に処する。"
+    related_to: [negligent-fire, explosion]
+
+  - id: gas-leakage
+    label: ガス漏出等罪
+    article: "118"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: ガス・電気・蒸気
+        keywords: [ガス, 電気, 蒸気]
+      - type: conduct
+        desc: 漏出・流出させ、又は遮断する
+        keywords: [ガス漏れ, ガスを漏ら, ガスの元栓, 電気を止め]
+      - type: result
+        desc: よって人の生命・身体・財産に危険を生じさせる
+        keywords: [危険]
+      - type: result
+        desc: （2項・ガス漏出等致死傷）よって人を死傷させる
+        keywords: [死傷, 中毒]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: （2項）傷害の罪と比較して、重い刑により処断する
+    statute_text: "ガス、電気又は蒸気を漏出させ、流出させ、又は遮断し、よって人の生命、身体又は財産に危険を生じさせた者は、三年以下の拘禁刑又は十万円以下の罰金に処する。\n２　ガス、電気又は蒸気を漏出させ、流出させ、又は遮断し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [injury, injury-causing-death]
+
+  # --- 第10章 出水及び水利に関する罪 (119-123) ---
+  - id: flooding-inhabited
+    label: 現住建造物等浸害罪
+    article: "119"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 現に人が住居に使用し又は現に人がいる建造物・汽車・電車・鉱坑
+        keywords: [家, 建物]
+      - type: conduct
+        desc: 出水させて浸害する
+        keywords: [出水, 水浸し, 浸水, 水没]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: death
+        note: 死刑又は無期若しくは3年以上の拘禁刑
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 死刑又は無期若しくは3年以上の拘禁刑
+    statute_text: "出水させて、現に人が住居に使用し又は現に人がいる建造物、汽車、電車又は鉱坑を浸害した者は、死刑又は無期若しくは三年以上の拘禁刑に処する。"
+
+  - id: flooding-uninhabited
+    label: 非現住建造物等浸害罪
+    article: "120"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: object
+        desc: 119条に規定する物以外の物
+        keywords: [田畑, 倉庫]
+      - type: conduct
+        desc: 出水させて浸害する
+        keywords: [出水, 水浸し, 浸水]
+      - type: result
+        desc: よって公共の危険を生じさせる
+        keywords: [公共の危険]
+      - type: circumstance
+        desc: （2項）自己所有の物は、差押え・物権の負担・賃貸・配偶者居住権の設定・保険に付した場合に限る
+        keywords: [自分の物]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "出水させて、前条に規定する物以外の物を浸害し、よって公共の危険を生じさせた者は、一年以上十年以下の拘禁刑に処する。\n２　浸害した物が自己の所有に係るときは、その物が差押えを受け、物権を負担し、賃貸し、配偶者居住権が設定され、又は保険に付したものである場合に限り、前項の例による。"
+    related_to: [flooding-inhabited]
+
+  - id: obstruction-of-flood-control
+    label: 水防妨害罪
+    article: "121"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: circumstance
+        desc: 水害の際
+        keywords: [水害, 洪水]
+      - type: conduct
+        desc: 水防用の物を隠匿・損壊し、その他の方法により水防を妨害する
+        keywords: [土のう, 水防を妨害]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "水害の際に、水防用の物を隠匿し、若しくは損壊し、又はその他の方法により、水防を妨害した者は、一年以上十年以下の拘禁刑に処する。"
+
+  - id: negligent-flooding
+    label: 過失建造物等浸害罪
+    article: "122"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 公共の安全(不特定多数の生命身体財産)
+    elements:
+      - type: conduct
+        desc: 過失により出水させて119条の物を浸害し、又は120条の物を浸害して公共の危険を生じさせる
+        keywords: [水漏れ, 浸水, 出水]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 20万円以下の罰金
+    statute_text: "過失により出水させて、第百十九条に規定する物を浸害した者又は第百二十条に規定する物を浸害し、よって公共の危険を生じさせた者は、二十万円以下の罰金に処する。"
+    related_to: [flooding-inhabited, flooding-uninhabited]
+
+  - id: obstruction-of-water-use
+    label: 水利妨害及び出水危険罪
+    article: "123"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 水利権・公共の安全
+    elements:
+      - type: object
+        desc: 堤防・水門等
+        keywords: [堤防, 水門, 用水路]
+      - type: conduct
+        desc: 堤防の決壊・水門の破壊その他水利の妨害となるべき行為又は出水させるべき行為をする
+        keywords: [決壊, 水門を壊, 水を止め, 水利]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 20万円以下の罰金
+    statute_text: "堤防を決壊させ、水門を破壊し、その他水利の妨害となるべき行為又は出水させるべき行為をした者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。"
+
+  # --- 第14章 あへん煙に関する罪 (136-141) ---
+  - id: opium-import
+    label: あへん煙輸入等罪
+    article: "136"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: あへん煙
+        keywords: [あへん, アヘン, 阿片]
+      - type: conduct
+        desc: 輸入・製造・販売し、又は販売の目的で所持する
+        keywords: [輸入, 製造, 販売, 密売]
+      - type: intent
+        desc: 故意（所持は販売の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: 6月以上7年以下の拘禁刑
+    statute_text: "あへん煙を輸入し、製造し、販売し、又は販売の目的で所持した者は、六月以上七年以下の拘禁刑に処する。"
+
+  - id: opium-pipe-import
+    label: あへん煙吸食器具輸入等罪
+    article: "137"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: あへん煙を吸食する器具
+        keywords: [アヘン吸引具, あへんの器具]
+      - type: conduct
+        desc: 輸入・製造・販売し、又は販売の目的で所持する
+        keywords: [輸入, 製造, 販売]
+      - type: intent
+        desc: 故意（所持は販売の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "あへん煙を吸食する器具を輸入し、製造し、販売し、又は販売の目的で所持した者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [opium-import]
+
+  - id: opium-import-by-customs
+    label: 税関職員によるあへん煙輸入等罪
+    article: "138"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: circumstance
+        desc: 行為者が税関職員であること
+        keywords: [税関職員, 税関]
+      - type: conduct
+        desc: あへん煙・吸食器具を輸入し、又はその輸入を許す
+        keywords: [輸入, 見逃す]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "税関職員が、あへん煙又はあへん煙を吸食するための器具を輸入し、又はこれらの輸入を許したときは、一年以上十年以下の拘禁刑に処する。"
+    related_to: [opium-import, opium-pipe-import]
+
+  - id: opium-smoking
+    label: あへん煙吸食及び場所提供罪
+    article: "139"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: conduct
+        desc: あへん煙を吸食する
+        keywords: [あへんを吸, アヘンを吸]
+      - type: conduct
+        desc: （2項）あへん煙の吸食のため建物又は室を提供して利益を図る
+        keywords: [場所を提供, 部屋を貸]
+      - type: intent
+        desc: 故意（2項は図利の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑（1項）
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: （2項）6月以上7年以下の拘禁刑
+    statute_text: "あへん煙を吸食した者は、三年以下の拘禁刑に処する。\n２　あへん煙の吸食のため建物又は室を提供して利益を図った者は、六月以上七年以下の拘禁刑に処する。"
+
+  - id: opium-possession
+    label: あへん煙等所持罪
+    article: "140"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: あへん煙又はあへん煙を吸食するための器具
+        keywords: [あへん, アヘン]
+      - type: conduct
+        desc: 所持する
+        keywords: [所持, 持っていた]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑
+    statute_text: "あへん煙又はあへん煙を吸食するための器具を所持した者は、一年以下の拘禁刑に処する。"
 
   # --- 第15章 飲料水に関する罪 (142-147) ---
   - id: water-contamination
@@ -721,6 +1257,134 @@ crimes:
         note: 10万円以下の罰金
     statute_text: "人の飲料に供する浄水を汚染し、よって使用することができないようにした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。"
 
+  - id: waterworks-contamination
+    label: 水道汚染罪
+    article: "143"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: 水道により公衆に供給する飲料の浄水又はその水源
+        keywords: [水道, 水源, 浄水場, 貯水池]
+      - type: conduct
+        desc: 汚染して使用できないようにする
+        keywords: [汚染, 汚す]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: 6月以上7年以下の拘禁刑
+    statute_text: "水道により公衆に供給する飲料の浄水又はその水源を汚染し、よって使用することができないようにした者は、六月以上七年以下の拘禁刑に処する。"
+    related_to: [water-contamination]
+
+  - id: poisoning-drinking-water
+    label: 浄水毒物等混入罪
+    article: "144"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: 人の飲料に供する浄水
+        keywords: [飲料水, 井戸, ポット, 給水]
+      - type: conduct
+        desc: 毒物その他人の健康を害すべき物を混入する
+        keywords: [毒を入れ, 毒物, 混入]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "人の飲料に供する浄水に毒物その他人の健康を害すべき物を混入した者は、三年以下の拘禁刑に処する。"
+    related_to: [water-contamination]
+
+  - id: water-contamination-causing-death-injury
+    label: 浄水汚染等致死傷罪
+    article: "145"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康・個人の生命身体
+    elements:
+      - type: conduct
+        desc: 浄水汚染（142条）・水道汚染（143条）・浄水毒物等混入（144条）の罪を犯す
+        keywords: [汚染, 毒を入れ]
+      - type: result
+        desc: よって人を死傷させる
+        keywords: [死傷, 体調を崩, 中毒]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 傷害の罪と比較して、重い刑により処断する
+    statute_text: "前三条の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [water-contamination, waterworks-contamination, poisoning-drinking-water, injury, injury-causing-death]
+
+  - id: poisoning-waterworks
+    label: 水道毒物等混入罪
+    article: "146"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康・個人の生命
+    elements:
+      - type: object
+        desc: 水道により公衆に供給する飲料の浄水又はその水源
+        keywords: [水道, 水源, 浄水場]
+      - type: conduct
+        desc: 毒物その他人の健康を害すべき物を混入する
+        keywords: [毒を入れ, 毒物, 混入]
+      - type: result
+        desc: （後段・水道毒物等混入致死）よって人を死亡させる
+        keywords: [死亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+      - type: death
+        note: （致死）死刑又は無期若しくは5年以上の拘禁刑
+      - type: imprisonment
+        min: 5
+        max: null
+        unit: year
+        note: （致死）死刑又は無期若しくは5年以上の拘禁刑
+    statute_text: "水道により公衆に供給する飲料の浄水又はその水源に毒物その他人の健康を害すべき物を混入した者は、二年以上の有期拘禁刑に処する。よって人を死亡させた者は、死刑又は無期若しくは五年以上の拘禁刑に処する。"
+    related_to: [waterworks-contamination, poisoning-drinking-water]
+
+  - id: damaging-waterworks
+    label: 水道損壊及び閉塞罪
+    article: "147"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 公衆の健康
+    elements:
+      - type: object
+        desc: 公衆の飲料に供する浄水の水道
+        keywords: [水道管, 水道]
+      - type: conduct
+        desc: 損壊し、又は閉塞する
+        keywords: [損壊, 閉塞, 壊す, 塞ぐ]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "公衆の飲料に供する浄水の水道を損壊し、又は閉塞した者は、一年以上十年以下の拘禁刑に処する。"
+
   # --- 第16章 通貨偽造の罪 (148-153) ---
   - id: counterfeiting-currency
     label: 通貨偽造罪
@@ -748,7 +1412,275 @@ crimes:
         note: 無期又は3年以上の拘禁刑
     statute_text: "行使の目的で、通用する貨幣、紙幣又は銀行券を偽造し、又は変造した者は、無期又は三年以上の拘禁刑に処する。\n２　偽造又は変造の貨幣、紙幣又は銀行券を行使し、又は行使の目的で人に交付し、若しくは輸入した者も、前項と同様とする。"
 
+  - id: counterfeiting-foreign-currency
+    label: 外国通貨偽造罪
+    article: "149"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 通貨に対する公共の信用
+    elements:
+      - type: object
+        desc: 日本国内に流通している外国の貨幣・紙幣・銀行券
+        keywords: [外国通貨, ドル, 外貨]
+      - type: conduct
+        desc: 偽造又は変造する
+        keywords: [偽造, 変造]
+      - type: conduct
+        desc: （2項）偽造・変造の外国通貨を行使し、又は行使の目的で人に交付し若しくは輸入する
+        keywords: [行使, 交付, 輸入]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+    statute_text: "行使の目的で、日本国内に流通している外国の貨幣、紙幣又は銀行券を偽造し、又は変造した者は、二年以上の有期拘禁刑に処する。\n２　偽造又は変造の外国の貨幣、紙幣又は銀行券を行使し、又は行使の目的で人に交付し、若しくは輸入した者も、前項と同様とする。"
+    related_to: [counterfeiting-currency]
+
+  - id: acquiring-counterfeit-currency
+    label: 偽造通貨等収得罪
+    article: "150"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 通貨に対する公共の信用
+    elements:
+      - type: object
+        desc: 偽造又は変造の貨幣・紙幣・銀行券
+        keywords: [偽札, 偽造通貨]
+      - type: conduct
+        desc: 収得する
+        keywords: [手に入れ, 受け取, 買い取]
+      - type: intent
+        desc: 行使の目的（偽造等であることの認識）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "行使の目的で、偽造又は変造の貨幣、紙幣又は銀行券を収得した者は、三年以下の拘禁刑に処する。"
+    related_to: [counterfeiting-currency, counterfeiting-foreign-currency]
+
+  - id: uttering-after-acquisition
+    label: 収得後知情行使等罪
+    article: "152"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 通貨に対する公共の信用
+    elements:
+      - type: circumstance
+        desc: 貨幣・紙幣・銀行券を収得した後に、偽造・変造のものであることを知った
+        keywords: [後で偽札と気づ, 偽札だと気づ]
+      - type: conduct
+        desc: これを行使し、又は行使の目的で人に交付する
+        keywords: [使った, 行使, 交付]
+      - type: intent
+        desc: 偽造・変造であることの認識
+        keywords: []
+    penalties:
+      - type: fine
+        min: 2000
+        max: null
+        unit: yen
+        note: 額面価格の3倍以下の罰金又は科料。ただし2千円以下にすることはできない
+    statute_text: "貨幣、紙幣又は銀行券を収得した後に、それが偽造又は変造のものであることを知って、これを行使し、又は行使の目的で人に交付した者は、その額面価格の三倍以下の罰金又は科料に処する。ただし、二千円以下にすることはできない。"
+    related_to: [counterfeiting-currency, acquiring-counterfeit-currency]
+
+  - id: preparation-counterfeiting-currency
+    label: 通貨偽造等準備罪
+    article: "153"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 通貨に対する公共の信用
+    elements:
+      - type: object
+        desc: 通貨の偽造・変造に用いる器械又は原料
+        keywords: [印刷機, 器械, 原料]
+      - type: conduct
+        desc: 準備する
+        keywords: [準備, 用意]
+      - type: intent
+        desc: 貨幣・紙幣・銀行券の偽造又は変造の用に供する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "貨幣、紙幣又は銀行券の偽造又は変造の用に供する目的で、器械又は原料を準備した者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [counterfeiting-currency, counterfeiting-foreign-currency]
+
   # --- 第17章 文書偽造の罪 (154-161の2) ---
+  - id: counterfeiting-imperial-document
+    label: 詔書偽造等罪
+    article: "154"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 御璽・国璽・御名を使用した詔書その他の文書
+        keywords: [詔書, 御璽, 国璽, 御名]
+      - type: conduct
+        desc: 偽造する（2項：御璽等を押し又は御名を署した文書を変造する）
+        keywords: [偽造, 変造]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 無期又は3年以上の拘禁刑
+    statute_text: "行使の目的で、御璽、国璽若しくは御名を使用して詔書その他の文書を偽造し、又は偽造した御璽、国璽若しくは御名を使用して詔書その他の文書を偽造した者は、無期又は三年以上の拘禁刑に処する。\n２　御璽若しくは国璽を押し又は御名を署した詔書その他の文書を変造した者も、前項と同様とする。"
+
+  - id: counterfeiting-official-document
+    label: 公文書偽造等罪
+    article: "155"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 公務所・公務員の作成すべき文書等・電磁的記録文書等
+        keywords: [公文書, 住民票, 免許証, 証明書, 戸籍謄本]
+      - type: conduct
+        desc: （1項・有印）公務所・公務員の印章等・電磁的記録印章等を使用して偽造する
+        keywords: [偽造, 偽の証明書]
+      - type: conduct
+        desc: （2項）公務所・公務員が押印・署名した文書等又は電磁的記録印章等を使用して作成した電磁的記録文書等を変造する
+        keywords: [変造, 改ざん]
+      - type: conduct
+        desc: （3項・無印）前二項以外の公文書等・電磁的記録文書等を偽造し、又は変造する
+        keywords: [偽造, 変造]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑（1項・2項）
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: （3項）3年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: （3項）20万円以下の罰金
+    statute_text: "行使の目的で、次の各号に掲げるいずれかの行為をした者は、一年以上十年以下の拘禁刑に処する。\n一　公務所若しくは公務員の印章若しくは署名（以下この章、第百六十五条及び第百六十七条において「印章等」という。）を使用して公務所若しくは公務員の作成すべき文書若しくは図画（以下この章において「文書等」という。）を偽造し、又は偽造した公務所若しくは公務員の印章等を使用して公務所若しくは公務員の作成すべき文書等を偽造する行為\n二　公務所若しくは公務員の電磁的記録印章等（印章等として表示されることとなる電磁的記録をいう。以下この章、第百六十五条及び第百六十七条において同じ。）を使用して公務所若しくは公務員の作成すべき電磁的記録文書等（文書等として表示されて行使されることとなる電磁的記録をいう。以下この章において同じ。）を偽造し、又は偽造した公務所若しくは公務員の電磁的記録印章等を使用して公務所若しくは公務員の作成すべき電磁的記録文書等を偽造する行為\n２　公務所若しくは公務員が押印し若しくは署名した文書等又は公務所若しくは公務員が電磁的記録印章等を使用して作成した電磁的記録文書等を変造した者も、前項と同様とする。\n３　前二項に規定するもののほか、公務所若しくは公務員の作成すべき文書等若しくは電磁的記録文書等を偽造し、又は公務所若しくは公務員が作成した文書等若しくは電磁的記録文書等を変造した者は、三年以下の拘禁刑又は二十万円以下の罰金に処する。"
+
+  - id: false-official-document
+    label: 虚偽公文書作成等罪
+    article: "156"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: circumstance
+        desc: 行為者が公務員で、その職務に関すること
+        keywords: [公務員, 役所の職員]
+      - type: conduct
+        desc: 虚偽の文書等・電磁的記録文書等を作成し、又は変造する
+        keywords: [虚偽の公文書, 嘘の証明書, 改ざん]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 前二条の例による（詔書等：無期又は3年以上の拘禁刑）
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 前二条の例による（有印：1年以上10年以下の拘禁刑）
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 前二条の例による（無印：3年以下の拘禁刑）
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 前二条の例による（無印：20万円以下の罰金）
+    statute_text: "公務員が、その職務に関し、行使の目的で、虚偽の文書等若しくは電磁的記録文書等を作成し、又は文書等若しくは電磁的記録文書等を変造したときは、印章等又は電磁的記録印章等の有無により区別して、前二条の例による。"
+    related_to: [counterfeiting-imperial-document, counterfeiting-official-document]
+
+  - id: false-entry-in-notarial-deed
+    label: 公正証書原本不実記載等罪
+    article: "157"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 登記簿・戸籍簿その他の権利義務に関する公正証書の原本（電磁的記録を含む）
+        keywords: [登記簿, 戸籍, 住民登録, 登記]
+      - type: conduct
+        desc: 公務員に虚偽の申立てをして不実の記載・記録をさせる
+        keywords: [虚偽の申立て, 嘘の届出, 偽装結婚, 嘘の住所, 虚偽の登記]
+      - type: object
+        desc: （2項）免状・鑑札・旅券（電磁的記録を含む）
+        keywords: [旅券, パスポート, 免許, 免状]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑（1項）
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金（1項）
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: （2項）1年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: （2項）20万円以下の罰金
+    statute_text: "公務員に対し虚偽の申立てをして、登記簿、戸籍簿その他の権利若しくは義務に関する公正証書の原本に不実の記載をさせ、又は権利若しくは義務に関する公正証書の原本として用いられる電磁的記録に不実の記録をさせた者は、五年以下の拘禁刑又は五十万円以下の罰金に処する。\n２　公務員に対し虚偽の申立てをして、免状、鑑札若しくは旅券に不実の記載をさせ、又は電磁的記録文書等その他の電磁的記録であって、免状、鑑札若しくは旅券の全部若しくは一部として用いられるものに不実の記録をさせた者は、一年以下の拘禁刑又は二十万円以下の罰金に処する。\n３　前二項の罪の未遂は、罰する。"
+
+  - id: uttering-forged-official-document
+    label: 偽造公文書行使等罪
+    article: "158"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 154条〜157条の偽造・変造・虚偽作成・不実記載の文書等・電磁的記録文書等
+        keywords: [偽造の公文書, 偽の免許証, 偽の証明書]
+      - type: conduct
+        desc: 行使し、又は電磁的記録を公正証書の原本・人の事務処理の用に供する
+        keywords: [行使, 提示, 使った, 見せた]
+      - type: intent
+        desc: 偽造等であることの認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 偽造等をした者と同一の刑（詔書等：無期又は3年以上の拘禁刑）
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 偽造等をした者と同一の刑（有印公文書：1年以上10年以下の拘禁刑）
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 偽造等をした者と同一の刑（公正証書原本不実記載等：5年以下の拘禁刑又は50万円以下の罰金。無印公文書は3年以下の拘禁刑又は20万円以下の罰金。免状等は1年以下の拘禁刑又は20万円以下の罰金）
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 偽造等をした者と同一の刑（公正証書原本不実記載等：50万円以下の罰金）
+    statute_text: "第百五十四条から前条までの文書等若しくは電磁的記録文書等を行使し、同条第一項の電磁的記録を公正証書の原本としての用に供し、又は同条第二項の電磁的記録を人の事務処理の用に供した者は、その文書等若しくは電磁的記録文書等を偽造し、若しくは変造し、虚偽の文書等若しくは電磁的記録文書等を作成し、又は不実の記載若しくは記録をさせた者と同一の刑に処する。\n２　前項の罪の未遂は、罰する。"
+    related_to: [counterfeiting-imperial-document, counterfeiting-official-document, false-official-document, false-entry-in-notarial-deed]
   - id: counterfeiting-private-document
     label: 私文書偽造罪
     article: "159"
@@ -786,6 +1718,104 @@ crimes:
         note: 10万円以下の罰金（3項）
     statute_text: "行使の目的で、次の各号に掲げるいずれかの行為をした者は、三月以上五年以下の拘禁刑に処する。\n一　他人の印章等を使用して権利、義務若しくは事実証明に関する文書等を偽造し、又は偽造した他人の印章等を使用して権利、義務若しくは事実証明に関する文書等を偽造する行為\n二　他人の電磁的記録印章等を使用して権利、義務若しくは事実証明に関する電磁的記録文書等を偽造し、又は偽造した他人の電磁的記録印章等を使用して権利、義務若しくは事実証明に関する電磁的記録文書等を偽造する行為\n２　他人が押印し若しくは署名した権利、義務若しくは事実証明に関する文書等又は他人が電磁的記録印章等を使用して作成した権利、義務若しくは事実証明に関する電磁的記録文書等を変造した者も、前項と同様とする。\n３　前二項に規定するもののほか、権利、義務又は事実証明に関する文書等又は電磁的記録文書等を偽造し、又は変造した者は、一年以下の拘禁刑又は十万円以下の罰金に処する。"
 
+  - id: false-medical-certificate
+    label: 虚偽診断書等作成罪
+    article: "160"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: circumstance
+        desc: 行為者が医師であること
+        keywords: [医師, 医者]
+      - type: object
+        desc: 公務所に提出すべき診断書・検案書・死亡証書（電磁的記録文書等を含む）
+        keywords: [診断書, 死亡診断書, 検案書, 死亡証書]
+      - type: conduct
+        desc: 虚偽の記載・記録をする
+        keywords: [嘘の診断書, 虚偽の診断書, 虚偽記載]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "医師が、公務所に提出すべき診断書、検案書若しくは死亡証書に虚偽の記載をし、又は公務所に提出すべき電磁的記録文書等であって、診断書、検案書若しくは死亡証書の全部若しくは一部として用いられるものに虚偽の記録をしたときは、三年以下の拘禁刑又は三十万円以下の罰金に処する。"
+
+  - id: uttering-forged-private-document
+    label: 偽造私文書等行使罪
+    article: "161"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 文書に対する公共の信用
+    elements:
+      - type: object
+        desc: 159条・160条の偽造・変造・虚偽記載の文書等・電磁的記録文書等
+        keywords: [偽造の契約書, 偽の書類, 嘘の診断書]
+      - type: conduct
+        desc: 行使する
+        keywords: [行使, 提出, 使った, 見せた]
+      - type: intent
+        desc: 偽造等であることの認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 偽造等をした者と同一の刑（有印私文書：3月以上5年以下の拘禁刑）
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 偽造等をした者と同一の刑（虚偽診断書等：3年以下の拘禁刑又は30万円以下の罰金。無印私文書は1年以下の拘禁刑又は10万円以下の罰金）
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 偽造等をした者と同一の刑（虚偽診断書等：30万円以下の罰金）
+    statute_text: "前二条の文書等又は電磁的記録文書等を行使した者は、その文書等若しくは電磁的記録文書等を偽造し、若しくは変造し、又は虚偽の記載若しくは記録をした者と同一の刑に処する。\n２　前項の罪の未遂は、罰する。"
+    related_to: [counterfeiting-private-document, false-medical-certificate]
+
+  - id: unauthorized-electromagnetic-record
+    label: 電磁的記録不正作出及び供用罪
+    article: "161の2"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 電磁的記録に対する公共の信用
+    elements:
+      - type: object
+        desc: 人の事務処理の用に供する権利・義務・事実証明に関する電磁的記録
+        keywords: [データ, 電磁的記録, 顧客データ, 会計データ]
+      - type: conduct
+        desc: 不正に作る（2項：公務所・公務員により作られるべき電磁的記録の場合は加重）
+        keywords: [データを改ざん, 不正に作, 書き換え]
+      - type: conduct
+        desc: （3項）不正に作られた電磁的記録を人の事務処理の用に供する
+        keywords: [供用]
+      - type: intent
+        desc: 人の事務処理を誤らせる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑（1項）
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金（1項）
+      - type: imprisonment
+        max: 10
+        unit: year
+        note: （2項・公電磁的記録）10年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: （2項・公電磁的記録）100万円以下の罰金。3項は不正に作った者と同一の刑
+    statute_text: "人の事務処理を誤らせる目的で、その事務処理の用に供する権利、義務又は事実証明に関する電磁的記録を不正に作った者は、五年以下の拘禁刑又は五十万円以下の罰金に処する。\n２　前項の罪が公務所又は公務員により作られるべき電磁的記録に係るときは、十年以下の拘禁刑又は百万円以下の罰金に処する。\n３　不正に作られた権利、義務又は事実証明に関する電磁的記録を、第一項の目的で、人の事務処理の用に供した者は、その電磁的記録を不正に作った者と同一の刑に処する。\n４　前項の罪の未遂は、罰する。"
+
   # --- 第18章 有価証券偽造の罪 (162-163) ---
   - id: counterfeiting-securities
     label: 有価証券偽造罪
@@ -812,6 +1842,30 @@ crimes:
         unit: month
         note: 3月以上10年以下の拘禁刑
     statute_text: "行使の目的で、公債証書、官庁の証券、会社の株券その他の有価証券を偽造し、又は変造した者は、三月以上十年以下の拘禁刑に処する。\n２　行使の目的で、有価証券に虚偽の記入をした者も、前項と同様とする。"
+
+  - id: uttering-forged-securities
+    label: 偽造有価証券行使等罪
+    article: "163"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 有価証券に対する公共の信用
+    elements:
+      - type: object
+        desc: 偽造・変造の有価証券又は虚偽の記入がある有価証券
+        keywords: [偽造の手形, 偽の小切手, 偽造の株券]
+      - type: conduct
+        desc: 行使し、又は行使の目的で人に交付し若しくは輸入する
+        keywords: [行使, 交付, 輸入, 使った]
+      - type: intent
+        desc: 偽造等であることの認識（交付・輸入は行使の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 3月以上10年以下の拘禁刑
+    statute_text: "偽造若しくは変造の有価証券又は虚偽の記入がある有価証券を行使し、又は行使の目的で人に交付し、若しくは輸入した者は、三月以上十年以下の拘禁刑に処する。\n２　前項の罪の未遂は、罰する。"
+    related_to: [counterfeiting-securities]
 
   # --- 第18章の2 支払用カード電磁的記録に関する罪 (163の2-163の5) ---
   - id: unauthorized-payment-card-record
@@ -846,7 +1900,131 @@ crimes:
         note: 100万円以下の罰金
     statute_text: "人の財産上の事務処理を誤らせる目的で、その事務処理の用に供する電磁的記録であって、クレジットカードその他の代金又は料金の支払用のカードを構成するものを不正に作った者は、十年以下の拘禁刑又は百万円以下の罰金に処する。預貯金の引出用のカードを構成する電磁的記録を不正に作った者も、同様とする。\n２　不正に作られた前項の電磁的記録を、同項の目的で、人の財産上の事務処理の用に供した者も、同項と同様とする。\n３　不正に作られた第一項の電磁的記録をその構成部分とするカードを、同項の目的で、譲り渡し、貸し渡し、又は輸入した者も、同項と同様とする。"
 
+  - id: possession-unauthorized-card
+    label: 不正電磁的記録カード所持罪
+    article: "163の3"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 支払用カードの電磁的記録に対する信用
+    elements:
+      - type: object
+        desc: 不正に作られた電磁的記録を構成部分とする支払用カード
+        keywords: [偽造カード, 偽のクレジットカード]
+      - type: conduct
+        desc: 所持する
+        keywords: [所持, 持っていた]
+      - type: intent
+        desc: 人の財産上の事務処理を誤らせる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "前条第一項の目的で、同条第三項のカードを所持した者は、五年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [unauthorized-payment-card-record]
+
+  - id: preparation-unauthorized-card
+    label: 支払用カード電磁的記録不正作出準備罪
+    article: "163の4"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 支払用カードの電磁的記録に対する信用
+    elements:
+      - type: object
+        desc: 支払用カードを構成する電磁的記録の情報（カード番号等）
+        keywords: [カード情報, カード番号, スキミング]
+      - type: conduct
+        desc: 取得し、又は情を知って提供する（2項：保管する、3項：器械・原料を準備する）
+        keywords: [カード情報を盗, カード情報を取得, 保管, スキマー]
+      - type: intent
+        desc: 支払用カード電磁的記録不正作出（163条の2第1項）の用に供する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "第百六十三条の二第一項の犯罪行為の用に供する目的で、同項の電磁的記録の情報を取得した者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。情を知って、その情報を提供した者も、同様とする。\n２　不正に取得された第百六十三条の二第一項の電磁的記録の情報を、前項の目的で保管した者も、同項と同様とする。\n３　第一項の目的で、器械又は原料を準備した者も、同項と同様とする。"
+    related_to: [unauthorized-payment-card-record]
+
   # --- 第19章 印章偽造の罪 (164-168) ---
+  - id: counterfeiting-imperial-seal
+    label: 御璽偽造及び不正使用等罪
+    article: "164"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 印章・署名に対する公共の信用
+    elements:
+      - type: object
+        desc: 御璽・国璽・御名
+        keywords: [御璽, 国璽, 御名]
+      - type: conduct
+        desc: 偽造する（2項：不正に使用し、又は偽造したものを使用する）
+        keywords: [偽造, 不正使用]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+    statute_text: "行使の目的で、御璽、国璽又は御名を偽造した者は、二年以上の有期拘禁刑に処する。\n２　御璽、国璽若しくは御名を不正に使用し、又は偽造した御璽、国璽若しくは御名を使用した者も、前項と同様とする。"
+
+  - id: counterfeiting-official-seal
+    label: 公印偽造及び不正使用等罪
+    article: "165"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 印章・署名に対する公共の信用
+    elements:
+      - type: object
+        desc: 公務所・公務員の印章等又は電磁的記録印章等
+        keywords: [公印, 役所の印鑑, 職印]
+      - type: conduct
+        desc: 偽造する（2項：不正に使用し、又は偽造したものを使用する）
+        keywords: [偽造, 不正使用, 勝手に押す]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "行使の目的で、公務所又は公務員の印章等又は電磁的記録印章等を偽造した者は、三月以上五年以下の拘禁刑に処する。\n２　公務所若しくは公務員の印章等若しくは電磁的記録印章等を不正に使用し、又は偽造した公務所若しくは公務員の印章等若しくは電磁的記録印章等を使用した者も、前項と同様とする。"
+    related_to: [counterfeiting-seal]
+
+  - id: counterfeiting-official-mark
+    label: 公記号偽造及び不正使用等罪
+    article: "166"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 印章・署名に対する公共の信用
+    elements:
+      - type: object
+        desc: 公務所の記号又は電磁的記録記号
+        keywords: [公記号, 検印, 刻印]
+      - type: conduct
+        desc: 偽造する（2項：不正に使用し、又は偽造したものを使用する）
+        keywords: [偽造, 不正使用]
+      - type: intent
+        desc: 行使の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "行使の目的で、公務所の記号又は電磁的記録記号（記号として表示されることとなる電磁的記録をいう。次項において同じ。）を偽造した者は、三年以下の拘禁刑に処する。\n２　公務所の記号若しくは電磁的記録記号を不正に使用し、又は偽造した公務所の記号若しくは電磁的記録記号を使用した者も、前項と同様とする。"
+    related_to: [counterfeiting-official-seal]
+
   - id: counterfeiting-seal
     label: 印章偽造罪
     article: "167"
@@ -871,6 +2049,69 @@ crimes:
         unit: year
         note: 3年以下の拘禁刑
     statute_text: "行使の目的で、他人の印章等又は電磁的記録印章等を偽造した者は、三年以下の拘禁刑に処する。\n２　他人の印章等若しくは電磁的記録印章等を不正に使用し、又は偽造した印章等若しくは電磁的記録印章等を使用した者も、前項と同様とする。"
+
+  # --- 第19章の2 不正指令電磁的記録に関する罪 (168の2-168の3) ---
+  - id: creating-malware
+    label: 不正指令電磁的記録作成等罪
+    article: "168の2"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 電子計算機のプログラムに対する社会一般の信頼
+    elements:
+      - type: object
+        desc: 電子計算機の使用者の意図に沿うべき動作をさせず、又は意図に反する動作をさせる不正な指令を与える電磁的記録等（コンピュータ・ウイルス）
+        keywords: [ウイルス, マルウェア, ランサムウェア, トロイの木馬]
+      - type: conduct
+        desc: 作成し、又は提供する
+        keywords: [作成, 提供, 配布]
+      - type: conduct
+        desc: （2項）人の電子計算機における実行の用に供する
+        keywords: [感染させ, 仕込]
+      - type: circumstance
+        desc: 正当な理由がないこと
+        keywords: []
+      - type: intent
+        desc: 人の電子計算機における実行の用に供する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "正当な理由がないのに、人の電子計算機における実行の用に供する目的で、次に掲げる電磁的記録その他の記録を作成し、又は提供した者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。\n一　人が電子計算機を使用するに際してその意図に沿うべき動作をさせず、又はその意図に反する動作をさせるべき不正な指令を与える電磁的記録\n二　前号に掲げるもののほか、同号の不正な指令を記述した電磁的記録その他の記録\n２　正当な理由がないのに、前項第一号に掲げる電磁的記録を人の電子計算機における実行の用に供した者も、同項と同様とする。\n３　前項の罪の未遂は、罰する。"
+
+  - id: acquiring-malware
+    label: 不正指令電磁的記録取得等罪
+    article: "168の3"
+    category: CrimeAgainstPublicTrust
+    legal_interest: 電子計算機のプログラムに対する社会一般の信頼
+    elements:
+      - type: object
+        desc: 不正指令電磁的記録等（コンピュータ・ウイルス）
+        keywords: [ウイルス, マルウェア]
+      - type: conduct
+        desc: 取得し、又は保管する
+        keywords: [取得, 保管, 入手]
+      - type: circumstance
+        desc: 正当な理由がないこと
+        keywords: []
+      - type: intent
+        desc: 人の電子計算機における実行の用に供する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "正当な理由がないのに、前条第一項の目的で、同項各号に掲げる電磁的記録その他の記録を取得し、又は保管した者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。"
+    related_to: [creating-malware]
 
   # --- 第20章 偽証の罪 (169-171) ---
   - id: perjury
@@ -965,6 +2206,36 @@ crimes:
         note: 30万円以下の罰金又は拘留若しくは科料
     statute_text: "公然とわいせつな行為をした者は、六月以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
 
+  - id: distribution-of-obscene-material
+    label: わいせつ物頒布等罪
+    article: "175"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な性風俗
+    elements:
+      - type: object
+        desc: わいせつな文書・図画・電磁的記録に係る記録媒体その他の物、わいせつな電磁的記録
+        keywords: [わいせつ画像, わいせつ動画, 無修正, わいせつ物]
+      - type: conduct
+        desc: 頒布し、公然と陳列し、又は電気通信の送信により頒布する
+        keywords: [頒布, 販売, 公然と陳列, ネットに公開, アップロード]
+      - type: conduct
+        desc: （2項）有償で頒布する目的で所持・保管する
+        keywords: [販売目的で所持]
+      - type: intent
+        desc: 故意（2項は有償頒布の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑。又は拘禁刑及び罰金を併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金若しくは科料。又は拘禁刑及び罰金を併科する
+    statute_text: "わいせつな文書、図画、電磁的記録に係る記録媒体その他の物を頒布し、又は公然と陳列した者は、二年以下の拘禁刑若しくは二百五十万円以下の罰金若しくは科料に処し、又は拘禁刑及び罰金を併科する。電気通信の送信によりわいせつな電磁的記録その他の記録を頒布した者も、同様とする。\n２　有償で頒布する目的で、前項の物を所持し、又は同項の電磁的記録を保管した者も、同項と同様とする。"
+    related_to: [public-indecency]
+
   - id: non-consensual-sexual-intercourse
     label: 不同意性交等罪
     article: "177"
@@ -1020,6 +2291,56 @@ crimes:
         note: 6月以上10年以下の拘禁刑
     statute_text: "次に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、わいせつな行為をした者は、婚姻関係の有無にかかわらず、六月以上十年以下の拘禁刑に処する。\n一　暴行若しくは脅迫を用いること又はそれらを受けたこと。\n二　心身の障害を生じさせること又はそれがあること。\n三　アルコール若しくは薬物を摂取させること又はそれらの影響があること。\n四　睡眠その他の意識が明瞭でない状態にさせること又はその状態にあること。\n五　同意しない意思を形成し、表明し又は全うするいとまがないこと。\n六　予想と異なる事態に直面させて恐怖させ、若しくは驚愕させること又はその事態に直面して恐怖し、若しくは驚愕していること。\n七　虐待に起因する心理的反応を生じさせること又はそれがあること。\n八　経済的又は社会的関係上の地位に基づく影響力によって受ける不利益を憂慮させること又はそれを憂慮していること。\n２　行為がわいせつなものではないとの誤信をさせ、若しくは行為をする者について人違いをさせ、又はそれらの誤信若しくは人違いをしていることに乗じて、わいせつな行為をした者も、前項と同様とする。\n３　十六歳未満の者に対し、わいせつな行為をした者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）も、第一項と同様とする。"
 
+  - id: solicitation-of-lewdness
+    label: 淫行勧誘罪
+    article: "183"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な性風俗
+    elements:
+      - type: object
+        desc: 淫行の常習のない女子
+        keywords: [女性, 女子]
+      - type: conduct
+        desc: 勧誘して姦淫させる
+        keywords: [淫行を勧誘, 売春させ, 売春を勧誘]
+      - type: intent
+        desc: 営利の目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "営利の目的で、淫行の常習のない女子を勧誘して姦淫させた者は、三年以下の拘禁刑又は三十万円以下の罰金に処する。"
+
+  - id: bigamy
+    label: 重婚罪
+    article: "184"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 一夫一婦制の婚姻秩序
+    elements:
+      - type: circumstance
+        desc: 配偶者のある者（又はその相手方）
+        keywords: [既婚者, 配偶者がいる]
+      - type: conduct
+        desc: 重ねて婚姻をする（相手方となって婚姻をする）
+        keywords: [重婚, 二重結婚, 二重に婚姻]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+    statute_text: "配偶者のある者が重ねて婚姻をしたときは、二年以下の拘禁刑に処する。その相手方となって婚姻をした者も、同様とする。"
+
+  # --- 第23章 賭博及び富くじに関する罪 (185-187) ---
+
   - id: gambling
     label: 賭博罪
     article: "185"
@@ -1038,6 +2359,73 @@ crimes:
         unit: yen
         note: 50万円以下の罰金又は科料
     statute_text: "賭博をした者は、五十万円以下の罰金又は科料に処する。ただし、一時の娯楽に供する物を賭けたにとどまるときは、この限りでない。"
+
+  - id: habitual-gambling
+    label: 常習賭博及び賭博場開張等図利罪
+    article: "186"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な経済的風俗
+    elements:
+      - type: conduct
+        desc: 常習として賭博をする
+        keywords: [常習, 繰り返し賭博]
+      - type: conduct
+        desc: （2項）賭博場を開張し、又は博徒を結合して利益を図る
+        keywords: [賭博場, 闇カジノを開, 胴元, 賭場]
+      - type: intent
+        desc: 故意（2項は図利の目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑（1項）
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: （2項）3月以上5年以下の拘禁刑
+    statute_text: "常習として賭博をした者は、三年以下の拘禁刑に処する。\n２　賭博場を開張し、又は博徒を結合して利益を図った者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [gambling]
+
+  - id: lottery
+    label: 富くじ発売等罪
+    article: "187"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 健全な経済的風俗
+    elements:
+      - type: object
+        desc: 富くじ
+        keywords: [富くじ, 私設の宝くじ, くじ]
+      - type: conduct
+        desc: 発売する（2項：発売の取次ぎをする、3項：授受する）
+        keywords: [発売, 取次ぎ, 授受, 購入]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑（1項）
+      - type: fine
+        max: 1500000
+        unit: yen
+        note: 150万円以下の罰金（1項）
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: （2項）1年以下の拘禁刑
+      - type: fine
+        max: 1000000
+        unit: yen
+        note: （2項）100万円以下の罰金
+      - type: fine
+        max: 200000
+        unit: yen
+        note: （3項）20万円以下の罰金又は科料
+    statute_text: "富くじを発売した者は、二年以下の拘禁刑又は百五十万円以下の罰金に処する。\n２　富くじ発売の取次ぎをした者は、一年以下の拘禁刑又は百万円以下の罰金に処する。\n３　前二項に規定するもののほか、富くじを授受した者は、二十万円以下の罰金又は科料に処する。"
+    related_to: [gambling]
 
   # --- 第24章 礼拝所及び墳墓に関する罪 (188-192) ---
   - id: disrespect-worship-place
@@ -1072,6 +2460,97 @@ crimes:
         unit: yen
         note: 10万円以下の罰金
     statute_text: "神祠、仏堂、墓所その他の礼拝所に対し、公然と不敬な行為をした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。\n２　説教、礼拝又は葬式を妨害した者は、一年以下の拘禁刑又は十万円以下の罰金に処する。"
+
+  - id: grave-desecration
+    label: 墳墓発掘罪
+    article: "189"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 国民の宗教的感情・死者に対する敬虔感情
+    elements:
+      - type: object
+        desc: 墳墓
+        keywords: [墓, 墳墓, お墓]
+      - type: conduct
+        desc: 発掘する
+        keywords: [発掘, 掘り返, 墓を掘]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+    statute_text: "墳墓を発掘した者は、二年以下の拘禁刑に処する。"
+    related_to: [disrespect-worship-place]
+
+  - id: corpse-desecration
+    label: 死体損壊等罪
+    article: "190"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 国民の宗教的感情・死者に対する敬虔感情
+    elements:
+      - type: object
+        desc: 死体・遺骨・遺髪又は棺に納めてある物
+        keywords: [死体, 遺体, 遺骨, 遺髪]
+      - type: conduct
+        desc: 損壊・遺棄・領得する
+        keywords: [死体遺棄, 遺体を遺棄, 死体を損壊, 遺骨を持ち去]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+    statute_text: "死体、遺骨、遺髪又は棺に納めてある物を損壊し、遺棄し、又は領得した者は、三年以下の拘禁刑に処する。"
+
+  - id: grave-desecration-corpse
+    label: 墳墓発掘死体損壊等罪
+    article: "191"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 国民の宗教的感情・死者に対する敬虔感情
+    elements:
+      - type: conduct
+        desc: 墳墓発掘（189条）の罪を犯す
+        keywords: [墓を掘, 発掘]
+      - type: conduct
+        desc: 死体・遺骨・遺髪又は棺に納めてある物を損壊・遺棄・領得する
+        keywords: [遺骨を持ち去, 損壊, 領得]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "第百八十九条の罪を犯して、死体、遺骨、遺髪又は棺に納めてある物を損壊し、遺棄し、又は領得した者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [grave-desecration, corpse-desecration]
+
+  - id: secret-burial
+    label: 変死者密葬罪
+    article: "192"
+    category: CrimeAgainstPublicMorals
+    legal_interest: 犯罪捜査（検視）の適正
+    elements:
+      - type: object
+        desc: 変死者
+        keywords: [変死, 不審死]
+      - type: conduct
+        desc: 検視を経ないで葬る
+        keywords: [検視を経ない, 勝手に葬, 密葬]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金又は科料
+    statute_text: "検視を経ないで変死者を葬った者は、十万円以下の罰金又は科料に処する。"
 
   # --- 第25章 汚職の罪 (193-198) ---
   - id: abuse-of-authority
@@ -1994,3 +3473,117 @@ crimes:
         unit: year
         note: （2項）傷害の罪と比較して、重い刑により処断する
     statute_text: "陸路、水路又は橋を損壊し、又は閉塞して往来の妨害を生じさせた者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。\n２　前項の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+
+  - id: endangering-traffic
+    label: 往来危険罪
+    article: "125"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 交通の安全
+    elements:
+      - type: object
+        desc: 鉄道・その標識（2項：灯台・浮標）
+        keywords: [線路, 鉄道, 踏切, 信号, 灯台]
+      - type: conduct
+        desc: 損壊し、又はその他の方法により汽車・電車（2項：艦船）の往来の危険を生じさせる
+        keywords: [置き石, 線路に石, 線路に置, 往来の危険]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 2年以上の有期拘禁刑
+    statute_text: "鉄道若しくはその標識を損壊し、又はその他の方法により、汽車又は電車の往来の危険を生じさせた者は、二年以上の有期拘禁刑に処する。\n２　灯台若しくは浮標を損壊し、又はその他の方法により、艦船の往来の危険を生じさせた者も、前項と同様とする。"
+    related_to: [obstruction-of-traffic]
+
+  - id: overturning-train
+    label: 汽車転覆等罪
+    article: "126"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 交通の安全・乗客の生命身体
+    elements:
+      - type: object
+        desc: 現に人がいる汽車・電車（2項：艦船）
+        keywords: [電車, 列車, 船]
+      - type: conduct
+        desc: 転覆させ、沈没させ、又は破壊する
+        keywords: [転覆, 脱線, 沈没, 破壊]
+      - type: result
+        desc: （3項・汽車転覆等致死）よって人を死亡させる
+        keywords: [死亡]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 無期又は3年以上の拘禁刑
+      - type: death
+        note: （3項・致死）死刑又は無期拘禁刑
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: （3項・致死）死刑又は無期拘禁刑
+    statute_text: "現に人がいる汽車又は電車を転覆させ、又は破壊した者は、無期又は三年以上の拘禁刑に処する。\n２　現に人がいる艦船を転覆させ、沈没させ、又は破壊した者も、前項と同様とする。\n３　前二項の罪を犯し、よって人を死亡させた者は、死刑又は無期拘禁刑に処する。"
+
+  - id: overturning-train-by-endangering
+    label: 往来危険による汽車転覆等罪
+    article: "127"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 交通の安全・乗客の生命身体
+    elements:
+      - type: conduct
+        desc: 往来危険（125条）の罪を犯す
+        keywords: [置き石, 往来の危険]
+      - type: result
+        desc: よって汽車・電車を転覆・破壊し、又は艦船を転覆・沈没・破壊する
+        keywords: [転覆, 脱線, 沈没]
+      - type: intent
+        desc: 基本犯の故意（転覆等の結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: null
+        unit: year
+        note: 前条の例による（無期又は3年以上の拘禁刑）
+      - type: death
+        note: 前条の例による（人を死亡させたとき：死刑又は無期拘禁刑）
+    statute_text: "第百二十五条の罪を犯し、よって汽車若しくは電車を転覆させ、若しくは破壊し、又は艦船を転覆させ、沈没させ、若しくは破壊した者も、前条の例による。"
+    related_to: [endangering-traffic, overturning-train]
+
+  - id: negligent-endangering-traffic
+    label: 過失往来危険罪
+    article: "129"
+    category: CrimeAgainstPublicSafety
+    legal_interest: 交通の安全
+    elements:
+      - type: conduct
+        desc: 過失により汽車・電車・艦船の往来の危険を生じさせ、又は転覆・沈没・破壊させる
+        keywords: [往来の危険, 転覆, 脱線]
+      - type: circumstance
+        desc: （2項・業務上過失往来危険）その業務に従事する者
+        keywords: [運転士, 船長, 業務上]
+      - type: intent
+        desc: 過失
+        keywords: []
+    penalties:
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金（1項）
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: （2項・業務上）3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: （2項・業務上）50万円以下の罰金
+    statute_text: "過失により、汽車、電車若しくは艦船の往来の危険を生じさせ、又は汽車若しくは電車を転覆させ、若しくは破壊し、若しくは艦船を転覆させ、沈没させ、若しくは破壊した者は、三十万円以下の罰金に処する。\n２　その業務に従事する者が前項の罪を犯したときは、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [endangering-traffic, overturning-train]

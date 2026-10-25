@@ -127,11 +127,108 @@ concepts:
     indicates_crimes: [property-damage]
 
   # --- 社会的法益 ---
+  # 公共の安全: 放火・失火（第9章）
   - id: arson-concept
     pref_label: 放火
-    alt_labels: [放火, 火をつけられた, 燃やされた, 火災]
-    indicates_crimes: [arson-inhabited]
+    alt_labels: [放火, 火をつけられた, 燃やされた, 火災, 火をつけ, 火を放]
+    indicates_crimes: [arson-inhabited, arson-uninhabited, arson-other-property]
 
+  - id: uninhabited-arson
+    pref_label: 非現住建造物等への放火
+    alt_labels: [空き家に放火, 空き家に火, 倉庫に放火, 倉庫に火, 小屋に火, 物置に火, 空きビルに火]
+    broader: arson-concept
+    indicates_crimes: [arson-uninhabited]
+
+  - id: vehicle-arson
+    pref_label: 建造物等以外への放火
+    alt_labels: [車に火, 車に放火, 車を燃や, バイクに火, 自転車に火, ゴミに火, ゴミ置き場に火, ゴミ置き場に放火]
+    broader: arson-concept
+    indicates_crimes: [arson-other-property]
+
+  - id: fire-spread
+    pref_label: 延焼
+    alt_labels: [延焼, 燃え移, 燃え広が]
+    indicates_crimes: [spread-of-fire]
+
+  - id: arson-preparation-concept
+    pref_label: 放火の予備
+    alt_labels: [放火の準備, 放火するつもり, 放火しようと, 灯油をまこ, ガソリンをまこ, ガソリンを用意, 灯油を用意]
+    broader: arson-concept
+    indicates_crimes: [arson-preparation]
+
+  - id: firefighting-obstruction
+    pref_label: 消火の妨害
+    alt_labels: [消火を妨害, 消火の邪魔, 消火活動を妨害, 消火器を隠, 消火栓, 消防の邪魔, 消防車の邪魔, 消防車を妨害]
+    indicates_crimes: [obstruction-of-firefighting]
+
+  - id: negligent-fire-concept
+    pref_label: 失火
+    alt_labels: [失火, 火の不始末, 火事を出, 寝たばこ, 寝タバコ, タバコの火, 火の消し忘れ, ボヤ]
+    indicates_crimes: [negligent-fire, professional-negligent-fire]
+
+  - id: professional-negligent-fire-concept
+    pref_label: 業務上失火・重過失失火
+    alt_labels: [業務上失火, 重過失失火, 工事中の火, 溶接の火花]
+    broader: negligent-fire-concept
+    indicates_crimes: [professional-negligent-fire]
+
+  - id: explosion-concept
+    pref_label: 激発物の破裂
+    alt_labels: [爆発させ, 爆破, 爆弾, 爆発物, 破裂させ, ボイラーが破裂, 火薬]
+    indicates_crimes: [explosion, professional-negligent-fire]
+
+  - id: gas-leakage-concept
+    pref_label: ガス・電気・蒸気の漏出・遮断
+    alt_labels: [ガス漏れ, ガスを漏ら, ガスを出, ガスの元栓, ガス栓を開, ガスを止め, 電気を遮断, 蒸気を漏ら]
+    indicates_crimes: [gas-leakage]
+
+  # 公共の安全: 出水・水利（第10章）
+  - id: flooding-concept
+    pref_label: 出水による浸害
+    alt_labels: [出水させ, 浸水させ, 水浸しにさ, 水没させ, 洪水を起こ]
+    indicates_crimes: [flooding-inhabited, flooding-uninhabited]
+
+  - id: flood-control-obstruction
+    pref_label: 水防の妨害
+    alt_labels: [水防を妨害, 水防の邪魔, 土のうを, 土嚢を]
+    indicates_crimes: [obstruction-of-flood-control]
+
+  - id: negligent-flooding-concept
+    pref_label: 過失による浸害
+    alt_labels: [過失で浸水, 誤って浸水, 誤って水門, 出水事故]
+    broader: flooding-concept
+    indicates_crimes: [negligent-flooding]
+
+  - id: water-use-obstruction
+    pref_label: 水利の妨害・出水の危険
+    alt_labels: [水利妨害, 堤防を決壊, 堤防を壊, 水門を壊, 水門を破壊, 用水路を塞, 用水を止め, 田んぼの水を止め]
+    indicates_crimes: [obstruction-of-water-use]
+
+  # 公共の安全: 往来（第11章）
+  - id: traffic-obstruction
+    pref_label: 往来妨害
+    alt_labels: [往来妨害, 道路封鎖, 通行妨害]
+    indicates_crimes: [obstruction-of-traffic]
+
+  - id: train-endangering
+    pref_label: 鉄道・艦船の往来の危険
+    alt_labels: [置き石, 線路に石, 線路に置, 線路に物, 線路を壊, 踏切を壊, 信号機を壊, 灯台を壊, 浮標, ブイを壊]
+    broader: traffic-obstruction
+    indicates_crimes: [endangering-traffic, overturning-train-by-endangering]
+
+  - id: train-overturning
+    pref_label: 汽車・電車・艦船の転覆等
+    alt_labels: [脱線させ, 転覆させ, 電車を転覆, 列車を転覆, 船を沈め, 沈没させ, 電車を破壊]
+    broader: traffic-obstruction
+    indicates_crimes: [overturning-train, overturning-train-by-endangering]
+
+  - id: negligent-traffic-danger
+    pref_label: 過失による往来の危険
+    alt_labels: [脱線事故, 列車事故, 電車の運転ミス, 運転士の過失, 過失で脱線, 船舶事故, 船の衝突]
+    broader: traffic-obstruction
+    indicates_crimes: [negligent-endangering-traffic]
+
+  # 公共の信用: 通貨（第16章）
   - id: forgery
     pref_label: 偽造
     alt_labels: [偽造, 変造, 偽物, 偽の書類, なりすまし文書]
@@ -139,40 +236,219 @@ concepts:
 
   - id: currency-forgery
     pref_label: 通貨偽造
-    alt_labels: [偽札, 偽金, 通貨偽造]
+    alt_labels: [偽札, 偽金, 通貨偽造, 偽造紙幣, 偽造硬貨]
     broader: forgery
-    indicates_crimes: [counterfeiting-currency]
+    indicates_crimes: [counterfeiting-currency, counterfeiting-foreign-currency, acquiring-counterfeit-currency, uttering-after-acquisition, preparation-counterfeiting-currency]
+
+  - id: foreign-currency-forgery
+    pref_label: 外国通貨偽造
+    alt_labels: [偽ドル, 偽造ドル, 偽ユーロ, 外国の紙幣, 外国紙幣, 外貨を偽造]
+    broader: currency-forgery
+    indicates_crimes: [counterfeiting-foreign-currency]
+
+  - id: counterfeit-acquisition
+    pref_label: 偽造通貨の収得・収得後の行使
+    alt_labels: [偽札を受け取, 偽札をつかま, 偽札と気づ, 偽札だと気づ, 偽札を買, 偽札を手に入れ, 偽札を譲り受け]
+    broader: currency-forgery
+    indicates_crimes: [acquiring-counterfeit-currency, uttering-after-acquisition]
+
+  - id: currency-forgery-preparation
+    pref_label: 通貨偽造の準備
+    alt_labels: [偽札を作る準備, 偽札の印刷機, 偽札用の, 紙幣を印刷する機械, 偽札作りの道具]
+    broader: currency-forgery
+    indicates_crimes: [preparation-counterfeiting-currency]
+
+  # 公共の信用: 文書（第17章）
+  - id: imperial-document
+    pref_label: 詔書・御璽・国璽
+    alt_labels: [詔書, 御璽, 国璽]
+    broader: forgery
+    indicates_crimes: [counterfeiting-imperial-document, counterfeiting-imperial-seal]
+
+  - id: official-document-forgery
+    pref_label: 公文書の偽造
+    alt_labels: [公文書偽造, 公文書を偽造, 偽造公文書, 免許証を偽造, 偽の免許証, 偽造の免許証, 住民票を偽造, 偽の住民票, 証明書を偽造, 偽の証明書, パスポートを偽造, 偽のパスポート, 保険証を偽造, 偽の保険証]
+    broader: forgery
+    indicates_crimes: [counterfeiting-official-document, uttering-forged-official-document]
+
+  - id: false-official-document-concept
+    pref_label: 虚偽公文書の作成
+    alt_labels: [虚偽公文書, 嘘の公文書, 公文書を改ざん, 公文書改ざん, 決裁文書の改ざん, 公務員が虚偽の, 役所の職員が嘘の]
+    broader: forgery
+    indicates_crimes: [false-official-document, uttering-forged-official-document]
+
+  - id: false-registration
+    pref_label: 公正証書原本等への不実記載
+    alt_labels: [不実記載, 虚偽の登記, 嘘の登記, 偽装結婚, 偽装離婚, 虚偽の婚姻届, 嘘の婚姻届, 虚偽の届出, 嘘の届出, 虚偽の住民登録, 嘘の住所で住民登録, 虚偽の転入届]
+    indicates_crimes: [false-entry-in-notarial-deed, uttering-forged-official-document]
+
+  - id: unauthorized-filing
+    pref_label: 無断の届出（私文書偽造・不実記載）
+    alt_labels: [勝手に婚姻届, 勝手に離婚届, 婚姻届を勝手に, 離婚届を勝手に, 無断で婚姻届, 無断で離婚届]
+    broader: false-registration
+    indicates_crimes: [counterfeiting-private-document, uttering-forged-private-document, false-entry-in-notarial-deed, uttering-forged-official-document]
+
+  - id: false-medical-certificate-concept
+    pref_label: 虚偽診断書
+    alt_labels: [嘘の診断書, 虚偽の診断書, 偽の診断書, 診断書を偽, 死亡診断書を偽, 虚偽診断書]
+    indicates_crimes: [false-medical-certificate, uttering-forged-private-document]
+
+  - id: forged-document-use
+    pref_label: 偽造文書の行使
+    alt_labels: [偽造した書類を使, 偽の書類を使, 偽造書類を提出, 偽の書類を提出, 偽造した契約書を, 偽の契約書を]
+    broader: forgery
+    indicates_crimes: [uttering-forged-private-document, uttering-forged-official-document]
+
+  - id: data-falsification
+    pref_label: 電磁的記録の不正作出
+    alt_labels: [データを改ざん, データ改ざん, 記録を改ざん, データを書き換え, 記録を書き換え, 電磁的記録, 改ざんしたデータ]
+    indicates_crimes: [unauthorized-electromagnetic-record]
+
+  # 公共の信用: 有価証券・支払用カード（第18章・第18章の2）
+  - id: securities-forgery
+    pref_label: 有価証券の偽造・行使
+    alt_labels: [偽の手形, 偽造の手形, 手形を偽造, 偽の小切手, 偽造小切手, 小切手を偽造, 偽の株券, 偽造株券, 偽の商品券, 偽造商品券, 偽の金券, 偽造の金券]
+    broader: forgery
+    indicates_crimes: [counterfeiting-securities, uttering-forged-securities]
 
   - id: card-forgery
     pref_label: 支払カード偽造
     alt_labels: [クレジットカード偽造, スキミング, カード不正]
     broader: forgery
-    indicates_crimes: [unauthorized-payment-card-record]
+    indicates_crimes: [unauthorized-payment-card-record, possession-unauthorized-card, preparation-unauthorized-card]
 
+  - id: fake-card-possession
+    pref_label: 不正カードの所持
+    alt_labels: [偽造カード, 偽のクレジットカード, 偽のキャッシュカード]
+    broader: card-forgery
+    indicates_crimes: [possession-unauthorized-card, unauthorized-payment-card-record]
+
+  - id: card-info-theft
+    pref_label: カード情報の不正取得
+    alt_labels: [カード情報を盗, カード情報が盗, カード情報を抜, カード情報を取得, カード番号を盗, カード番号が盗, スキマー]
+    broader: card-forgery
+    indicates_crimes: [preparation-unauthorized-card]
+
+  # 公共の信用: 印章（第19章）
+  - id: official-seal-forgery
+    pref_label: 公印の偽造・不正使用
+    alt_labels: [公印, 職印, 役所の印鑑, 役所のハンコ, 公務員の印鑑]
+    broader: forgery
+    indicates_crimes: [counterfeiting-official-seal]
+
+  - id: official-mark-forgery
+    pref_label: 公記号の偽造・不正使用
+    alt_labels: [公記号, 公務所の記号, 役所の記号, 官庁の記号]
+    broader: forgery
+    indicates_crimes: [counterfeiting-official-mark]
+
+  # 公共の信用: 不正指令電磁的記録（第19章の2）
+  - id: malware-concept
+    pref_label: コンピュータ・ウイルス
+    alt_labels: [コンピュータウイルス, コンピューターウイルス, マルウェア, ランサムウェア, トロイの木馬, スパイウェア, 不正プログラム, 遠隔操作ウイルス, キーロガー, バックドア, ウイルスを作, ウイルスを送, ウイルスを仕込, ウイルスを配, ウイルスに感染させ, ウイルス付き, ウイルスメール, パソコンがウイルス, スマホがウイルス]
+    indicates_crimes: [creating-malware, acquiring-malware]
+
+  - id: malware-acquisition
+    pref_label: ウイルスの取得・保管
+    alt_labels: [ウイルスを入手, ウイルスを購入, ウイルスを手に入れ, ウイルスを保管, マルウェアを入手, マルウェアを購入]
+    broader: malware-concept
+    indicates_crimes: [acquiring-malware]
+
+  # 風俗・健康: あへん煙（第14章）
+  - id: opium-concept
+    pref_label: あへん煙
+    alt_labels: [あへん, アヘン, 阿片]
+    indicates_crimes: [opium-import, opium-pipe-import, opium-import-by-customs, opium-smoking, opium-possession]
+
+  - id: opium-smoking-concept
+    pref_label: あへん煙の吸食・場所提供
+    alt_labels: [アヘンを吸, あへんを吸, 阿片を吸, アヘン窟]
+    broader: opium-concept
+    indicates_crimes: [opium-smoking]
+
+  - id: opium-customs
+    pref_label: 税関職員によるあへん煙の輸入等
+    alt_labels: [税関職員, 税関の職員]
+    broader: opium-concept
+    indicates_crimes: [opium-import-by-customs]
+
+  # 風俗・健康: 飲料水（第15章）
+  - id: water-pollution
+    pref_label: 飲料水汚染
+    alt_labels: [飲料水汚染, 水を汚された, 井戸を汚, 飲み水を汚, 水源を汚, 浄水を汚, 水道水を汚]
+    indicates_crimes: [water-contamination, waterworks-contamination, water-contamination-causing-death-injury]
+
+  - id: water-poisoning
+    pref_label: 飲料水への毒物混入
+    alt_labels: [水道に毒, 井戸に毒, 飲み水に毒, 浄水に毒, 水源に毒, 貯水槽に毒, 給水タンクに毒]
+    broader: water-pollution
+    indicates_crimes: [poisoning-drinking-water, poisoning-waterworks, water-contamination-causing-death-injury]
+
+  - id: waterworks-damage
+    pref_label: 水道の損壊・閉塞
+    alt_labels: [水道管を壊, 水道管を損壊, 水道管を塞, 水道を壊, 水道設備を壊]
+    indicates_crimes: [damaging-waterworks]
+
+  # 風俗・健康: わいせつ・重婚（第22章の一部）
   - id: obscenity
     pref_label: わいせつ
     alt_labels: [公然わいせつ, 露出, わいせつ行為]
     indicates_crimes: [public-indecency]
 
+  - id: obscene-material
+    pref_label: わいせつ物の頒布等
+    alt_labels: [わいせつ画像, わいせつ動画, わいせつな画像, わいせつな動画, わいせつ物, わいせつDVD, 無修正, 裏DVD]
+    broader: obscenity
+    indicates_crimes: [distribution-of-obscene-material]
+
+  - id: solicitation-concept
+    pref_label: 淫行の勧誘
+    alt_labels: [淫行勧誘, 淫行を勧誘, 売春させ, 売春をさせ, 売春を勧誘, 体を売らせ]
+    indicates_crimes: [solicitation-of-lewdness]
+
+  - id: bigamy-concept
+    pref_label: 重婚
+    alt_labels: [重婚, 二重結婚, 二重婚, 二重に結婚, 二重に婚姻, 妻がいるのに結婚, 夫がいるのに結婚, 配偶者がいるのに結婚]
+    indicates_crimes: [bigamy]
+
+  # 風俗・健康: 賭博・富くじ（第23章）
   - id: gambling-concept
     pref_label: 賭博
-    alt_labels: [賭博, ギャンブル, 賭け事, 違法カジノ]
-    indicates_crimes: [gambling]
+    alt_labels: [賭博, ギャンブル, 賭け事, 違法カジノ, 闇カジノ, 野球賭博, オンラインカジノ, 賭けマージャン, 賭け麻雀]
+    indicates_crimes: [gambling, habitual-gambling]
 
-  - id: water-pollution
-    pref_label: 飲料水汚染
-    alt_labels: [飲料水汚染, 水道に毒, 水を汚された]
-    indicates_crimes: [water-contamination]
+  - id: gambling-house
+    pref_label: 常習賭博・賭博場開張
+    alt_labels: [常習賭博, 常習的に賭博, 賭博場, 賭場, 胴元, 闇カジノを開, 闇カジノを経営, 違法カジノを経営, 違法カジノを運営]
+    broader: gambling-concept
+    indicates_crimes: [habitual-gambling]
 
-  - id: traffic-obstruction
-    pref_label: 往来妨害
-    alt_labels: [往来妨害, 道路封鎖, 通行妨害]
-    indicates_crimes: [obstruction-of-traffic]
+  - id: lottery-concept
+    pref_label: 富くじ
+    alt_labels: [富くじ, 私設宝くじ, 私設の宝くじ, 違法な宝くじ, 違法なくじ]
+    broader: gambling-concept
+    indicates_crimes: [lottery]
 
+  # 風俗・健康: 礼拝所・墳墓（第24章）
   - id: worship-disrespect
     pref_label: 礼拝所不敬
     alt_labels: [墓を荒らされた, 神社を汚された, 礼拝所不敬]
     indicates_crimes: [disrespect-worship-place]
+
+  - id: grave-concept
+    pref_label: 墳墓の発掘
+    alt_labels: [墓を掘, 墓を暴, 墳墓を発掘, 墓荒らし, 墓あらし, 墓を開け]
+    indicates_crimes: [grave-desecration, grave-desecration-corpse]
+
+  - id: corpse-concept
+    pref_label: 死体・遺骨の損壊・遺棄・領得
+    alt_labels: [死体遺棄, 死体を遺棄, 遺体を遺棄, 死体を捨, 遺体を捨, 死体を放置, 遺体を放置, 死体を隠, 遺体を隠, 死体を埋め, 遺体を埋め, 死体損壊, 死体を損壊, 遺体を損壊, 遺体を傷つけ, 遺骨を持ち去, 遺骨を盗, 遺骨を捨, 遺骨を勝手に]
+    indicates_crimes: [corpse-desecration, grave-desecration-corpse]
+
+  - id: secret-burial-concept
+    pref_label: 変死者の密葬
+    alt_labels: [変死者, 変死体, 検視を受けず, 検視を経ず, 検視せず, 届けずに埋葬, 勝手に埋葬, 勝手に火葬]
+    indicates_crimes: [secret-burial]
 
   # --- 国家的法益 ---
   - id: official-duty-obstruction
@@ -282,6 +558,12 @@ concepts:
     pref_label: 騒乱
     alt_labels: [騒乱, 暴動, 集団で暴れた]
     indicates_crimes: [riot]
+
+  - id: dispersal-order
+    pref_label: 解散命令への不服従
+    alt_labels: [解散命令, 解散しな, 解散に応じ]
+    broader: riot-concept
+    indicates_crimes: [failure-to-disperse]
 
   - id: abuse-authority-concept
     pref_label: 職権濫用
