@@ -180,15 +180,77 @@ concepts:
     alt_labels: [公務執行妨害, 警察官に抵抗, 役所で暴れた]
     indicates_crimes: [obstruction-of-official-duty]
 
+  - id: official-computer-obstruction
+    pref_label: 公務用電子計算機の妨害
+    alt_labels: [役所のパソコン, 役所のシステム, 行政システム, 自治体のシステム, 役所のサーバー]
+    broader: official-duty-obstruction
+    indicates_crimes: [computer-obstruction-of-official-duty]
+
+  - id: seal-breaking
+    pref_label: 封印・差押え表示の破棄
+    alt_labels: [封印を破, 封印を剥が, 差押えの表示, 差押えの紙, 差し押さえの紙, 差押えの札, 差し押さえの札]
+    indicates_crimes: [breaking-seals, aggravated-breaking-seals]
+
+  - id: execution-obstruction
+    pref_label: 強制執行の妨害
+    alt_labels: [強制執行, 差押え, 差し押さえ, 財産を隠, 資産隠し, 財産隠し, 財産の隠匿, 仮装譲渡, 執行官, 執行妨害, 占有屋]
+    indicates_crimes: [property-damage-to-obstruct-execution, obstruction-of-compulsory-execution, aggravated-breaking-seals]
+
+  - id: auction-obstruction
+    pref_label: 競売・入札の公正の侵害
+    alt_labels: [競売, 競売妨害, 入札妨害, 入札を妨害, 予定価格を漏ら, 公共工事の入札]
+    indicates_crimes: [obstruction-of-execution-sale, obstruction-of-public-auction]
+
+  - id: bid-rigging
+    pref_label: 談合
+    alt_labels: [談合, 入札談合, 官製談合]
+    broader: auction-obstruction
+    indicates_crimes: [obstruction-of-public-auction]
+
   - id: false-report
     pref_label: 虚偽の申告・証言
     alt_labels: [虚偽告訴, でっちあげ, 冤罪, 嘘の告訴, 偽証, 嘘の証言]
     indicates_crimes: [false-accusation, perjury]
 
+  - id: false-expert-concept
+    pref_label: 虚偽の鑑定・通訳・翻訳
+    alt_labels: [虚偽鑑定, 嘘の鑑定, 鑑定を偽, 嘘の通訳, 虚偽の通訳, 嘘の翻訳, 虚偽の翻訳]
+    broader: false-report
+    indicates_crimes: [false-expert-testimony]
+
+  - id: witness-intimidation
+    pref_label: 証人等への威迫
+    alt_labels: [証人を脅, 証言するな, 被害届を取り下げろ, 被害届を取り下げるよう, 告訴を取り下げろ, 口止め, 示談を迫, 証言を変えろ]
+    indicates_crimes: [intimidation-of-witness]
+
   - id: bribery-concept
     pref_label: 賄賂
     alt_labels: [賄賂, わいろ, 収賄, 袖の下]
-    indicates_crimes: [bribe-acceptance]
+    indicates_crimes: [bribe-acceptance, third-party-bribery, aggravated-bribery, intermediary-bribery, bribe-giving]
+
+  - id: bribe-giving-concept
+    pref_label: 賄賂の供与
+    alt_labels: [贈賄, 賄賂を渡, 賄賂を贈, 賄賂を送, 金品を贈]
+    broader: bribery-concept
+    indicates_crimes: [bribe-giving]
+
+  - id: third-party-bribery-concept
+    pref_label: 第三者への賄賂供与
+    alt_labels: [第三者供賄, 第三者に賄賂, 献金させ, 寄付させ]
+    broader: bribery-concept
+    indicates_crimes: [third-party-bribery]
+
+  - id: aggravated-bribery-concept
+    pref_label: 不正な職務行為と賄賂
+    alt_labels: [加重収賄, 事後収賄, 便宜を図, 便宜の見返り, 退職後に謝礼]
+    broader: bribery-concept
+    indicates_crimes: [aggravated-bribery, bribe-acceptance]
+
+  - id: intermediary-bribery-concept
+    pref_label: あっせん収賄
+    alt_labels: [あっせん収賄, 斡旋収賄, 口利き]
+    broader: bribery-concept
+    indicates_crimes: [intermediary-bribery]
 
   - id: harboring
     pref_label: 犯人蔵匿・証拠隠滅
@@ -198,12 +260,23 @@ concepts:
   - id: escape-concept
     pref_label: 逃走
     alt_labels: [逃走, 脱走, 脱獄]
-    indicates_crimes: [escape]
+    indicates_crimes: [escape, aggravated-escape]
+
+  - id: escape-assistance
+    pref_label: 被拘禁者の逃走援助・奪取
+    alt_labels: [脱獄を手伝, 逃走を手伝, 脱走を手伝, 逃走を助け, 脱獄を助け, 囚人を逃が, 受刑者を逃が, 奪還, 護送中に逃が]
+    broader: escape-concept
+    indicates_crimes: [rescuing-prisoner, aiding-escape, aiding-escape-by-guard]
 
   - id: insurrection-concept
     pref_label: 内乱・外患
     alt_labels: [内乱, クーデター, 政府転覆, 外患, 売国]
-    indicates_crimes: [insurrection, inducement-foreign-aggression]
+    indicates_crimes: [insurrection, inducement-foreign-aggression, insurrection-preparation, aiding-insurrection, assisting-foreign-aggression, foreign-aggression-preparation]
+
+  - id: foreign-relations
+    pref_label: 国交の侵害
+    alt_labels: [国旗, 国章, 私戦, 義勇兵, 外国と戦闘, 外国で戦闘, 中立命令, 局外中立]
+    indicates_crimes: [damaging-foreign-national-emblem, private-war-preparation, violation-of-neutrality-order]
 
   - id: riot-concept
     pref_label: 騒乱
@@ -214,3 +287,9 @@ concepts:
     pref_label: 職権濫用
     alt_labels: [職権濫用, 権力乱用, 公務員の権力乱用]
     indicates_crimes: [abuse-of-authority]
+
+  - id: special-official-abuse
+    pref_label: 捜査・司法・看守職員による職権濫用・暴行
+    alt_labels: [不当逮捕, 違法逮捕, 拷問, 警察官に殴られ, 警官に殴られ, 警察に殴られ, 刑事に殴られ, 取り調べで殴られ, 取調べで殴られ, 取り調べで暴行, 取調べで暴行, 看守に殴られ, 刑務官に殴られ, 刑務官の暴行, 留置場で暴行]
+    broader: abuse-authority-concept
+    indicates_crimes: [special-abuse-of-authority, violence-by-special-official, special-abuse-causing-death-injury]

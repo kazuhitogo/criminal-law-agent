@@ -95,6 +95,15 @@ uv run pytest                                  # テスト
 uv run python -m criminal_ontology.query "財布を盗まれた"   # 単体確認
 ```
 
+条文の照合（手動実行の開発ツール。e-Gov 法令 API に接続する。テスト・ビルドからは呼ばない）:
+
+```bash
+uv run python scripts/egov_statutes.py check         # crimes.yaml の statute_text と e-Gov 原文の差分
+uv run python scripts/egov_statutes.py check --fix   # 差分を e-Gov 原文で書き換え
+uv run python scripts/egov_statutes.py show 96の2    # 指定条の原文を YAML 値として出力
+uv run python scripts/egov_statutes.py list          # 第2編の条一覧（* = 収録済み）
+```
+
 ### 2. エージェント API
 
 ```bash

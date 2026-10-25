@@ -8,7 +8,7 @@ crimes:
   # 【国家的法益に対する罪】
   # ================================================================
 
-  # --- 第1章 内乱に関する罪 (77-80) ---
+  # --- 第2章 内乱に関する罪 (77-80) ---
   - id: insurrection
     label: 内乱罪
     article: "77"
@@ -29,9 +29,50 @@ crimes:
         max: null
         unit: year
         note: 死刑又は無期拘禁刑(首謀者)。その他は役割に応じ無期又は有期拘禁刑
-    statute_text: "国の統治機構を破壊し、又はその領土において国権を排除して権力を行使し、その他憲法の定める統治の基本秩序を壊乱することを目的として暴動をした者は、内乱の罪とし、次の区別に従って処断する。"
+    statute_text: "国の統治機構を破壊し、又はその領土において国権を排除して権力を行使し、その他憲法の定める統治の基本秩序を壊乱することを目的として暴動をした者は、内乱の罪とし、次の区別に従って処断する。\n一　首謀者は、死刑又は無期拘禁刑に処する。\n二　謀議に参与し、又は群衆を指揮した者は無期又は三年以上の拘禁刑に処し、その他諸般の職務に従事した者は一年以上十年以下の拘禁刑に処する。\n三　付和随行し、その他単に暴動に参加した者は、三年以下の拘禁刑に処する。\n２　前項の罪の未遂は、罰する。ただし、同項第三号に規定する者については、この限りでない。"
 
-  # --- 第2章 外患に関する罪 (81-89) ---
+  - id: insurrection-preparation
+    label: 内乱予備・陰謀罪
+    article: "78"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の存立・統治機構
+    elements:
+      - type: conduct
+        desc: 内乱の予備（武器・資金の準備等）又は陰謀（二人以上での謀議）をする
+        keywords: [内乱の準備, 内乱の計画, クーデター計画, 謀議]
+      - type: intent
+        desc: 内乱を実行する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "内乱の予備又は陰謀をした者は、一年以上十年以下の拘禁刑に処する。"
+    related_to: [insurrection]
+
+  - id: aiding-insurrection
+    label: 内乱等幇助罪
+    article: "79"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の存立・統治機構
+    elements:
+      - type: conduct
+        desc: 兵器・資金・食糧の供給その他の行為により、内乱又は内乱の予備・陰謀を幇助する
+        keywords: [兵器を供給, 資金を提供, 食糧を供給, 幇助]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 7
+        unit: year
+        note: 7年以下の拘禁刑
+    statute_text: "兵器、資金若しくは食糧を供給し、又はその他の行為により、前二条の罪を幇助した者は、七年以下の拘禁刑に処する。"
+    related_to: [insurrection, insurrection-preparation]
+
+  # --- 第3章 外患に関する罪 (81-89) ---
   - id: inducement-foreign-aggression
     label: 外患誘致罪
     article: "81"
@@ -49,6 +90,129 @@ crimes:
         note: 死刑
     statute_text: "外国と通謀して日本国に対し武力を行使させた者は、死刑に処する。"
 
+  - id: assisting-foreign-aggression
+    label: 外患援助罪
+    article: "82"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の対外的存立
+    elements:
+      - type: circumstance
+        desc: 日本国に対して外国から武力の行使があったとき
+        keywords: [武力行使, 侵攻, 戦争]
+      - type: conduct
+        desc: 外国に加担して軍務に服し、その他外国に軍事上の利益を与える
+        keywords: [外国軍に加担, 軍事情報を渡す, 敵に協力]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: death
+        note: 死刑又は無期若しくは2年以上の拘禁刑
+      - type: imprisonment
+        min: 2
+        max: null
+        unit: year
+        note: 死刑又は無期若しくは2年以上の拘禁刑
+    statute_text: "日本国に対して外国から武力の行使があったときに、これに加担して、その軍務に服し、その他これに軍事上の利益を与えた者は、死刑又は無期若しくは二年以上の拘禁刑に処する。"
+    related_to: [inducement-foreign-aggression]
+
+  - id: foreign-aggression-preparation
+    label: 外患予備・陰謀罪
+    article: "88"
+    category: CrimeAgainstStateExistence
+    legal_interest: 国家の対外的存立
+    elements:
+      - type: conduct
+        desc: 外患誘致罪（81条）又は外患援助罪（82条）の予備又は陰謀をする
+        keywords: [外患の準備, 外国と密約, 謀議]
+      - type: intent
+        desc: 外患誘致・外患援助を実行する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "第八十一条又は第八十二条の罪の予備又は陰謀をした者は、一年以上十年以下の拘禁刑に処する。"
+    related_to: [inducement-foreign-aggression, assisting-foreign-aggression]
+
+  # --- 第4章 国交に関する罪 (90-94) ---
+  - id: damaging-foreign-national-emblem
+    label: 外国国章損壊等罪
+    article: "92"
+    category: CrimeAgainstStateExistence
+    legal_interest: 日本国の外交上の利益
+    elements:
+      - type: object
+        desc: 外国の国旗その他の国章
+        keywords: [外国の国旗, 国旗, 国章]
+      - type: conduct
+        desc: 損壊し、除去し、又は汚損する
+        keywords: [燃やす, 破る, 引きずり下ろす, 汚す]
+      - type: intent
+        desc: 外国に対して侮辱を加える目的
+        keywords: []
+      - type: circumstance
+        desc: （2項）外国政府の請求がなければ公訴を提起できない
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 200000
+        unit: yen
+        note: 20万円以下の罰金
+    statute_text: "外国に対して侮辱を加える目的で、その国の国旗その他の国章を損壊し、除去し、又は汚損した者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。\n２　前項の罪は、外国政府の請求がなければ公訴を提起することができない。"
+
+  - id: private-war-preparation
+    label: 私戦予備・陰謀罪
+    article: "93"
+    category: CrimeAgainstStateExistence
+    legal_interest: 日本国の外交上の利益
+    elements:
+      - type: conduct
+        desc: 外国に対して私的に戦闘行為をするための予備又は陰謀をする（自首した者は刑を免除）
+        keywords: [私戦, 外国で戦闘, 義勇兵, 武器の準備]
+      - type: intent
+        desc: 外国に対して私的に戦闘行為をする目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑（自首した者は刑を免除）
+    statute_text: "外国に対して私的に戦闘行為をする目的で、その予備又は陰謀をした者は、三月以上五年以下の拘禁刑に処する。ただし、自首した者は、その刑を免除する。"
+
+  - id: violation-of-neutrality-order
+    label: 中立命令違反罪
+    article: "94"
+    category: CrimeAgainstStateExistence
+    legal_interest: 日本国の外交上の利益
+    elements:
+      - type: circumstance
+        desc: 外国が交戦している際
+        keywords: [交戦, 戦争]
+      - type: conduct
+        desc: 局外中立に関する命令に違反する
+        keywords: [中立命令, 局外中立]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "外国が交戦している際に、局外中立に関する命令に違反した者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+
   # --- 第5章 公務の執行を妨害する罪 (95-96の6) ---
   - id: obstruction-of-official-duty
     label: 公務執行妨害罪
@@ -62,6 +226,9 @@ crimes:
       - type: conduct
         desc: 職務執行に際し暴行又は脅迫を加える
         keywords: [暴行, 脅迫, 抵抗, 妨害, 殴る, 突き飛ばす]
+      - type: conduct
+        desc: （2項・職務強要）公務員に処分をさせ若しくはさせないため、又は辞職させるために暴行又は脅迫を加える
+        keywords: [職務強要, 辞職を迫る, 処分を迫る]
       - type: intent
         desc: 故意
         keywords: []
@@ -74,7 +241,200 @@ crimes:
         max: 500000
         unit: yen
         note: 50万円以下の罰金
-    statute_text: "公務員が職務を執行するに当たり、これに対して暴行又は脅迫を加えた者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    statute_text: "公務員が職務を執行するに当たり、これに対して暴行又は脅迫を加えた者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。\n２　公務員に、ある処分をさせ、若しくはさせないため、又はその職を辞させるために、暴行又は脅迫を加えた者も、前項と同様とする。"
+
+  - id: computer-obstruction-of-official-duty
+    label: 電子計算機損壊等公務執行妨害罪
+    article: "95の2"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家・地方公共団体の公務
+    elements:
+      - type: circumstance
+        desc: 公務員が職務を執行するに当たり
+        keywords: [公務員, 役所]
+      - type: object
+        desc: 公務員の職務に使用する電子計算機又はその用に供する電磁的記録
+        keywords: [役所のパソコン, 行政システム, 電子計算機, 電磁的記録]
+      - type: conduct
+        desc: 損壊し、虚偽の情報・不正な指令を与え、その他の方法により、使用目的に沿う動作をさせず又は反する動作をさせる
+        keywords: [システムを壊す, データを消す, ウイルス, 不正な指令]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 500000
+        unit: yen
+        note: 50万円以下の罰金
+    statute_text: "公務員が職務を執行するに当たり、その職務に使用する電子計算機若しくはその用に供する電磁的記録を損壊し、若しくはその職務に使用する電子計算機に虚偽の情報若しくは不正な指令を与え、又はその他の方法により、その電子計算機に使用目的に沿うべき動作をさせず、又は使用目的に反する動作をさせた者は、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    related_to: [obstruction-of-official-duty]
+
+  - id: breaking-seals
+    label: 封印等破棄罪
+    article: "96"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務員が施した封印・差押えの表示の効力（強制執行等の公務）
+    elements:
+      - type: object
+        desc: 公務員が施した封印又は差押えの表示
+        keywords: [封印, 差押えの表示, 差し押さえの紙]
+      - type: conduct
+        desc: 損壊し、又はその他の方法により封印・差押えの表示に係る命令・処分を無効にする
+        keywords: [剥がす, 破る, 持ち出す]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑若しくは250万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "公務員が施した封印若しくは差押えの表示を損壊し、又はその他の方法によりその封印若しくは差押えの表示に係る命令若しくは処分を無効にした者は、三年以下の拘禁刑若しくは二百五十万円以下の罰金に処し、又はこれを併科する。"
+
+  - id: property-damage-to-obstruct-execution
+    label: 強制執行妨害目的財産損壊等罪
+    article: "96の2"
+    category: CrimeAgainstStateFunction
+    legal_interest: 強制執行の適正な運用
+    elements:
+      - type: object
+        desc: 強制執行を受け、若しくは受けるべき財産（3号は金銭執行を受けるべき財産）
+        keywords: [差押え, 財産, 資産]
+      - type: conduct
+        desc: （1号）財産を隠匿・損壊し、譲渡を仮装し、又は債務の負担を仮装する
+        keywords: [財産を隠す, 資産隠し, 仮装譲渡, 名義を移す, 架空の借金]
+      - type: conduct
+        desc: （2号）財産の現状を改変して価格を減損し、又は強制執行の費用を増大させる
+        keywords: [価値を下げる, 現状を変える]
+      - type: conduct
+        desc: （3号）金銭執行を受けるべき財産を無償その他の不利益な条件で譲渡し、又は権利を設定する。情を知ってその相手方となった者も同様
+        keywords: [タダで譲る, 安く譲る, 譲渡]
+      - type: intent
+        desc: 強制執行を妨害する目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑若しくは250万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "強制執行を妨害する目的で、次の各号のいずれかに該当する行為をした者は、三年以下の拘禁刑若しくは二百五十万円以下の罰金に処し、又はこれを併科する。情を知って、第三号に規定する譲渡又は権利の設定の相手方となった者も、同様とする。\n一　強制執行を受け、若しくは受けるべき財産を隠匿し、損壊し、若しくはその譲渡を仮装し、又は債務の負担を仮装する行為\n二　強制執行を受け、又は受けるべき財産について、その現状を改変して、価格を減損し、又は強制執行の費用を増大させる行為\n三　金銭執行を受けるべき財産について、無償その他の不利益な条件で、譲渡をし、又は権利の設定をする行為"
+
+  - id: obstruction-of-compulsory-execution
+    label: 強制執行行為妨害等罪
+    article: "96の3"
+    category: CrimeAgainstStateFunction
+    legal_interest: 強制執行の適正な運用
+    elements:
+      - type: conduct
+        desc: 偽計又は威力を用いて、立入り・占有者の確認その他の強制執行の行為を妨害する
+        keywords: [執行官を妨害, 立入りを拒む, 居座る, 偽計, 威力]
+      - type: conduct
+        desc: （2項）強制執行の申立てをさせず又は取り下げさせる目的で、申立権者又はその代理人に暴行又は脅迫を加える
+        keywords: [申立てを取り下げろ, 債権者を脅す]
+      - type: intent
+        desc: 故意（2項は申立てをさせない・取り下げさせる目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑若しくは250万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "偽計又は威力を用いて、立入り、占有者の確認その他の強制執行の行為を妨害した者は、三年以下の拘禁刑若しくは二百五十万円以下の罰金に処し、又はこれを併科する。\n２　強制執行の申立てをさせず又はその申立てを取り下げさせる目的で、申立権者又はその代理人に対して暴行又は脅迫を加えた者も、前項と同様とする。"
+
+  - id: obstruction-of-execution-sale
+    label: 強制執行関係売却妨害罪
+    article: "96の4"
+    category: CrimeAgainstStateFunction
+    legal_interest: 強制執行における売却の公正
+    elements:
+      - type: object
+        desc: 強制執行において行われ、又は行われるべき売却（競売等）
+        keywords: [競売, 売却]
+      - type: conduct
+        desc: 偽計又は威力を用いて売却の公正を害すべき行為をする
+        keywords: [競売妨害, 入札を妨害, 買受けを妨害]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑若しくは250万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "偽計又は威力を用いて、強制執行において行われ、又は行われるべき売却の公正を害すべき行為をした者は、三年以下の拘禁刑若しくは二百五十万円以下の罰金に処し、又はこれを併科する。"
+
+  - id: aggravated-breaking-seals
+    label: 加重封印等破棄等罪
+    article: "96の5"
+    category: CrimeAgainstStateFunction
+    legal_interest: 強制執行の適正な運用
+    elements:
+      - type: conduct
+        desc: 人の債務に関して、96条から96条の4までの罪を犯す
+        keywords: [他人の借金, 執行妨害の請負, 占有屋]
+      - type: intent
+        desc: 報酬を得、又は得させる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑若しくは500万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 5000000
+        unit: yen
+        note: 500万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "報酬を得、又は得させる目的で、人の債務に関して、第九十六条から前条までの罪を犯した者は、五年以下の拘禁刑若しくは五百万円以下の罰金に処し、又はこれを併科する。"
+    related_to: [breaking-seals, property-damage-to-obstruct-execution, obstruction-of-compulsory-execution, obstruction-of-execution-sale]
+
+  - id: obstruction-of-public-auction
+    label: 公契約関係競売等妨害罪
+    article: "96の6"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公の競売・入札の公正
+    elements:
+      - type: object
+        desc: 公の競売又は入札で契約を締結するためのもの
+        keywords: [公共工事, 入札, 公の競売]
+      - type: conduct
+        desc: 偽計又は威力を用いて、公の競売・入札の公正を害すべき行為をする
+        keywords: [入札妨害, 予定価格を漏らす, 官製談合]
+      - type: conduct
+        desc: （2項・談合）談合する
+        keywords: [談合, 入札談合]
+      - type: intent
+        desc: 故意（2項は公正な価格を害し又は不正な利益を得る目的）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑若しくは250万円以下の罰金に処し、又はこれを併科する
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金（拘禁刑との任意的併科あり）
+    statute_text: "偽計又は威力を用いて、公の競売又は入札で契約を締結するためのものの公正を害すべき行為をした者は、三年以下の拘禁刑若しくは二百五十万円以下の罰金に処し、又はこれを併科する。\n２　公正な価格を害し又は不正な利益を得る目的で、談合した者も、前項と同様とする。"
 
   # --- 第6章 逃走の罪 (97-102) ---
   - id: escape
@@ -98,6 +458,105 @@ crimes:
         unit: year
         note: 3年以下の拘禁刑
     statute_text: "法令により拘禁された者が逃走したときは、三年以下の拘禁刑に処する。"
+
+  - id: aggravated-escape
+    label: 加重逃走罪
+    article: "98"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の拘禁作用
+    elements:
+      - type: object
+        desc: 法令により拘禁された者
+        keywords: [拘禁, 留置場, 刑務所]
+      - type: conduct
+        desc: 拘禁場若しくは拘束のための器具を損壊し、暴行若しくは脅迫をし、又は二人以上通謀して逃走する
+        keywords: [手錠を壊す, 檻を壊す, 看守を殴る, 集団脱走, 脱獄]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "前条に規定する者が拘禁場若しくは拘束のための器具を損壊し、暴行若しくは脅迫をし、又は二人以上通謀して、逃走したときは、三月以上五年以下の拘禁刑に処する。"
+    related_to: [escape]
+
+  - id: rescuing-prisoner
+    label: 被拘禁者奪取罪
+    article: "99"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の拘禁作用
+    elements:
+      - type: object
+        desc: 法令により拘禁された者
+        keywords: [逮捕された人, 囚人, 被疑者]
+      - type: conduct
+        desc: 奪取する（看守者の実力支配から離脱させ、自己又は第三者の支配下に移す）
+        keywords: [奪還, 奪い返す, 連れ去る]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑
+    statute_text: "法令により拘禁された者を奪取した者は、三月以上五年以下の拘禁刑に処する。"
+
+  - id: aiding-escape
+    label: 逃走援助罪
+    article: "100"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の拘禁作用
+    elements:
+      - type: conduct
+        desc: 器具を提供し、その他逃走を容易にすべき行為をする
+        keywords: [脱獄を手伝う, 逃走を手伝う, 道具を差し入れる]
+      - type: conduct
+        desc: （2項）逃走させる目的で暴行又は脅迫をする
+        keywords: [看守を脅す, 暴行]
+      - type: intent
+        desc: 法令により拘禁された者を逃走させる目的
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑（1項）
+      - type: imprisonment
+        min: 3
+        max: 60
+        unit: month
+        note: 3月以上5年以下の拘禁刑（2項）
+    statute_text: "法令により拘禁された者を逃走させる目的で、器具を提供し、その他逃走を容易にすべき行為をした者は、三年以下の拘禁刑に処する。\n２　前項の目的で、暴行又は脅迫をした者は、三月以上五年以下の拘禁刑に処する。"
+    related_to: [escape]
+
+  - id: aiding-escape-by-guard
+    label: 看守者等逃走援助罪
+    article: "101"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の拘禁作用
+    elements:
+      - type: object
+        desc: 法令により拘禁された者を看守し又は護送する者（身分犯）
+        keywords: [看守, 刑務官, 護送]
+      - type: conduct
+        desc: 拘禁された者を逃走させる
+        keywords: [逃がす, 逃走させる]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: 10
+        unit: year
+        note: 1年以上10年以下の拘禁刑
+    statute_text: "法令により拘禁された者を看守し又は護送する者がその拘禁された者を逃走させたときは、一年以上十年以下の拘禁刑に処する。"
+    related_to: [aiding-escape]
 
   # --- 第7章 犯人蔵匿及び証拠隠滅の罪 (103-105の2) ---
   - id: harboring-criminal
@@ -152,7 +611,34 @@ crimes:
         note: 30万円以下の罰金
     statute_text: "他人の刑事事件に関する証拠を隠滅し、偽造し、若しくは変造し、又は偽造若しくは変造の証拠を使用した者は、三年以下の拘禁刑又は三十万円以下の罰金に処する。"
 
-  # --- 第9章 騒乱の罪 (106-107) ---
+  - id: intimidation-of-witness
+    label: 証人等威迫罪
+    article: "105の2"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の刑事司法作用・証人等の私生活の平穏
+    elements:
+      - type: object
+        desc: 自己若しくは他人の刑事事件の捜査・審判に必要な知識を有すると認められる者（被害者・証人・参考人等）又はその親族
+        keywords: [証人, 被害者, 目撃者, 参考人]
+      - type: conduct
+        desc: 当該事件に関して、正当な理由なく面会を強請し、又は強談威迫の行為をする
+        keywords: [証言するな, 被害届を取り下げろ, 口止め, 押しかける, 示談を迫る]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 2
+        unit: year
+        note: 2年以下の拘禁刑
+      - type: fine
+        max: 300000
+        unit: yen
+        note: 30万円以下の罰金
+    statute_text: "自己若しくは他人の刑事事件の捜査若しくは審判に必要な知識を有すると認められる者又はその親族に対し、当該事件に関して、正当な理由がないのに面会を強請し、又は強談威迫の行為をした者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。"
+    related_to: [evidence-destruction, intimidation]
+
+  # --- 第8章 騒乱の罪 (106-107) ---
   - id: riot
     label: 騒乱罪
     article: "106"
@@ -167,12 +653,22 @@ crimes:
         keywords: []
     penalties:
       - type: imprisonment
-        max: null
+        min: 1
+        max: 10
         unit: year
-        note: 首謀者は1年以上10年以下の拘禁刑等、役割により区別
-    statute_text: "多衆で集合して暴行又は脅迫をした者は、騒乱の罪とし、次の区別に従って処断する。"
+        note: 首謀者は1年以上10年以下の拘禁刑
+      - type: imprisonment
+        min: 6
+        max: 84
+        unit: month
+        note: 他人を指揮し又は率先して勢いを助けた者は6月以上7年以下の拘禁刑
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 付和随行した者は10万円以下の罰金
+    statute_text: "多衆で集合して暴行又は脅迫をした者は、騒乱の罪とし、次の区別に従って処断する。\n一　首謀者は、一年以上十年以下の拘禁刑に処する。\n二　他人を指揮し、又は他人に率先して勢いを助けた者は、六月以上七年以下の拘禁刑に処する。\n三　付和随行した者は、十万円以下の罰金に処する。"
 
-  # --- 第11章 放火及び失火の罪 (108-118) ---
+  # --- 第9章 放火及び失火の罪 (108-118) ---
   - id: arson-inhabited
     label: 現住建造物等放火罪
     article: "108"
@@ -238,6 +734,9 @@ crimes:
       - type: conduct
         desc: 偽造又は変造する
         keywords: [偽造, 変造, 偽札]
+      - type: conduct
+        desc: （2項）偽造・変造の通貨を行使し、又は行使の目的で人に交付し若しくは輸入する
+        keywords: [偽札を使う, 行使, 交付, 輸入]
       - type: intent
         desc: 行使の目的
         keywords: []
@@ -247,7 +746,7 @@ crimes:
         max: null
         unit: year
         note: 無期又は3年以上の拘禁刑
-    statute_text: "行使の目的で、通用する貨幣、紙幣又は銀行券を偽造し、又は変造した者は、無期又は三年以上の拘禁刑に処する。"
+    statute_text: "行使の目的で、通用する貨幣、紙幣又は銀行券を偽造し、又は変造した者は、無期又は三年以上の拘禁刑に処する。\n２　偽造又は変造の貨幣、紙幣又は銀行券を行使し、又は行使の目的で人に交付し、若しくは輸入した者も、前項と同様とする。"
 
   # --- 第17章 文書偽造の罪 (154-161の2) ---
   - id: counterfeiting-private-document
@@ -257,11 +756,17 @@ crimes:
     legal_interest: 文書に対する公共の信用
     elements:
       - type: object
-        desc: 権利義務又は事実証明に関する他人の文書・図画
+        desc: 権利義務又は事実証明に関する他人の文書等・電磁的記録文書等
         keywords: [文書偽造, 偽造, 書類, 契約書, サイン, 署名, 印鑑]
       - type: conduct
-        desc: 他人の印章・署名を使用して偽造する
-        keywords: [偽造, 変造, なりすまし, 偽の書類]
+        desc: （1項）他人の印章等・電磁的記録印章等を使用して偽造する
+        keywords: [偽造, なりすまし, 偽の書類]
+      - type: conduct
+        desc: （2項）他人が押印・署名した文書等又は電磁的記録文書等を変造する
+        keywords: [変造, 改ざん]
+      - type: conduct
+        desc: （3項）前二項以外の権利義務又は事実証明に関する文書等・電磁的記録文書等を偽造・変造する（無印私文書偽造等）
+        keywords: [偽造, 変造]
       - type: intent
         desc: 行使の目的
         keywords: []
@@ -270,8 +775,16 @@ crimes:
         min: 3
         max: 60
         unit: month
-        note: 3月以上5年以下の拘禁刑
-    statute_text: "行使の目的で、他人の印章若しくは署名を使用して権利、義務若しくは事実証明に関する文書若しくは図画を偽造し、又は偽造した他人の印章若しくは署名を使用して権利、義務若しくは事実証明に関する文書若しくは図画を偽造した者は、三月以上五年以下の拘禁刑に処する。"
+        note: 3月以上5年以下の拘禁刑（1項・2項）
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑（3項）
+      - type: fine
+        max: 100000
+        unit: yen
+        note: 10万円以下の罰金（3項）
+    statute_text: "行使の目的で、次の各号に掲げるいずれかの行為をした者は、三月以上五年以下の拘禁刑に処する。\n一　他人の印章等を使用して権利、義務若しくは事実証明に関する文書等を偽造し、又は偽造した他人の印章等を使用して権利、義務若しくは事実証明に関する文書等を偽造する行為\n二　他人の電磁的記録印章等を使用して権利、義務若しくは事実証明に関する電磁的記録文書等を偽造し、又は偽造した他人の電磁的記録印章等を使用して権利、義務若しくは事実証明に関する電磁的記録文書等を偽造する行為\n２　他人が押印し若しくは署名した権利、義務若しくは事実証明に関する文書等又は他人が電磁的記録印章等を使用して作成した権利、義務若しくは事実証明に関する電磁的記録文書等を変造した者も、前項と同様とする。\n３　前二項に規定するもののほか、権利、義務又は事実証明に関する文書等又は電磁的記録文書等を偽造し、又は変造した者は、一年以下の拘禁刑又は十万円以下の罰金に処する。"
 
   # --- 第18章 有価証券偽造の罪 (162-163) ---
   - id: counterfeiting-securities
@@ -286,6 +799,9 @@ crimes:
       - type: conduct
         desc: 偽造又は変造する
         keywords: [偽造, 変造]
+      - type: conduct
+        desc: （2項）有価証券に虚偽の記入をする
+        keywords: [虚偽記入]
       - type: intent
         desc: 行使の目的
         keywords: []
@@ -295,7 +811,7 @@ crimes:
         max: 120
         unit: month
         note: 3月以上10年以下の拘禁刑
-    statute_text: "行使の目的で、公債証書、官庁の証券、会社の株券その他の有価証券を偽造し、又は変造した者は、三月以上十年以下の拘禁刑に処する。"
+    statute_text: "行使の目的で、公債証書、官庁の証券、会社の株券その他の有価証券を偽造し、又は変造した者は、三月以上十年以下の拘禁刑に処する。\n２　行使の目的で、有価証券に虚偽の記入をした者も、前項と同様とする。"
 
   # --- 第18章の2 支払用カード電磁的記録に関する罪 (163の2-163の5) ---
   - id: unauthorized-payment-card-record
@@ -308,8 +824,14 @@ crimes:
         desc: 人の財産上の事務処理を誤らせる目的のクレジットカード等の電磁的記録
         keywords: [クレジットカード, スキミング, 電磁的記録, カード偽造, 不正作出]
       - type: conduct
-        desc: 不正に作出する
+        desc: 不正に作出する（預貯金の引出用カードの電磁的記録を含む）
         keywords: [偽造, スキミング, 不正作出]
+      - type: conduct
+        desc: （2項）不正に作られた電磁的記録を人の財産上の事務処理の用に供する
+        keywords: [偽造カードを使う, 不正使用]
+      - type: conduct
+        desc: （3項）不正に作られた電磁的記録を構成部分とするカードを譲り渡し・貸し渡し・輸入する
+        keywords: [譲渡, 貸与, 輸入]
       - type: intent
         desc: 財産上の事務処理を誤らせる目的
         keywords: []
@@ -322,7 +844,7 @@ crimes:
         max: 1000000
         unit: yen
         note: 100万円以下の罰金
-    statute_text: "人の財産上の事務処理を誤らせる目的で、その事務処理の用に供する電磁的記録であって、クレジットカードその他の代金又は料金の支払用のカードを構成するものを不正に作った者は、十年以下の拘禁刑又は百万円以下の罰金に処する。"
+    statute_text: "人の財産上の事務処理を誤らせる目的で、その事務処理の用に供する電磁的記録であって、クレジットカードその他の代金又は料金の支払用のカードを構成するものを不正に作った者は、十年以下の拘禁刑又は百万円以下の罰金に処する。預貯金の引出用のカードを構成する電磁的記録を不正に作った者も、同様とする。\n２　不正に作られた前項の電磁的記録を、同項の目的で、人の財産上の事務処理の用に供した者も、同項と同様とする。\n３　不正に作られた第一項の電磁的記録をその構成部分とするカードを、同項の目的で、譲り渡し、貸し渡し、又は輸入した者も、同項と同様とする。"
 
   # --- 第19章 印章偽造の罪 (164-168) ---
   - id: counterfeiting-seal
@@ -332,11 +854,14 @@ crimes:
     legal_interest: 印章・署名に対する公共の信用
     elements:
       - type: object
-        desc: 他人の印章又は署名
+        desc: 他人の印章等又は電磁的記録印章等
         keywords: [印鑑, 印章, 署名, ハンコ, 偽造]
       - type: conduct
         desc: 行使の目的で偽造する
         keywords: [偽造, 印鑑偽造]
+      - type: conduct
+        desc: （2項）他人の印章等を不正に使用し、又は偽造した印章等を使用する
+        keywords: [不正使用, 勝手に押す]
       - type: intent
         desc: 行使の目的
         keywords: []
@@ -345,7 +870,7 @@ crimes:
         max: 3
         unit: year
         note: 3年以下の拘禁刑
-    statute_text: "行使の目的で、他人の印章又は署名を偽造した者は、三年以下の拘禁刑に処する。"
+    statute_text: "行使の目的で、他人の印章等又は電磁的記録印章等を偽造した者は、三年以下の拘禁刑に処する。\n２　他人の印章等若しくは電磁的記録印章等を不正に使用し、又は偽造した印章等若しくは電磁的記録印章等を使用した者も、前項と同様とする。"
 
   # --- 第20章 偽証の罪 (169-171) ---
   - id: perjury
@@ -370,6 +895,30 @@ crimes:
         unit: month
         note: 3月以上10年以下の拘禁刑
     statute_text: "法律により宣誓した証人が虚偽の陳述をしたときは、三月以上十年以下の拘禁刑に処する。"
+
+  - id: false-expert-testimony
+    label: 虚偽鑑定等罪
+    article: "171"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家の審判作用
+    elements:
+      - type: object
+        desc: 法律により宣誓した鑑定人・通訳人・翻訳人
+        keywords: [鑑定人, 通訳人, 翻訳人]
+      - type: conduct
+        desc: 虚偽の鑑定・通訳・翻訳をする
+        keywords: [虚偽鑑定, 嘘の鑑定, 嘘の通訳, 虚偽の翻訳]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 3
+        max: 120
+        unit: month
+        note: 前二条の例による（偽証罪と同じ3月以上10年以下の拘禁刑。自白による刑の減免あり）
+    statute_text: "法律により宣誓した鑑定人、通訳人又は翻訳人が虚偽の鑑定、通訳又は翻訳をしたときは、前二条の例による。"
+    related_to: [perjury]
 
   # --- 第21章 虚偽告訴の罪 (172-173) ---
   - id: false-accusation
@@ -413,7 +962,7 @@ crimes:
       - type: fine
         max: 300000
         unit: yen
-        note: 30万円以下の罰金又は科料
+        note: 30万円以下の罰金又は拘留若しくは科料
     statute_text: "公然とわいせつな行為をした者は、六月以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
 
   - id: non-consensual-sexual-intercourse
@@ -428,6 +977,12 @@ crimes:
       - type: conduct
         desc: 暴行・脅迫等により同意しない意思の形成等を困難にして性交等をする
         keywords: [無理やり, 同意なく, 性交, 性的暴行]
+      - type: conduct
+        desc: （2項）わいせつでないとの誤信・人違いをさせ、又はそれに乗じて性交等をする
+        keywords: [だまして, 人違い]
+      - type: object
+        desc: （3項）16歳未満の者（13歳以上16歳未満の場合は5歳以上年長の者による行為に限る）
+        keywords: [16歳未満, 子ども, 未成年]
       - type: intent
         desc: 故意
         keywords: []
@@ -437,7 +992,7 @@ crimes:
         max: null
         unit: year
         note: 5年以上の有期拘禁刑
-    statute_text: "次に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、性交、肛門性交、口腔性交又は膣若しくは肛門に身体の一部若しくは物を挿入する行為であってわいせつなものをした者は、婚姻関係の有無にかかわらず、五年以上の有期拘禁刑に処する。"
+    statute_text: "前条第一項各号に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、性交、肛門性交、口腔性交又は膣若しくは肛門に身体の一部（陰茎を除く。）若しくは物を挿入する行為であってわいせつなもの（以下この条及び第百七十九条第二項において「性交等」という。）をした者は、婚姻関係の有無にかかわらず、五年以上の有期拘禁刑に処する。\n２　行為がわいせつなものではないとの誤信をさせ、若しくは行為をする者について人違いをさせ、又はそれらの誤信若しくは人違いをしていることに乗じて、性交等をした者も、前項と同様とする。\n３　十六歳未満の者に対し、性交等をした者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）も、第一項と同様とする。"
 
   - id: non-consensual-indecency
     label: 不同意わいせつ罪
@@ -448,6 +1003,12 @@ crimes:
       - type: conduct
         desc: 同意しない意思の形成等が困難な状態でわいせつな行為をする
         keywords: [痴漢, わいせつ, 体を触られた, 無理やり触られた, 性被害]
+      - type: conduct
+        desc: （2項）わいせつでないとの誤信・人違いをさせ、又はそれに乗じてわいせつな行為をする
+        keywords: [だまして, 人違い]
+      - type: object
+        desc: （3項）16歳未満の者（13歳以上16歳未満の場合は5歳以上年長の者による行為に限る）
+        keywords: [16歳未満, 子ども, 未成年]
       - type: intent
         desc: 故意
         keywords: []
@@ -457,7 +1018,7 @@ crimes:
         max: 120
         unit: month
         note: 6月以上10年以下の拘禁刑
-    statute_text: "前条第一項各号に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、わいせつな行為をした者は、婚姻関係の有無にかかわらず、六月以上十年以下の拘禁刑に処する。"
+    statute_text: "次に掲げる行為又は事由その他これらに類する行為又は事由により、同意しない意思を形成し、表明し若しくは全うすることが困難な状態にさせ又はその状態にあることに乗じて、わいせつな行為をした者は、婚姻関係の有無にかかわらず、六月以上十年以下の拘禁刑に処する。\n一　暴行若しくは脅迫を用いること又はそれらを受けたこと。\n二　心身の障害を生じさせること又はそれがあること。\n三　アルコール若しくは薬物を摂取させること又はそれらの影響があること。\n四　睡眠その他の意識が明瞭でない状態にさせること又はその状態にあること。\n五　同意しない意思を形成し、表明し又は全うするいとまがないこと。\n六　予想と異なる事態に直面させて恐怖させ、若しくは驚愕させること又はその事態に直面して恐怖し、若しくは驚愕していること。\n七　虐待に起因する心理的反応を生じさせること又はそれがあること。\n八　経済的又は社会的関係上の地位に基づく影響力によって受ける不利益を憂慮させること又はそれを憂慮していること。\n２　行為がわいせつなものではないとの誤信をさせ、若しくは行為をする者について人違いをさせ、又はそれらの誤信若しくは人違いをしていることに乗じて、わいせつな行為をした者も、前項と同様とする。\n３　十六歳未満の者に対し、わいせつな行為をした者（当該十六歳未満の者が十三歳以上である場合については、その者が生まれた日より五年以上前の日に生まれた者に限る。）も、第一項と同様とする。"
 
   - id: gambling
     label: 賭博罪
@@ -491,6 +1052,9 @@ crimes:
       - type: conduct
         desc: 公然と不敬な行為をする
         keywords: [不敬, 荒らす, 汚す]
+      - type: conduct
+        desc: （2項・説教等妨害）説教・礼拝・葬式を妨害する
+        keywords: [葬式を妨害, 礼拝を妨害, 説教を妨害]
       - type: intent
         desc: 故意
         keywords: []
@@ -498,12 +1062,16 @@ crimes:
       - type: imprisonment
         max: 6
         unit: month
-        note: 6月以下の拘禁刑
+        note: 6月以下の拘禁刑（1項）
+      - type: imprisonment
+        max: 1
+        unit: year
+        note: 1年以下の拘禁刑（2項）
       - type: fine
         max: 100000
         unit: yen
-        note: 10万円以下の罰金又は科料
-    statute_text: "神祠、仏堂、墓所その他の礼拝所に対し、公然と不敬な行為をした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。"
+        note: 10万円以下の罰金
+    statute_text: "神祠、仏堂、墓所その他の礼拝所に対し、公然と不敬な行為をした者は、六月以下の拘禁刑又は十万円以下の罰金に処する。\n２　説教、礼拝又は葬式を妨害した者は、一年以下の拘禁刑又は十万円以下の罰金に処する。"
 
   # --- 第25章 汚職の罪 (193-198) ---
   - id: abuse-of-authority
@@ -528,6 +1096,80 @@ crimes:
         note: 2年以下の拘禁刑
     statute_text: "公務員がその職権を濫用して、人に義務のないことを行わせ、又は権利の行使を妨害したときは、二年以下の拘禁刑に処する。"
 
+  - id: special-abuse-of-authority
+    label: 特別公務員職権濫用罪
+    article: "194"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家作用の公正・個人の身体活動の自由
+    elements:
+      - type: object
+        desc: 裁判・検察・警察の職務を行う者又はこれを補助する者（身分犯）
+        keywords: [警察官, 検察官, 裁判官]
+      - type: conduct
+        desc: 職権を濫用して人を逮捕し又は監禁する
+        keywords: [不当逮捕, 違法逮捕, 不当な拘束]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 6
+        max: 120
+        unit: month
+        note: 6月以上10年以下の拘禁刑
+    statute_text: "裁判、検察若しくは警察の職務を行う者又はこれらの職務を補助する者がその職権を濫用して、人を逮捕し、又は監禁したときは、六月以上十年以下の拘禁刑に処する。"
+    related_to: [abuse-of-authority, unlawful-capture-confinement]
+
+  - id: violence-by-special-official
+    label: 特別公務員暴行陵虐罪
+    article: "195"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家作用の公正・被告人等の人権
+    elements:
+      - type: object
+        desc: 裁判・検察・警察の職務を行う者又はこれを補助する者（2項は拘禁された者を看守・護送する者）
+        keywords: [警察官, 刑務官, 看守]
+      - type: conduct
+        desc: 職務を行うに当たり、被告人・被疑者その他の者に暴行又は陵辱若しくは加虐の行為をする
+        keywords: [取り調べで暴行, 拷問, 虐待, 陵辱]
+      - type: conduct
+        desc: （2項）看守・護送する者が、拘禁された者に暴行又は陵辱若しくは加虐の行為をする
+        keywords: [受刑者への暴行, 看守の虐待]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 7
+        unit: year
+        note: 7年以下の拘禁刑
+    statute_text: "裁判、検察若しくは警察の職務を行う者又はこれらの職務を補助する者が、その職務を行うに当たり、被告人、被疑者その他の者に対して暴行又は陵辱若しくは加虐の行為をしたときは、七年以下の拘禁刑に処する。\n２　法令により拘禁された者を看守し又は護送する者がその拘禁された者に対して暴行又は陵辱若しくは加虐の行為をしたときも、前項と同様とする。"
+    related_to: [abuse-of-authority, assault]
+
+  - id: special-abuse-causing-death-injury
+    label: 特別公務員職権濫用等致死傷罪
+    article: "196"
+    category: CrimeAgainstStateFunction
+    legal_interest: 国家作用の公正・個人の生命身体
+    elements:
+      - type: conduct
+        desc: 特別公務員職権濫用罪（194条）又は特別公務員暴行陵虐罪（195条）を犯す
+        keywords: [不当逮捕, 取り調べで暴行]
+      - type: result
+        desc: よって人を死傷させる
+        keywords: [死傷, 怪我, 死亡]
+      - type: intent
+        desc: 基本犯の故意（死傷結果の故意は不要）
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: 傷害の罪と比較して、重い刑により処断する
+    statute_text: "前二条の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
+    related_to: [special-abuse-of-authority, violence-by-special-official, injury, injury-causing-death]
+
   - id: bribe-acceptance
     label: 収賄罪
     article: "197"
@@ -538,8 +1180,11 @@ crimes:
         desc: 公務員
         keywords: [収賄, 賄賂, わいろ, 公務員, 袖の下]
       - type: conduct
-        desc: 職務に関し賄賂を収受・要求・約束する
+        desc: 職務に関し賄賂を収受・要求・約束する（請託を受けたときは受託収賄）
         keywords: [賄賂, 収賄, わいろ, 受け取る]
+      - type: conduct
+        desc: （2項・事前収賄）公務員になろうとする者が請託を受けて賄賂を収受・要求・約束し、公務員となる
+        keywords: [事前収賄]
       - type: intent
         desc: 職務関連性の認識
         keywords: []
@@ -548,7 +1193,118 @@ crimes:
         max: 5
         unit: year
         note: 5年以下の拘禁刑
-    statute_text: "公務員が、その職務に関し、賄賂を収受し、又はその要求若しくは約束をしたときは、五年以下の拘禁刑に処する。この場合において、請託を受けたときは、七年以下の拘禁刑に処する。"
+      - type: imprisonment
+        max: 7
+        unit: year
+        note: 請託を受けたときは7年以下の拘禁刑
+    statute_text: "公務員が、その職務に関し、賄賂を収受し、又はその要求若しくは約束をしたときは、五年以下の拘禁刑に処する。この場合において、請託を受けたときは、七年以下の拘禁刑に処する。\n２　公務員になろうとする者が、その担当すべき職務に関し、請託を受けて、賄賂を収受し、又はその要求若しくは約束をしたときは、公務員となった場合において、五年以下の拘禁刑に処する。"
+
+  - id: third-party-bribery
+    label: 第三者供賄罪
+    article: "197の2"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務の公正とそれに対する社会的信頼
+    elements:
+      - type: object
+        desc: 公務員
+        keywords: [公務員]
+      - type: circumstance
+        desc: 職務に関し請託を受けること
+        keywords: [請託, 頼まれて]
+      - type: conduct
+        desc: 第三者に賄賂を供与させ、又はその供与の要求若しくは約束をする
+        keywords: [第三者に賄賂, 献金させる, 寄付させる]
+      - type: intent
+        desc: 職務関連性の認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+    statute_text: "公務員が、その職務に関し、請託を受けて、第三者に賄賂を供与させ、又はその供与の要求若しくは約束をしたときは、五年以下の拘禁刑に処する。"
+    related_to: [bribe-acceptance]
+
+  - id: aggravated-bribery
+    label: 加重収賄罪
+    article: "197の3"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務の公正とそれに対する社会的信頼
+    elements:
+      - type: conduct
+        desc: （1項）公務員が収賄・受託収賄・事前収賄・第三者供賄の罪を犯し、よって不正な行為をし又は相当の行為をしない
+        keywords: [便宜を図る, 不正な行為, 見返り]
+      - type: conduct
+        desc: （2項）公務員が職務上不正な行為をした（相当の行為をしなかった）ことに関し、賄賂を収受・要求・約束し、又は第三者に供与させる
+        keywords: [便宜の見返り, 謝礼]
+      - type: conduct
+        desc: （3項・事後収賄）公務員であった者が、在職中に請託を受けて職務上不正な行為をした（相当の行為をしなかった）ことに関し、賄賂を収受・要求・約束する
+        keywords: [事後収賄, 退職後に謝礼]
+      - type: intent
+        desc: 職務関連性の認識
+        keywords: []
+    penalties:
+      - type: imprisonment
+        min: 1
+        max: null
+        unit: year
+        note: 1年以上の有期拘禁刑（1項・2項）
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑（3項・事後収賄）
+    statute_text: "公務員が前二条の罪を犯し、よって不正な行為をし、又は相当の行為をしなかったときは、一年以上の有期拘禁刑に処する。\n２　公務員が、その職務上不正な行為をしたこと又は相当の行為をしなかったことに関し、賄賂を収受し、若しくはその要求若しくは約束をし、又は第三者にこれを供与させ、若しくはその供与の要求若しくは約束をしたときも、前項と同様とする。\n３　公務員であった者が、その在職中に請託を受けて職務上不正な行為をしたこと又は相当の行為をしなかったことに関し、賄賂を収受し、又はその要求若しくは約束をしたときは、五年以下の拘禁刑に処する。"
+    related_to: [bribe-acceptance, third-party-bribery]
+
+  - id: intermediary-bribery
+    label: あっせん収賄罪
+    article: "197の4"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務の公正とそれに対する社会的信頼
+    elements:
+      - type: object
+        desc: 公務員
+        keywords: [公務員, 議員]
+      - type: conduct
+        desc: 請託を受け、他の公務員に職務上不正な行為をさせる（相当の行為をさせない）ようにあっせんをすること又はしたことの報酬として、賄賂を収受・要求・約束する
+        keywords: [口利き, あっせん, 斡旋]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 5
+        unit: year
+        note: 5年以下の拘禁刑
+    statute_text: "公務員が請託を受け、他の公務員に職務上不正な行為をさせるように、又は相当の行為をさせないようにあっせんをすること又はしたことの報酬として、賄賂を収受し、又はその要求若しくは約束をしたときは、五年以下の拘禁刑に処する。"
+    related_to: [bribe-acceptance]
+
+  - id: bribe-giving
+    label: 贈賄罪
+    article: "198"
+    category: CrimeAgainstStateFunction
+    legal_interest: 公務の公正とそれに対する社会的信頼
+    elements:
+      - type: object
+        desc: 197条から197条の4までに規定する賄賂
+        keywords: [賄賂, わいろ]
+      - type: conduct
+        desc: 賄賂を供与し、又はその申込み若しくは約束をする
+        keywords: [贈賄, 賄賂を渡す, 接待, 金品を贈る]
+      - type: intent
+        desc: 故意
+        keywords: []
+    penalties:
+      - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑
+      - type: fine
+        max: 2500000
+        unit: yen
+        note: 250万円以下の罰金
+    statute_text: "第百九十七条から第百九十七条の四までに規定する賄賂を供与し、又はその申込み若しくは約束をした者は、三年以下の拘禁刑又は二百五十万円以下の罰金に処する。"
+    related_to: [bribe-acceptance, third-party-bribery, aggravated-bribery, intermediary-bribery]
 
   # ================================================================
   # 【個人的法益に対する罪】
@@ -657,7 +1413,7 @@ crimes:
       - type: fine
         max: 300000
         unit: yen
-        note: 30万円以下の罰金又は科料
+        note: 30万円以下の罰金又は拘留若しくは科料
     statute_text: "暴行を加えた者が人を傷害するに至らなかったときは、二年以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
     related_to: [injury]
 
@@ -762,8 +1518,8 @@ crimes:
         desc: 生命・身体・自由・名誉・財産に害を加える旨を告知して脅迫する
         keywords: [脅された, 殺すと言われた, 脅迫, 危害を加える, 脅し, 恐喝された]
       - type: object
-        desc: 本人又は親族
-        keywords: []
+        desc: 本人又は親族（2項）
+        keywords: [家族, 親族]
       - type: intent
         desc: 故意
         keywords: []
@@ -776,7 +1532,7 @@ crimes:
         max: 300000
         unit: yen
         note: 30万円以下の罰金
-    statute_text: "生命、身体、自由、名誉又は財産に対し害を加える旨を告知して人を脅迫した者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。"
+    statute_text: "生命、身体、自由、名誉又は財産に対し害を加える旨を告知して人を脅迫した者は、二年以下の拘禁刑又は三十万円以下の罰金に処する。\n２　親族の生命、身体、自由、名誉又は財産に対し害を加える旨を告知して人を脅迫した者も、前項と同様とする。"
     related_to: [compulsion, extortion]
 
   - id: compulsion
@@ -788,6 +1544,9 @@ crimes:
       - type: conduct
         desc: 脅迫・暴行で義務のないことを行わせ又は権利の行使を妨害する
         keywords: [強要, 無理やりやらされた, 強制, 脅して従わせる, 土下座させられた]
+      - type: object
+        desc: 本人又は親族（2項。親族への害悪の告知による脅迫）
+        keywords: [家族, 親族]
       - type: intent
         desc: 故意
         keywords: []
@@ -796,7 +1555,7 @@ crimes:
         max: 3
         unit: year
         note: 3年以下の拘禁刑
-    statute_text: "生命、身体、自由、名誉若しくは財産に対し害を加える旨を告知して脅迫し、又は暴行を用いて、人に義務のないことを行わせ、又は権利の行使を妨害した者は、三年以下の拘禁刑に処する。"
+    statute_text: "生命、身体、自由、名誉若しくは財産に対し害を加える旨を告知して脅迫し、又は暴行を用いて、人に義務のないことを行わせ、又は権利の行使を妨害した者は、三年以下の拘禁刑に処する。\n２　親族の生命、身体、自由、名誉又は財産に対し害を加える旨を告知して脅迫し、人に義務のないことを行わせ、又は権利の行使を妨害した者も、前項と同様とする。\n３　前二項の罪の未遂は、罰する。"
     related_to: [intimidation]
 
   # --- 第33章 略取、誘拐及び人身売買の罪 (224-229) ---
@@ -836,6 +1595,9 @@ crimes:
       - type: circumstance
         desc: 公然性(不特定又は多数が認識しうる状態)
         keywords: [SNS, ネット, 公然, 掲示板, 拡散]
+      - type: object
+        desc: （2項）死者の名誉は虚偽の事実を摘示した場合に限り処罰
+        keywords: [死者, 故人]
       - type: intent
         desc: 故意
         keywords: []
@@ -848,7 +1610,7 @@ crimes:
         max: 500000
         unit: yen
         note: 50万円以下の罰金
-    statute_text: "公然と事実を摘示し、人の名誉を毀損した者は、その事実の有無にかかわらず、三年以下の拘禁刑又は五十万円以下の罰金に処する。"
+    statute_text: "公然と事実を摘示し、人の名誉を毀損した者は、その事実の有無にかかわらず、三年以下の拘禁刑又は五十万円以下の罰金に処する。\n２　死者の名誉を毀損した者は、虚偽の事実を摘示することによってした場合でなければ、罰しない。"
     related_to: [insult]
 
   - id: insult
@@ -874,7 +1636,7 @@ crimes:
       - type: fine
         max: 300000
         unit: yen
-        note: 30万円以下の罰金又は科料
+        note: 30万円以下の罰金又は拘留若しくは科料
     statute_text: "事実を摘示しなくても、公然と人を侮辱した者は、一年以下の拘禁刑若しくは三十万円以下の罰金又は拘留若しくは科料に処する。"
     related_to: [defamation]
 
@@ -919,11 +1681,11 @@ crimes:
       - type: imprisonment
         max: 3
         unit: year
-        note: 3年以下の拘禁刑
+        note: 3年以下の拘禁刑（前条の例による）
       - type: fine
         max: 500000
         unit: yen
-        note: 50万円以下の罰金
+        note: 50万円以下の罰金（前条の例による）
     statute_text: "威力を用いて人の業務を妨害した者も、前条の例による。"
     related_to: [defamation-of-credit]
 
@@ -967,6 +1729,9 @@ crimes:
       - type: conduct
         desc: 暴行・脅迫を用いて財物を強取する
         keywords: [強盗, 奪う, 脅して奪う, 暴力で奪う]
+      - type: conduct
+        desc: （2項・強盗利得）同じ方法で財産上不法の利益を得、又は他人に得させる
+        keywords: [支払いを免れる, 借金を帳消し]
       - type: intent
         desc: 故意 + 不法領得の意思
         keywords: []
@@ -976,7 +1741,7 @@ crimes:
         max: null
         unit: year
         note: 5年以上の有期拘禁刑
-    statute_text: "暴行又は脅迫を用いて他人の財物を強取した者は、強盗の罪とし、五年以上の有期拘禁刑に処する。"
+    statute_text: "暴行又は脅迫を用いて他人の財物を強取した者は、強盗の罪とし、五年以上の有期拘禁刑に処する。\n２　前項の方法により、財産上不法の利益を得、又は他人にこれを得させた者も、同項と同様とする。"
     related_to: [theft]
 
   # --- 第37章 詐欺及び恐喝の罪 (246-251) ---
@@ -989,6 +1754,9 @@ crimes:
       - type: conduct
         desc: 人を欺いて財物を交付させる
         keywords: [詐欺, 騙された, だまし取られた, 嘘, 振り込め, 架空請求, 騙し取る]
+      - type: conduct
+        desc: （2項・詐欺利得）同じ方法で財産上不法の利益を得、又は他人に得させる
+        keywords: [無銭飲食, 支払いを免れる]
       - type: result
         desc: 錯誤に基づく財産的処分
         keywords: [振り込んだ, 支払った, 渡した]
@@ -1000,7 +1768,7 @@ crimes:
         max: 10
         unit: year
         note: 10年以下の拘禁刑
-    statute_text: "人を欺いて財物を交付させた者は、十年以下の拘禁刑に処する。"
+    statute_text: "人を欺いて財物を交付させた者は、十年以下の拘禁刑に処する。\n２　前項の方法により、財産上不法の利益を得、又は他人にこれを得させた者も、同項と同様とする。"
     related_to: [extortion]
 
   - id: extortion
@@ -1012,6 +1780,9 @@ crimes:
       - type: conduct
         desc: 人を恐喝して財物を交付させる
         keywords: [恐喝, 脅して金, ゆすり, たかり, 脅し取られた, カツアゲ]
+      - type: conduct
+        desc: （2項・恐喝利得）同じ方法で財産上不法の利益を得、又は他人に得させる
+        keywords: [借金を帳消し, 支払いを免れる]
       - type: intent
         desc: 故意 + 不法領得の意思
         keywords: []
@@ -1020,7 +1791,7 @@ crimes:
         max: 10
         unit: year
         note: 10年以下の拘禁刑
-    statute_text: "人を恐喝して財物を交付させた者は、十年以下の拘禁刑に処する。"
+    statute_text: "人を恐喝して財物を交付させた者は、十年以下の拘禁刑に処する。\n２　前項の方法により、財産上不法の利益を得、又は他人にこれを得させた者も、同項と同様とする。"
     related_to: [fraud, intimidation]
 
   # --- 第38章 横領の罪 (252-254) ---
@@ -1031,7 +1802,7 @@ crimes:
     legal_interest: 財産・委託信任関係
     elements:
       - type: object
-        desc: 自己の占有する他人の物
+        desc: 自己の占有する他人の物（2項。公務所から保管を命ぜられた自己の物を含む）
         keywords: [横領, 着服, 使い込み, 預かった金, ネコババ]
       - type: conduct
         desc: 横領する
@@ -1044,7 +1815,7 @@ crimes:
         max: 5
         unit: year
         note: 5年以下の拘禁刑
-    statute_text: "自己の占有する他人の物を横領した者は、五年以下の拘禁刑に処する。"
+    statute_text: "自己の占有する他人の物を横領した者は、五年以下の拘禁刑に処する。\n２　自己の物であっても、公務所から保管を命ぜられた場合において、これを横領した者も、前項と同様とする。"
     related_to: [breach-of-trust]
 
   - id: breach-of-trust
@@ -1085,21 +1856,28 @@ crimes:
         desc: 盗品その他財産に対する罪に当たる行為で領得された物
         keywords: [盗品, 故買, 贓物, 盗まれた物の取引]
       - type: conduct
-        desc: 無償譲受・運搬・保管・有償譲受・あっせんをする
+        desc: （1項）無償で譲り受ける
+        keywords: [盗品をもらう, 無償譲受]
+      - type: conduct
+        desc: （2項）運搬・保管・有償譲受け・有償処分のあっせんをする
         keywords: [盗品, 譲受, 故買]
       - type: intent
         desc: 盗品であることの認識
         keywords: []
     penalties:
       - type: imprisonment
+        max: 3
+        unit: year
+        note: 3年以下の拘禁刑（1項・無償譲受け）
+      - type: imprisonment
         max: 10
         unit: year
-        note: 10年以下の拘禁刑(有償譲受け等)
+        note: 10年以下の拘禁刑及び50万円以下の罰金（2項・併科）
       - type: fine
         max: 500000
         unit: yen
-        note: 50万円以下の罰金(有償譲受け等)
-    statute_text: "盗品その他財産に対する罪に当たる行為によって領得された物を運搬し、保管し、若しくは有償で譲り受け、又はその有償の処分のあっせんをした者は、十年以下の拘禁刑及び五十万円以下の罰金に処する。"
+        note: 10年以下の拘禁刑及び50万円以下の罰金（2項・併科）
+    statute_text: "盗品その他財産に対する罪に当たる行為によって領得された物を無償で譲り受けた者は、三年以下の拘禁刑に処する。\n２　前項に規定する物を運搬し、保管し、若しくは有償で譲り受け、又はその有償の処分のあっせんをした者は、十年以下の拘禁刑及び五十万円以下の罰金に処する。"
 
   # --- 第40章 毀棄及び隠匿の罪 (258-264) ---
   - id: property-damage
@@ -1182,7 +1960,7 @@ crimes:
         note: 20万円以下の罰金
     statute_text: "正当な理由がないのに、封をしてある信書を開けた者は、一年以下の拘禁刑又は二十万円以下の罰金に処する。"
 
-  # --- 第10章 往来を妨害する罪 (124-129) ---
+  # --- 第11章 往来を妨害する罪 (124-129) ---
   - id: obstruction-of-traffic
     label: 往来妨害罪
     article: "124"
@@ -1195,6 +1973,9 @@ crimes:
       - type: conduct
         desc: 損壊又は閉塞して往来の妨害を生じさせる
         keywords: [妨害, 封鎖, 閉塞]
+      - type: result
+        desc: （2項・往来妨害致死傷）よって人を死傷させる
+        keywords: [死傷]
       - type: intent
         desc: 故意
         keywords: []
@@ -1207,4 +1988,9 @@ crimes:
         max: 200000
         unit: yen
         note: 20万円以下の罰金
-    statute_text: "陸路、水路又は橋を損壊し、又は閉塞して往来の妨害を生じさせた者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。"
+      - type: imprisonment
+        min: null
+        max: null
+        unit: year
+        note: （2項）傷害の罪と比較して、重い刑により処断する
+    statute_text: "陸路、水路又は橋を損壊し、又は閉塞して往来の妨害を生じさせた者は、二年以下の拘禁刑又は二十万円以下の罰金に処する。\n２　前項の罪を犯し、よって人を死傷させた者は、傷害の罪と比較して、重い刑により処断する。"
