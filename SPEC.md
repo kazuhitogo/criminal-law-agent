@@ -133,6 +133,7 @@ Entity
 - `search_crimes_by_text(consultation)` → 罪候補のリスト。該当なしは空リスト
   - 各候補の項目: crime_id / 罪名 / 条番号 / カテゴリ / 法定刑の概要 / score / via_concepts（経由した概念 ID）/ matched_surface（相談文中でマッチした語。原文表記・重複なし）
 - `get_crime_detail(crime_id)` → 条文原文・構成要件・法定刑・保護法益・関連罪。未知の ID のときはエラーを返す
+  - 関連罪（related_to）の各項目: crime_id / 罪名 / 条番号。罪名・条番号はオントロジーの値を付けて返す（LLM に記憶で補わせない）
 - `list_crime_categories()` → カテゴリ一覧。各カテゴリの項目:
   - count: 推論込みの所属罪数
   - direct_count: 直接そのカテゴリに収録した罪数

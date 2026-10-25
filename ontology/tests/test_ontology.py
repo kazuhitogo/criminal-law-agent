@@ -24,6 +24,21 @@ from criminal_ontology.semantics import SemanticLayer
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
+# 刑法第2編（77〜264条）で罪を定める条の一覧（SPEC §2）。
+# e-Gov 法令データ（140AC0000000045、2026-10 時点）から、未遂・親告罪・刑の減免・
+# 特例・準用・没収・削除の条を除いたもの。法改正時は scripts/egov_statutes.py list で更新する。
+PART2_CRIME_ARTICLES = """
+77 78 79 81 82 88 92 93 94 95 95の2 96 96の2 96の3 96の4 96の5 96の6 97 98 99 100 101
+103 104 105の2 106 107 108 109 110 111 113 114 116 117 117の2 118 119 120 121 122 123
+124 125 126 127 129 130 133 134 136 137 138 139 140 142 143 144 145 146 147 148 149 150
+152 153 154 155 156 157 158 159 160 161 161の2 162 163 163の2 163の3 163の4 164 165 166
+167 168の2 168の3 169 171 172 174 175 176 177 179 181 182 183 184 185 186 187 188 189 190
+191 192 193 194 195 196 197 197の2 197の3 197の4 198 199 201 202 204 205 206 208 208の2
+209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 224 225 225の2 226 226の2
+226の3 227 228の3 230 231 233 234 234の2 235 235の2 236 237 238 239 240 241 246 246の2
+247 248 249 252 253 254 256 258 259 260 261 262 262の2 263
+""".split()
+
 
 # -------------------------------------------------------------------
 # データ整合性
@@ -31,7 +46,16 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 def test_crimes_yaml_valid():
     data = yaml.safe_load((DATA_DIR / "crimes.yaml").read_text(encoding="utf-8"))
     cf = CrimesFile(**data)
-    assert len(cf.crimes) >= 40  # 刑法第2編を章横断で網羅
+    assert len(cf.crimes) == len(PART2_CRIME_ARTICLES)
+
+
+def test_articles_match_part2_list():
+    """収録の条番号が、第2編で罪を定める条の一覧と過不足なく一致すること（1 条 = 1 罪）。"""
+    articles = [c.article for c in load_crimes()]
+    assert len(articles) == len(set(articles)), "同じ条が複数の罪に分かれている"
+    expected = set(PART2_CRIME_ARTICLES)
+    assert set(articles) - expected == set(), "第2編の一覧に無い条を収録している"
+    assert expected - set(articles) == set(), "未収録の条がある"
 
 
 def test_crime_ids_unique():
@@ -65,7 +89,34 @@ def test_representative_crimes_present():
 def test_semantics_yaml_valid():
     data = yaml.safe_load((DATA_DIR / "semantics.yaml").read_text(encoding="utf-8"))
     sf = SemanticsFile(**data)
-    assert len(sf.concepts) >= 30
+    assert len(sf.concepts) >= len(VALID_CATEGORIES)
+    ids = [c.id for c in sf.concepts]
+    assert len(ids) == len(set(ids))
+
+
+def test_every_crime_indicated_by_concept():
+    """どの概念からも指されない罪は検索に出ないため、すべての罪が 1 つ以上の概念から指されること。"""
+    indicated = {cid for c in load_concepts() for cid in c.indicates_crimes}
+    orphans = {c.id for c in load_crimes()} - indicated
+    assert orphans == set(), f"概念から指されない罪: {sorted(orphans)}"
+
+
+def test_surfaces_at_least_two_chars():
+    """表層語（prefLabel / altLabel）は正規化後に 2 文字以上（1 文字語の誤マッチ防止）。"""
+    short = [
+        (c.id, s)
+        for c in load_concepts()
+        for s in [c.pref_label, *c.alt_labels]
+        if len(SemanticLayer._normalize(s)) < 2
+    ]
+    assert short == []
+
+
+def test_related_to_refs_exist():
+    ids = {c.id for c in load_crimes()}
+    for c in load_crimes():
+        for r in c.related_to:
+            assert r in ids, f"{c.id} の related_to が未知の罪 {r} を参照"
 
 
 def test_concept_crime_refs_exist():
@@ -186,6 +237,33 @@ def test_search_civil_matter_returns_empty(kb: CriminalLawKB):
     # 民事（貸金返還）は刑法概念にヒットしない
     cands = kb.search_by_text("貸した金が返ってこない")
     assert cands == []
+
+
+@pytest.mark.parametrize(
+    ("text", "crime_id"),
+    [
+        ("差し押さえを逃れるために財産を隠した", "property-damage-to-obstruct-execution"),
+        ("公共の工事の入札で談合した", "obstruction-of-public-auction"),
+        ("隣の空き家に放火された", "arson-uninhabited"),
+        ("拾った財布をそのまま自分のものにした", "embezzlement-of-lost-property"),
+        ("万引き犯を捕まえようとしたら殴られた", "constructive-robbery"),
+        ("他人のIDでネットバンキングから不正送金された", "computer-fraud"),
+    ],
+)
+def test_search_added_crimes_top(kb: CriminalLawKB, text: str, crime_id: str):
+    """全罪収録で追加した罪が、日常語の相談文で首位（同点首位を含む）に出ること。"""
+    cands = kb.search_by_text(text)
+    assert cands
+    top = {c.crime_id for c in cands if c.score == pytest.approx(cands[0].score)}
+    assert crime_id in top
+
+
+@pytest.mark.parametrize(
+    "text", ["怒りが爆発した", "喧嘩を売られた", "友人を買い物に誘った", "上の階から水漏れ"]
+)
+def test_search_no_false_match(kb: CriminalLawKB, text: str):
+    """汎用語を含むが犯罪でない相談文は、候補が出ないこと。"""
+    assert kb.search_by_text(text) == []
 
 
 def test_resolve_concepts(kb: CriminalLawKB):
