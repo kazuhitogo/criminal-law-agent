@@ -48,12 +48,31 @@ class SemanticLayer:
         parsed = SemanticsFile(**data)
         return cls(parsed.concepts)
 
-    @staticmethod
-    def _normalize(text: str) -> str:
+    _REMOVE_RE = re.compile(r"[\s、。,.!?！？「」『』()（）]")
+
+    @classmethod
+    def _normalize(cls, text: str) -> str:
         """比較用の正規化。空白・記号を除去し小文字化。"""
-        text = text.strip().lower()
-        text = re.sub(r"[\s、。,.!?！？「」『』()（）]", "", text)
-        return text
+        return cls._normalize_with_map(text)[0]
+
+    @classmethod
+    def _normalize_with_map(cls, text: str) -> tuple[str, list[int]]:
+        """正規化文字列と、正規化後の各文字 → 原文インデックスの対応表を返す。
+
+        1 文字ずつ小文字化・除去判定するため、lower() で文字数が変わる場合も
+        対応表は正しく保たれる。
+        """
+        out: list[str] = []
+        index_map: list[int] = []
+        for i, ch in enumerate(text):
+            if cls._REMOVE_RE.fullmatch(ch):
+                continue
+            for lc in ch.lower():
+                if cls._REMOVE_RE.fullmatch(lc):
+                    continue
+                out.append(lc)
+                index_map.append(i)
+        return "".join(out), index_map
 
     def get_concept(self, concept_id: str) -> Concept | None:
         return self._concepts.get(concept_id)
@@ -80,12 +99,20 @@ class SemanticLayer:
 
         各概念につき、相談文に出現した表層語を集計しスコア化する。
         スコア = マッチした表層語数 + 最長一致長の寄与（簡易）。
+        照合は正規化後に行い、根拠語(matched_surface)は相談文の原文表記
+        （最初の出現箇所）で返す。
         """
-        norm_text = self._normalize(consultation)
+        norm_text, index_map = self._normalize_with_map(consultation)
         matches: dict[str, ConceptMatch] = {}
 
         for surface_key, concept_ids in self._surface_index.items():
-            if surface_key and surface_key in norm_text:
+            if not surface_key:
+                continue
+            pos = norm_text.find(surface_key)
+            if pos >= 0:
+                start = index_map[pos]
+                end = index_map[pos + len(surface_key) - 1] + 1
+                original = consultation[start:end]
                 for cid in concept_ids:
                     c = self._concepts[cid]
                     m = matches.get(cid)
@@ -96,7 +123,8 @@ class SemanticLayer:
                             indicates_crimes=list(c.indicates_crimes),
                         )
                         matches[cid] = m
-                    m.matched_surface.append(surface_key)
+                    if original not in m.matched_surface:
+                        m.matched_surface.append(original)
                     # 長い表層語ほど高スコア（誤マッチ抑制）
                     m.score += 1.0 + len(surface_key) * 0.1
 

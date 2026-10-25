@@ -97,7 +97,7 @@ concepts:
 
   - id: deception
     pref_label: 欺罔による財産取得
-    alt_labels: [詐欺, 騙された, だまし取られた, 振り込め, 架空請求]
+    alt_labels: [詐欺, 騙され, だまされ, だまし取られた, 振り込め, 架空請求]
     indicates_crimes: [fraud]
 
   - id: extortion-concept

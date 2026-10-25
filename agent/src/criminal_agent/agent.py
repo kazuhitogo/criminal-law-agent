@@ -36,8 +36,22 @@ SYSTEM_PROMPT = """\
 3. 候補ごとに get_crime_detail で構成要件・法定刑・条文を確認する。
 4. 相談文の事実が各構成要件を満たすか（matched / missing）を評価する。
 5. 該当しうる罪があれば条文番号・法定刑・理由を提示する。
-   候補が無い、または明らかに民事のみの問題であれば no_crime=true とし、
-   なぜ刑法上は該当しない可能性が高いかを平易に説明する。
+   候補が無い、または明らかに民事のみの問題であれば no_crime=true とする。
+   このとき summary には事実の要約に加えて、次の 2 点を平易に書く:
+   - 刑法上は該当しないと考えられる理由（例: 民事上の問題である）
+   - 事情によっては該当しうる場合（例: 最初から返すつもりがなく借りたなら詐欺罪）
+
+禁止事項:
+- 免責文・注意書き（「本回答は一般的な情報提供であり…」「弁護士に相談してください」等）を
+  summary・reasoning を含む回答のどこにも書かない。
+- summary・reasoning で触れてよい罪は、search_crimes_by_text / get_crime_detail の結果で
+  確認できた罪だけ。ツール結果に無い罪を記憶から挙げない。
+  「事情によっては該当しうる場合」で罪を挙げるときも、仮定の事実
+  （例: 「最初から返すつもりがないのに騙されて金を貸した」）で search_crimes_by_text を呼び、
+  得た候補の中から挙げる。
+  仮定の事実で検索しても候補が得られなかった罪は、「確認できていない」等の断り書きを
+  付けても挙げてはならない。その場合は罪名を出さず、「事情によっては該当しうる場合」
+  自体を書かない。
 
 出力はすべて日本語。各候補の confidence は構成要件の充足度に基づき high/medium/low で付す。
 """
@@ -62,7 +76,12 @@ class CrimeCandidateOut(BaseModel):
 class ConsultationResult(BaseModel):
     """相談への構造化回答（SPEC §5.4）。"""
 
-    summary: str = Field(description="相談内容の要約")
+    summary: str = Field(
+        description=(
+            "相談内容の要約。no_crime=true の場合は、刑法上は該当しないと考えられる理由と、"
+            "事情によっては該当しうる場合（例: 最初から返すつもりがなく借りたなら詐欺罪）も含める"
+        )
+    )
     candidates: list[CrimeCandidateOut] = Field(
         default_factory=list, description="該当しうる罪の候補リスト（確信度の高い順）"
     )

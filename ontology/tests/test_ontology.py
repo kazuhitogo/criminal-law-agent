@@ -18,7 +18,7 @@ from criminal_ontology.build import (
     load_concepts,
     load_crimes,
 )
-from criminal_ontology.models import CrimesFile, SemanticsFile, VALID_CATEGORIES
+from criminal_ontology.models import Concept, CrimesFile, SemanticsFile, VALID_CATEGORIES
 from criminal_ontology.query import CriminalLawKB
 from criminal_ontology.semantics import SemanticLayer
 
@@ -159,6 +159,27 @@ def test_search_defamation_insult(kb: CriminalLawKB):
     ids = {c.crime_id for c in cands}
     assert "defamation" in ids
     assert "insult" in ids
+    # 根拠語は原文表記（大文字 SNS のまま）
+    ms = next(c for c in cands if c.crime_id == "defamation").matched_surface
+    assert "SNSで悪口" in ms
+    assert "snsで悪口" not in ms
+
+
+def test_matched_surface_original_notation():
+    """照合は正規化後、根拠語は原文の部分文字列（空白・記号込み）で返す。"""
+    layer = SemanticLayer(
+        [Concept(id="c1", pref_label="財布を盗まれた", alt_labels=["SNSで悪口"])]
+    )
+    ms = layer.resolve("駅で 財布を、盗まれた。昨日は SNS で悪口も")[0].matched_surface
+    assert "財布を、盗まれた" in ms
+    assert "SNS で悪口" in ms
+
+
+def test_matched_surface_first_occurrence():
+    layer = SemanticLayer([Concept(id="c1", pref_label="sns")])
+    m = layer.resolve("Sns と SNS")[0]
+    assert m.matched_surface == ["Sns"]
+    assert m.score == pytest.approx(1.0 + 3 * 0.1)
 
 
 def test_search_civil_matter_returns_empty(kb: CriminalLawKB):
