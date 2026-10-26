@@ -23,20 +23,46 @@ from criminal_agent.tools import (
 # -------------------------------------------------------------------
 def test_tool_search_theft():
     r = search_crimes_by_text("財布を盗まれた")
-    assert r
-    assert r[0]["crime_id"] == "theft"
-    assert r[0]["article"] == "235"
-    assert "盗まれた" in r[0]["matched_surface"]
+    assert r["query"] == "財布を盗まれた"
+    assert r["resubmit"] is None
+    c = r["candidates"]
+    assert c
+    assert c[0]["crime_id"] == "theft"
+    assert c[0]["article"] == "235"
+    assert "盗まれた" in c[0]["matched_surface"]
 
 
 def test_tool_search_assault_injury():
     r = search_crimes_by_text("隣人に殴られた")
-    ids = {c["crime_id"] for c in r}
+    ids = {c["crime_id"] for c in r["candidates"]}
     assert {"assault", "injury"} <= ids
 
 
 def test_tool_search_civil_empty():
-    assert search_crimes_by_text("貸した金が返ってこない") == []
+    r = search_crimes_by_text("貸した金が返ってこない")
+    assert r["candidates"] == []
+    assert r["resubmit"] is not None
+
+
+def test_tool_search_resubmit_on_zero_hits():
+    """0 件のとき、言い換えの方針（3 種）と制約を持つ差し戻しを返す。"""
+    r = search_crimes_by_text("盗んだバイクで走り出す")
+    assert r["candidates"] == []
+    rs = r["resubmit"]
+    assert rs["reason"]
+    names = [s["name"] for s in rs["strategies"]]
+    assert names == ["被害者視点の受け身形", "俗語を標準語へ", "法律用語・罪名"]
+    assert all(s["example"] for s in rs["strategies"])
+    assert any("事実" in c for c in rs["constraints"])
+    assert any("2 回" in c for c in rs["constraints"])
+
+
+def test_tool_search_rephrased_hits():
+    """方針どおりの言い換え（受け身形・罪名）で候補が出る。"""
+    for text, crime_id in [("バイクを盗まれた", "theft"), ("窃盗", "theft"), ("人に殴られた", "assault")]:
+        r = search_crimes_by_text(text)
+        assert r["resubmit"] is None
+        assert crime_id in {c["crime_id"] for c in r["candidates"]}
 
 
 def test_tool_get_crime_detail():

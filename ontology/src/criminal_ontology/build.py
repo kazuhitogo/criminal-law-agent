@@ -2,7 +2,7 @@
 
 生成物:
   build/criminal_law.ttl  — 罪・条文・構成要件・法定刑（RDF データ）
-  build/semantics.ttl     — SKOS 概念（セマンティックレイヤー）
+  build/semantics.ttl     — SKOS 概念（セマンティックレイヤー。罪名の生成概念を含む）
 
 schema.ttl は固定スキーマとして別管理。query 側でロード時に統合する。
 """
@@ -23,6 +23,7 @@ from .models import (
     CrimesFile,
     SemanticsFile,
 )
+from .semantics import generate_label_concepts
 
 CL = Namespace("https://example.org/criminal-law#")
 
@@ -139,13 +140,20 @@ def load_concepts(path: Path | None = None) -> list[Concept]:
     return SemanticsFile(**data).concepts
 
 
+def load_all_concepts(crimes: list[Crime] | None = None) -> list[Concept]:
+    """手書き概念（semantics.yaml）+ 罪名の生成概念を返す（SPEC §4.5）。"""
+    handwritten = load_concepts()
+    crimes = crimes if crimes is not None else load_crimes()
+    return handwritten + generate_label_concepts(crimes, handwritten)
+
+
 def build_all(out_dir: Path | None = None) -> dict[str, Path]:
     """全データをビルドして Turtle を書き出す。生成パスを返す。"""
     out_dir = out_dir or BUILD_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
 
     crimes = load_crimes()
-    concepts = load_concepts()
+    concepts = load_all_concepts(crimes)
 
     crimes_g = build_crimes_graph(crimes)
     sem_g = build_semantics_graph(concepts)

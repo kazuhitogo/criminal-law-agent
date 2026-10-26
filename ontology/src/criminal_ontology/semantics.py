@@ -13,7 +13,10 @@ from pathlib import Path
 
 import yaml
 
-from .models import Concept, SemanticsFile
+from .models import Concept, Crime, SemanticsFile
+
+# 罪名から自動生成する概念の id 接頭辞（SPEC §4.5）
+LABEL_CONCEPT_PREFIX = "label-"
 
 
 @dataclass
@@ -129,3 +132,31 @@ class SemanticLayer:
                     m.score += 1.0 + len(surface_key) * 0.1
 
         return sorted(matches.values(), key=lambda x: x.score, reverse=True)
+
+
+def generate_label_concepts(crimes: list[Crime], handwritten: list[Concept]) -> list[Concept]:
+    """罪名の生成概念を作る（SPEC §4.5）。
+
+    罪名から末尾の「罪」を除いた語（例: 窃盗）を表層語に持ち、その罪だけを指す。
+    語が 2 文字未満、または手書き概念の正式名・表層語と正規化後に一致する語は生成しない
+    （同じ語でスコアが二重に加算されるのを避けるため）。
+    """
+    norm = SemanticLayer._normalize
+    taken = {norm(s) for c in handwritten for s in [c.pref_label, *c.alt_labels]}
+    out: list[Concept] = []
+    for crime in crimes:
+        if not crime.label.endswith("罪"):
+            continue
+        stem = crime.label[:-1]
+        key = norm(stem)
+        if len(key) < 2 or key in taken:
+            continue
+        out.append(
+            Concept(
+                id=f"{LABEL_CONCEPT_PREFIX}{crime.id}",
+                pref_label=crime.label,
+                alt_labels=[stem],
+                indicates_crimes=[crime.id],
+            )
+        )
+    return out

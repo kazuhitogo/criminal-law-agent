@@ -18,22 +18,50 @@ def get_kb() -> CriminalLawKB:
     return CriminalLawKB.load()
 
 
+# 0 件時の差し戻し（SPEC §5.2）。言い換え自体は文脈理解が要るので LLM に任せ、
+# 方針だけをツール結果で渡す。
+RESUBMIT = {
+    "reason": "辞書に一致する語が無く、罪候補が 0 件だった。相談文を言い換えて再検索すること。",
+    "strategies": [
+        {
+            "name": "被害者視点の受け身形",
+            "example": "盗んだ → 盗まれた、殴った → 殴られた",
+        },
+        {
+            "name": "俗語を標準語へ",
+            "example": "パクった → 盗まれた、ボコられた → 殴られた（受け身形と組み合わせる）",
+        },
+        {
+            "name": "法律用語・罪名",
+            "example": "窃盗、横領、暴行（罪名から「罪」を除いた語。窃取などの条文の用語は辞書に無いことが多い）",
+        },
+    ],
+    "constraints": [
+        "辞書の語は被害者視点の受け身形が中心。①②を先に試す",
+        "表現（視点・語彙）だけを変え、事実を足さない・変えない",
+        "1 つの事実につき言い換えは 2 回まで。2 回とも 0 件なら候補なしとする",
+    ],
+}
+
+
 @tool
-def search_crimes_by_text(consultation: str) -> list[dict]:
+def search_crimes_by_text(consultation: str) -> dict:
     """相談文 → 概念 → 罪候補を解決して返す（概念経由の2段階検索）。
 
-    該当しうる罪が無い場合は空リストを返す（刑法上該当なしの可能性）。
+    候補が 0 件のときは resubmit（言い換えの方針）を返す。その方針で言い換えて再検索する。
 
     Args:
-        consultation: 利用者の相談文（日常語）。
+        consultation: 利用者の相談文（日常語）。言い換え後の文でもよい。
 
     Returns:
-        罪候補のリスト。各要素は crime_id / label / article / category /
+        {"query", "candidates", "resubmit"}。
+        candidates の各要素は crime_id / label / article / category /
         penalties / score / via_concepts / matched_surface を含む。スコア降順。
-        matched_surface は相談文中で辞書にマッチした語（判断根拠）。
+        matched_surface は query 中で辞書にマッチした語（判断根拠）。
+        resubmit は 0 件のときだけ値を持ち、ヒット時は null。
     """
     cands = get_kb().search_by_text(consultation)
-    return [
+    candidates = [
         {
             "crime_id": c.crime_id,
             "label": c.label,
@@ -46,6 +74,11 @@ def search_crimes_by_text(consultation: str) -> list[dict]:
         }
         for c in cands
     ]
+    return {
+        "query": consultation,
+        "candidates": candidates,
+        "resubmit": None if candidates else RESUBMIT,
+    }
 
 
 @tool

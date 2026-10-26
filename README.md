@@ -246,10 +246,12 @@ LLM に渡すツール出力は軽量に保ち、可視化用データはスト�
   定義域・値域、`owl:inverseOf` / `TransitiveProperty` / `disjointWith` 等。
 - **罪データ** (`ontology/data/crimes.yaml`): 刑法第2編で罪を定める全条（175 罪、8 カテゴリ）を収録。
   条文原文（e-Gov 法令データ）・構成要件・法定刑（拘禁刑, 2025年施行を反映）。
-- **セマンティックレイヤー** (`ontology/data/semantics.yaml`): SKOS 概念辞書（139 概念）。
+- **セマンティックレイヤー** (`ontology/data/semantics.yaml`): SKOS 概念辞書（手書き 139 概念）。
   日常語（「殴られた」等）を法律概念へ正規化し、概念→罪へ橋渡しする。
+  ビルド時に罪名の生成概念（「窃盗」等、罪名から「罪」を除いた語。128 概念）を自動で足す。
 - **検索 API** (`ontology/src/criminal_ontology/query.py`): 相談文 → 概念 → 罪候補の
   2段階解決。owlrl による RDFS/OWL-RL 推論でクラス階層を補う。
+  エージェントのツールは 0 件のとき差し戻し（言い換えの方針）を返し、AI が言い換えて再検索する。
 
 YAML を人が編集し、`build.py` が Turtle（`ontology/build/*.ttl`）へ変換する二層構成。
 

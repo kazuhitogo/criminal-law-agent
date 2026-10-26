@@ -17,7 +17,7 @@ from rdflib.namespace import RDF, RDFS, SKOS
 from .build import (
     SCHEMA_PATH,
     build_all,
-    load_concepts,
+    load_all_concepts,
 )
 from .semantics import SemanticLayer
 
@@ -78,7 +78,7 @@ class CriminalLawKB:
             # RDFS + OWL-RL クロージャ（subClassOf, inverseOf, TransitiveProperty 等）
             owlrl.DeductiveClosure(owlrl.RDFS_OWLRL_Semantics).expand(g)
 
-        sl = SemanticLayer(load_concepts())
+        sl = SemanticLayer(load_all_concepts())
         return cls(g, sl)
 
     # ----------------------------------------------------------------

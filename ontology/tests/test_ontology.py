@@ -20,7 +20,7 @@ from criminal_ontology.build import (
 )
 from criminal_ontology.models import Concept, CrimesFile, SemanticsFile, VALID_CATEGORIES
 from criminal_ontology.query import CriminalLawKB
-from criminal_ontology.semantics import SemanticLayer
+from criminal_ontology.semantics import SemanticLayer, generate_label_concepts
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
@@ -95,7 +95,10 @@ def test_semantics_yaml_valid():
 
 
 def test_every_crime_indicated_by_concept():
-    """どの概念からも指されない罪は検索に出ないため、すべての罪が 1 つ以上の概念から指されること。"""
+    """どの概念からも指されない罪は検索に出ないため、すべての罪が 1 つ以上の概念から指されること。
+
+    罪名の生成概念で自明に満たされないよう、手書き概念（semantics.yaml）だけで判定する。
+    """
     indicated = {cid for c in load_concepts() for cid in c.indicates_crimes}
     orphans = {c.id for c in load_crimes()} - indicated
     assert orphans == set(), f"概念から指されない罪: {sorted(orphans)}"
@@ -138,6 +141,47 @@ def test_semantic_broader_closure_no_cycle():
     for c in sl.all_concepts():
         closure = sl.broader_closure(c.id)
         assert c.id not in closure  # 自己言及なし
+
+
+# -------------------------------------------------------------------
+# 罪名の生成概念（SPEC §4.5）
+# -------------------------------------------------------------------
+def test_label_concepts_generated():
+    generated = generate_label_concepts(load_crimes(), load_concepts())
+    by_crime = {c.indicates_crimes[0]: c for c in generated}
+    theft = by_crime["theft"]
+    assert theft.id == "label-theft"
+    assert theft.pref_label == "窃盗罪"
+    assert theft.alt_labels == ["窃盗"]
+    assert all(len(c.indicates_crimes) == 1 for c in generated)
+
+
+def test_label_concepts_stem_rules():
+    """語は 2 文字以上、手書き概念の正式名・表層語と重複しない、id は手書きと衝突しない。"""
+    handwritten = load_concepts()
+    taken = {SemanticLayer._normalize(s) for c in handwritten for s in [c.pref_label, *c.alt_labels]}
+    hand_ids = {c.id for c in handwritten}
+    for c in generate_label_concepts(load_crimes(), handwritten):
+        stem = SemanticLayer._normalize(c.alt_labels[0])
+        assert len(stem) >= 2
+        assert stem not in taken, f"{c.id} の語 {stem} が手書き概念と重複"
+        assert c.id not in hand_ids
+
+
+def test_label_concepts_short_and_duplicate_skipped():
+    crimes = load_crimes()[:1]
+    crime = crimes[0].model_copy(update={"label": "X罪"})
+    assert generate_label_concepts([crime], []) == []
+    crime = crimes[0].model_copy(update={"label": "窃盗罪"})
+    hand = [Concept(id="h", pref_label="窃盗")]
+    assert generate_label_concepts([crime], hand) == []
+
+
+def test_label_concepts_in_ttl(tmp_path):
+    from criminal_ontology.build import build_all
+
+    paths = build_all(out_dir=tmp_path)
+    assert "concept-label-theft" in paths["semantics"].read_text(encoding="utf-8")
 
 
 # -------------------------------------------------------------------
@@ -264,6 +308,18 @@ def test_search_added_crimes_top(kb: CriminalLawKB, text: str, crime_id: str):
 def test_search_no_false_match(kb: CriminalLawKB, text: str):
     """汎用語を含むが犯罪でない相談文は、候補が出ないこと。"""
     assert kb.search_by_text(text) == []
+
+
+@pytest.mark.parametrize(
+    ("text", "crime_id"),
+    [("窃盗された", "theft"), ("横領", "embezzlement"), ("窃盗罪にあたるか", "theft")],
+)
+def test_search_by_crime_name(kb: CriminalLawKB, text: str, crime_id: str):
+    """法律用語・罪名（末尾の「罪」なしを含む）で検索すると、その罪が首位に出ること。"""
+    cands = kb.search_by_text(text)
+    assert cands
+    top = {c.crime_id for c in cands if c.score == pytest.approx(cands[0].score)}
+    assert crime_id in top
 
 
 def test_resolve_concepts(kb: CriminalLawKB):
